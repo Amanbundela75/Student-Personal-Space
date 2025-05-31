@@ -1,6 +1,6 @@
 const Enrollment = require('../models/Enrollment.js');
 const Course = require('../models/Course.js');
-const User = require('../models/User.js');
+require('../models/User.js');
 
 // @desc    Enroll a student in a course
 // @route   POST /api/enrollments

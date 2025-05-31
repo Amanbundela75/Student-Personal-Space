@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAllEnrollmentsAdmin } from '../api/enrollments.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { Link } from 'react-router-dom';
+
 
 const AdminEnrollmentManagementPage = () => {
     const [enrollments, setEnrollments] = useState([]);
