@@ -152,7 +152,8 @@ To get a local copy up and running, follow these simple steps.
 * **Students:** Register, log in, select a branch, browse courses for that branch, and enroll.
 * **Admin:** Log in with admin credentials. Navigate to the "Admin Dashboard" to manage users, branches, and courses.
     * **Creating Branches/Courses:** It's recommended to create branches first, then courses, assigning them to the appropriate branch.
-
+      
+```bash
 lms-project/
 ├── backend/
 │   ├── config/         # Database configuration
@@ -164,18 +165,19 @@ lms-project/
 │   └── server.js       # Main backend server entry point
 │
 └── frontend/
-├── public/         # Static assets (for Vite, often just index.html and favicon)
-├── src/
-│   ├── api/          # Functions for backend API calls
-│   ├── assets/       # Local images, fonts, etc.
-│   ├── components/   # Reusable React components (auth, layout, admin, student)
-│   ├── contexts/     # React Context API (e.g., AuthContext)
-│   ├── pages/        # Page-level components
-│   ├── App.jsx       # Main app component with routing
-│   ├── main.jsx      # Vite entry point
-│   ├── index.css     # Global styles (or App.css)
-│   └── .env          # Frontend environment variables
-└── index.html      # Root HTML file for Vite
+    ├── public/         # Static assets (index.html, favicon)
+    ├── src/
+    │   ├── api/          # Functions for backend API calls
+    │   ├── assets/       # Local images, fonts, etc.
+    │   ├── components/   # Reusable React components
+    │   ├── contexts/     # React Context (AuthContext etc.)
+    │   ├── pages/        # Page-level components
+    │   ├── App.jsx       # Main app component
+    │   ├── main.jsx      # Vite entry point
+    │   ├── index.css     # Global styles
+    │   └── .env          # Frontend env variables
+    └── index.html      # Root HTML for Vite
+```
 
 ## 🤝 Contributing
 
