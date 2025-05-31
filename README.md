@@ -99,8 +99,8 @@ To get a local copy up and running, follow these simple steps.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME.git](https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME.git)
-    cd YOUR_REPOSITORY_NAME
+    git clone [https://github.com/Amanbundela75/LMS-Plateform.git](https://github.com/Amanbundela75/LMS-Plateform.git)
+    cd LMS-Plateform
     ```
     2.  **Backend Setup:**
     * Navigate to the backend directory:
