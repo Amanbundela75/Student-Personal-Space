@@ -7,12 +7,19 @@ A comprehensive full-stack platform for students to register, enroll in branches
 This Learning Management System (LMS) is designed to provide a seamless educational experience. Students can register, choose their academic branch or stream, and are then presented with a curated list of courses relevant to their selection. The system prioritizes student privacy, ensuring that individual progress and activities are not visible to other students. Administrators have a dedicated dashboard to manage users, branches, courses, and monitor student activity status on the platform.
 
 ## 📸 Screenshots
+
 ![2025-05-31 (1)](https://github.com/user-attachments/assets/fc0b880c-5f3c-4e95-815f-866946c8b4ea)
+
 ![2025-05-31 (4)](https://github.com/user-attachments/assets/b5d4fddd-4bd4-4822-91a3-22a4d1403fb6)
+
 ![2025-05-31 (2)](https://github.com/user-attachments/assets/3f794c69-4459-4e45-b04b-702ca801b073)
+
 ![2025-05-31 (3)](https://github.com/user-attachments/assets/ef194e03-3dfe-4b76-81c4-0f82e0a4bff9)
+
 ![2025-05-31 (5)](https://github.com/user-attachments/assets/99b085c5-0e52-43b4-9f39-4605caf7470d)
+
 ![2025-05-31 (6)](https://github.com/user-attachments/assets/33b59ea5-1a55-41b2-ac55-89a4ba4b1e21)
+
 ![2025-05-31 (7)](https://github.com/user-attachments/assets/22cf01a6-2480-47a1-866b-448e6247ed8d)
 
 ## ✨ Features
@@ -70,7 +77,7 @@ This LMS platform is packed with features designed for both students and adminis
     * JSON Web Tokens (JWT) for authentication
     * Bcrypt.js for password hashing
     * CORS
-    * 
+      
 * **Database:**
     * MongoDB (e.g., MongoDB Atlas or local instance)
 
