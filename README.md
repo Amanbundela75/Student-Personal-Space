@@ -41,8 +41,8 @@ This LMS platform is packed with features designed for both students and adminis
     * **Simple Enrollment:** One-click enrollment into available courses within their branch.
 * **Student Dashboard & Profile:**
     * **My Courses:** A dedicated section to view all enrolled courses.
-    * **(Optional: Add if implemented - Progress Tracking:** Monitor progress within each course.)
-    * **(Optional: Add if implemented - Access Course Materials:** Direct access to course content like videos, documents, etc.)
+    * **Progress Tracking:** Monitor progress within each course.
+    * **(Future Plane: Access Course Materials:** Direct access to course content like videos, documents, etc.)
     * **Profile Management:** Students can view and update their personal details (name, and optionally, their selected branch or password).
 * **Privacy First:**
     * Student activities, course enrollments, and progress are kept private and are not visible to other students.
