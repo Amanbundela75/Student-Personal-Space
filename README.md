@@ -32,7 +32,7 @@ This LMS platform is packed with features designed for both students and adminis
     * Easy-to-use registration with email and password.
     * Secure login with JWT (JSON Web Tokens) based sessions.
     * Password hashing for enhanced security.
-    * (Optional: Add if implemented - Email verification for new accounts).
+    * (Future Plane: Email verification for new accounts).
 * **Personalized Learning Path:**
     * **Branch/Stream Selection:** Students can select their preferred academic branch (e.g., Computer Science, Business Administration) upon registration or from their profile.
     * **Tailored Course Catalog:** The system dynamically displays courses relevant only to the student's chosen branch, providing a focused learning environment.
