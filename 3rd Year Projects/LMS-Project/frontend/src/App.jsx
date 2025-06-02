@@ -10,13 +10,16 @@ import LoginPage from './pages/LoginPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 
 import StudentDashboardPage from './pages/StudentDashboardPage.jsx';
-import MyCoursesPage from './pages/MyCoursesPage.jsx'; // For student's specific "My Courses" tab if needed
+import MyCoursesPage from './pages/MyCoursesPage.jsx';
+import StudyCoursePage from './pages/StudyCoursePage.jsx';
+// For student's specific "My Courses" tab if needed
 
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
 import AdminUserManagementPage from './pages/AdminUserManagementPage.jsx';
 import AdminBranchManagementPage from './pages/AdminBranchManagementPage.jsx';
 import AdminCourseManagementPage from './pages/AdminCourseManagementPage.jsx';
 import AdminEnrollmentManagementPage from './pages/AdminEnrollmentManagementPage.jsx';
+
 // Placeholder for AdminEditUserPage - you would create this
 // import AdminEditUserPage from './pages/AdminEditUserPage';
 
@@ -57,6 +60,7 @@ function App() {
                     <Route element={<PrivateRoute roles={['student']} />}>
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
                         <Route path="/my-courses" element={<MyCoursesPage />} />
+                        <Route path="/courses/:courseId/study" element={<StudyCoursePage />} />
                         {/* Example route for studying a course - implement StudyCoursePage */}
                         {/* <Route path="/courses/:courseId/study" element={<StudyCoursePage />} /> */}
                     </Route>

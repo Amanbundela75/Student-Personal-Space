@@ -48,7 +48,7 @@ exports.getCourseById = async (req, res) => {
 // @route   POST /api/courses
 // @access  Private/Admin
 exports.createCourse = async (req, res) => {
-    const { title, description, branchId, instructor } = req.body;
+    const { title, description, branchId, instructor, youtubeVideos, notes } = req.body;
 
     if (!title || !description || !branchId) {
         return res.status(400).json({ success: false, message: 'Title, description, and branch ID are required' });
@@ -65,6 +65,8 @@ exports.createCourse = async (req, res) => {
             description,
             branch: branchId,
             instructor,
+            youtubeVideos: youtubeVideos || [], // Default to empty array if not provided
+            notes: notes || [],
         });
         // Populate branch info in the response
         const populatedCourse = await Course.findById(course._id).populate('branch', 'name');
@@ -82,7 +84,7 @@ exports.createCourse = async (req, res) => {
 // @route   PUT /api/courses/:id
 // @access  Private/Admin
 exports.updateCourse = async (req, res) => {
-    const { title, description, branchId, instructor } = req.body;
+    const { title, description, branchId, instructor, youtubeVideos, notes } = req.body;
     try {
         let course = await Course.findById(req.params.id);
         if (!course) {
@@ -100,6 +102,8 @@ exports.updateCourse = async (req, res) => {
         course.title = title || course.title;
         course.description = description || course.description;
         course.instructor = instructor !== undefined ? instructor : course.instructor;
+        course.youtubeVideos = youtubeVideos || course.youtubeVideos; // Default to empty array if not provided
+        course.notes = notes || course.notes;
 
         const updatedCourse = await course.save();
         const populatedCourse = await Course.findById(updatedCourse._id).populate('branch', 'name');

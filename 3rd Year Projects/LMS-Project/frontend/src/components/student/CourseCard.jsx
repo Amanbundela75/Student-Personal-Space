@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { enrollInCourseApi } from '../../api/enrollments';
 
 const CourseCard = ({ course, onEnrollSuccess, isEnrolled }) => {
+    const navigate = useNavigate();
     const { token, isAuthenticated, currentUser } = useAuth();
 
     const handleEnroll = async () => {
@@ -17,6 +18,7 @@ const CourseCard = ({ course, onEnrollSuccess, isEnrolled }) => {
                 if (response.success) {
                     alert('Successfully enrolled!');
                     if (onEnrollSuccess) onEnrollSuccess(course._id);
+                    navigate(`/courses/${course._id}/study`);
                 } else {
                     alert(`Enrollment failed: ${response.message}`);
                 }

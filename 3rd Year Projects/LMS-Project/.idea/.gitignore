@@ -6,3 +6,16 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+# .gitignore
+node_modules/
+/backend/node_modules/
+/frontend/node_modules/
+
+# Environment variables
+backend/.env
+frontend/.env
+*.env
+
+# Build outputs
+/frontend/dist

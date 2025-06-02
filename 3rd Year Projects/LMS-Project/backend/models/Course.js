@@ -1,4 +1,18 @@
+// backend/models/Course.js
 const mongoose = require('mongoose');
+
+const NoteSchema = new mongoose.Schema({
+    title: { type: String, required: true, trim: true },
+    content: { type: String }, // Can be markdown text, or simple text
+    url: { type: String, trim: true }, // Optional: if notes are external links
+    // Add other fields like type: 'text' | 'pdf' | 'link' if you want more structure
+});
+
+const VideoSchema = new mongoose.Schema({
+    title: { type: String, required: true, trim: true },
+    videoId: { type: String, required: true, trim: true }, // YouTube video ID (e.g., dQw4w9WgXcQ)
+    description: { type: String, trim: true }, // Optional short description
+});
 
 const CourseSchema = new mongoose.Schema({
     title: {
@@ -15,13 +29,13 @@ const CourseSchema = new mongoose.Schema({
         ref: 'Branch',
         required: [true, 'Branch is required for a course'],
     },
-    instructor: { // Optional: could be a string or ref to User model (admin/teacher role)
+    instructor: {
         type: String,
         default: 'Platform Admin'
     },
-    // Future enhancements:
-    // modules: [{ title: String, lessons: [{ title: String, contentType: String, contentUrl: String }] }]
-    // price: { type: Number, default: 0 }
+    // New fields for content:
+    youtubeVideos: [VideoSchema], // Array of video objects
+    notes: [NoteSchema],         // Array of note objects
     createdAt: { type: Date, default: Date.now },
 });
 
