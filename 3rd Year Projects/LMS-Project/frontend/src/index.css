@@ -1,11 +1,12 @@
+/* frontend/src/index.css - SUGGESTED CLEANER VERSION */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Default light theme colors */
+  color: #213547;
+  background-color: #ffffff; /* Base background for the entire HTML document */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,54 +16,40 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  text-decoration: none; /* Remove underline by default */
+  color: #007bff; /* Default link color */
 }
 a:hover {
-  color: #535bf2;
+  color: #0056b3; /* Darker on hover */
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  background-color: #f4f7f6; /* Your main app background from App.css - body in index.css can be simpler */
+  color: #333; /* Your main app text color from App.css */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif; /* Moved your preferred font-family here */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0; /* Common reset for headings */
+  color: #2c3e50; /* A consistent dark color for headings */
+  font-weight: 600; /* Good default weight */
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+h1 { font-size: 2.2em; margin-bottom: 0.75em; }
+h2 { font-size: 1.8em; margin-bottom: 0.6em; }
+h3 { font-size: 1.5em; margin-bottom: 0.5em; }
+
+/* Basic button reset - more specific button styles will be in App.css or component CSS */
+button, input[type="submit"], input[type="button"] {
   font-family: inherit;
-  background-color: #1a1a1a;
+  font-size: 1em;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  border-radius: 6px; /* Consistent border radius */
+  padding: 0.6em 1.2em; /* Default padding */
+  border: 1px solid transparent; /* Default border */
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }

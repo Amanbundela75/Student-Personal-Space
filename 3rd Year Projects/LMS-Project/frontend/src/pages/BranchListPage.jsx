@@ -34,14 +34,16 @@ const BranchListPage = () => {
             ) : (
                 <div className="card-list">
                     {branches.map(branch => (
-                        <div key={branch._id} className="card">
-                            <h3>{branch.name}</h3>
-                            <p>{branch.description || 'No description available.'}</p>
-                            <div className="card-actions"> {/* Add this wrapper */}
-                                <Link to={`/courses?branchId=${branch._id}`} className="button button-primary">
+                        <div key={branch._id} className="card branch-card"> {/* branch-card क्लास जोड़ी */}
+                            <div className="card-content"> {/* कंटेंट के लिए रैपर */}
+                                <h3>{branch.name}</h3>
+                                <p>{branch.description || 'No description available.'}</p>
+                            </div>
+                            <div className="card-actions"> {/* बटनों के लिए रैपर */}
+                                <Link to={`/courses?branchId=${branch._id}`} className="button button-primary button-full-width">
                                     View Courses in {branch.name}
                                 </Link>
-                                {/* If you had another button, it would go here and flexbox + gap would manage spacing */}
+                                {/* यदि और बटन हों तो यहाँ आएँगे */}
                             </div>
                         </div>
                     ))}
