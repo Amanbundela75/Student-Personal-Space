@@ -47,36 +47,40 @@ const EnrolledCourseCard = ({ enrollment, onUnenrollSuccess }) => {
 
 
     if (!enrollment || !enrollment.course) {
-        return <div className="card"><p>Course data not available for this enrollment.</p></div>;
+        return <div className="card"><p>Course data not available.</p></div>;
     }
 
     return (
-        <div className="card">
-            <h3>{enrollment.course.title}</h3>
-            <p>{enrollment.course.description?.substring(0, 100)}...</p>
-            {enrollment.course.branch && <p><strong>Branch:</strong> {enrollment.course.branch.name}</p>}
-            <p><strong>Enrolled on:</strong> {new Date(enrollment.enrolledAt).toLocaleDateString()}</p>
-            <p><strong>Current Progress:</strong> {progress}%</p>
-
-            {isEditingProgress ? (
-                <div>
-                    <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={newProgress}
-                        onChange={(e) => setNewProgress(e.target.value)}
-                        style={{ width: '60px', marginRight: '10px' }}
-                    />
-                    <button onClick={handleProgressUpdate} className="action-button" style={{marginRight: "5px"}}>Save</button>
-                    <button onClick={() => setIsEditingProgress(false)} className="action-button delete-button">Cancel</button>
-                </div>
-            ) : (
-                <button onClick={() => setIsEditingProgress(true)} className="action-button edit-button" style={{marginRight: "10px"}}>Update Progress</button>
-            )}
-            {/* Basic "Start Studying" link - in a real LMS, this would go to course content */}
-            <Link to={`/courses/${enrollment.course._id}/study`} className="action-button" style={{marginRight: "10px"}}>Start Studying</Link>
-            <button onClick={handleUnenroll} className="action-button delete-button">Unenroll</button>
+        <div className="card enrolled-course-card"> {/* एक और खास क्लास दे सकते हैं */}
+            <div className="card-content">
+                <h3>{enrollment.course.title}</h3>
+                {/* ... (बाकी कंटेंट: description, branch, enrolled on) ... */}
+                <p><strong>Current Progress:</strong> {progress}%</p>
+                {isEditingProgress ? (
+                    <div style={{display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}> {/* प्रोग्रेस अपडेट के लिए फ्लेक्स */}
+                        <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={newProgress}
+                            onChange={(e) => setNewProgress(e.target.value)}
+                            style={{ width: '70px', padding: '8px' }}
+                        />
+                        <button onClick={handleProgressUpdate} className="button button-primary" style={{flexGrow: 1}}>Save</button>
+                        <button onClick={() => setIsEditingProgress(false)} className="button button-secondary" style={{flexGrow: 1}}>Cancel</button>
+                    </div>
+                ) : (
+                    <button onClick={() => setIsEditingProgress(true)} className="button button-edit" style={{width: '100%', marginTop: '10px'}}>Update Progress</button>
+                )}
+            </div>
+            <div className="card-actions">
+                <Link to={`/courses/${enrollment.course._id}/study`} className="button button-primary">
+                    Start Studying
+                </Link>
+                <button onClick={handleUnenroll} className="button button-danger">
+                    Unenroll
+                </button>
+            </div>
         </div>
     );
 };
