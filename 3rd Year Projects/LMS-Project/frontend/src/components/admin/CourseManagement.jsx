@@ -45,14 +45,6 @@ const CourseManagement = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCurrentCourse(prev => ({ ...prev,
-            youtubeVideos: [
-                { title: "Python Tutorial for Beginners", videoId: "https://youtu.be/ERCMXc8x7mc?si=N0JN7fQ16pJ7LZ3C" },
-                { title: "Learn Python - Full Course", videoId: "https://youtu.be/UrsmFxEIp5k?si=GSGL5Vd-a7MS5XjN" }
-            ],
-            notes: [
-                { title: "Note 1 Title", content: "Some text content for note 1..." },
-                { title: "Note 2 Resource", url: "http://link.to/pdf" }
-            ],
         }));
     };
 
