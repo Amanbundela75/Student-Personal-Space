@@ -11,7 +11,6 @@ import ProfilePage from './pages/ProfilePage.jsx';
 
 import StudentDashboardPage from './pages/StudentDashboardPage.jsx';
 import MyCoursesPage from './pages/MyCoursesPage.jsx';
-import StudyCoursePage from './pages/StudyCoursePage.jsx';
 // For student's specific "My Courses" tab if needed
 
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
@@ -27,8 +26,7 @@ import AdminEnrollmentManagementPage from './pages/AdminEnrollmentManagementPage
 import BranchListPage from './pages/BranchListPage.jsx';
 import CourseListPage from './pages/CourseListPage.jsx';
 import CourseDetailPage from './pages/CourseDetailPage.jsx';
-// Placeholder for a page where students study course content
-// import StudyCoursePage from './pages/StudyCoursePage';
+import StudyCoursePage from './pages/StudyCoursePage';
 
 
 import NotFoundPage from './pages/NotFoundPage.jsx';
@@ -61,8 +59,7 @@ function App() {
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
                         <Route path="/my-courses" element={<MyCoursesPage />} />
                         <Route path="/courses/:courseId/study" element={<StudyCoursePage />} />
-                        {/* Example route for studying a course - implement StudyCoursePage */}
-                        {/* <Route path="/courses/:courseId/study" element={<StudyCoursePage />} /> */}
+                        {<Route path="/courses/:courseId/study" element={<StudyCoursePage />} />}
                     </Route>
 
                     {/* Admin Routes */}
