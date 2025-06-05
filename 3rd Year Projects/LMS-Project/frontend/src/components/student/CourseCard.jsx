@@ -29,20 +29,27 @@ const CourseCard = ({ course, onEnrollSuccess, isEnrolled }) => {
     };
 
     return (
-        <div className="card">
+    <div className="card course-item-card"> {/* एक और खास क्लास दे सकते हैं */}
+        <div className="card-content"> {/* कंटेंट के लिए रैपर */}
             <h3>{course.title}</h3>
             <p>{course.description?.substring(0, 100)}...</p>
             {course.branch && <p><strong>Branch:</strong> {course.branch.name}</p>}
             <p><strong>Instructor:</strong> {course.instructor || 'N/A'}</p>
-            <Link to={`/courses/${course._id}`} className="action-button edit-button" style={{marginRight: "10px"}}>View Details</Link>
+        </div>
+        <div className="card-actions">
+            <Link to={`/courses/${course._id}`} className="button button-primary">
+                View Details
+            </Link>
             {isAuthenticated && currentUser?.user?.role === 'student' && (
                 isEnrolled ? (
-                    <button disabled style={{backgroundColor: "grey"}}>Already Enrolled</button>
+                    <button className="button button-disabled" disabled>Already Enrolled</button>
                 ) : (
-                    <button onClick={handleEnroll}>Enroll</button>
+                    <button onClick={handleEnroll} className="button button-primary">Enroll</button>
+                    // Enroll को भी button-primary या अलग रंग दे सकते हैं, e.g., button-success (हरे रंग के लिए CSS बनानी होगी)
                 )
             )}
         </div>
+    </div>
     );
 };
 
