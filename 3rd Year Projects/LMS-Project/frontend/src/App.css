@@ -171,11 +171,10 @@ table tr:hover {
 .card-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px; /* Increased gap */
+    gap: 30px;
     margin-top: 20px;
 }
 
-/* Card Styling (Refined - this is for generic .card, not specific .branch-card which has more detail) */
 .card {
     background-color: #ffffff;
     border: 1px solid #e9ecef;
@@ -183,9 +182,8 @@ table tr:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 25px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* This is important for card layout */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 0; /* Remove margin-bottom if gap in card-list handles it */
 }
 
 .card:hover {
@@ -193,64 +191,113 @@ table tr:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.card h3 { /* For generic card titles, e.g., Course Cards */
-    font-size: 1.3em; /* Adjusted */
+/* This div will contain the main text content of the card */
+.card-content {
+    flex-grow: 1; /* Allows this section to grow, pushing actions to the bottom */
+    margin-bottom: 15px; /* Space before the actions start */
+}
+
+.card h3 {
+    font-size: 1.3em;
     color: #2c3e50;
     margin-top: 0;
     margin-bottom: 12px;
 }
 
-.card p { /* For generic card paragraphs */
-    font-size: 0.9em; /* Adjusted */
+.card p {
+    font-size: 0.9em;
     color: #555;
     line-height: 1.6;
-    flex-grow: 1; /* Pushes actions to bottom */
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Space between paragraphs */
+}
+.card p:last-child {
+    margin-bottom: 0; /* Remove margin from last paragraph in content area */
 }
 
-/* Card Actions (buttons container at the bottom of cards) */
+
+/* Card Actions - Container for buttons at the bottom */
 .card-actions {
-    margin-top: auto; /* Pushes this block to the bottom */
+    margin-top: auto; /* Ensures it's pushed to the bottom of the flex card */
     padding-top: 15px;
-    border-top: 1px solid #f1f3f5; /* Light separator line */
-    display: flex; /* Allows multiple buttons to be side-by-side */
-    flex-wrap: wrap; /* Buttons will wrap if not enough space */
-    gap: 10px; /* Space between buttons */
-    justify-content: flex-start; /* Align buttons to the start */
+    border-top: 1px solid #f1f3f5;
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    /* gap: 10px; */ /* We'll use margin on buttons instead for more control/compatibility */
 }
 
-/* Button styling within cards - this will style the "View Details" on Course Cards if they use .button.button-primary */
-.card .button.button-primary,
-.card .action-button { /* Generalizing action buttons within cards */
-    display: inline-block;
-    padding: 8px 15px; /* Slightly smaller for card actions */
-    font-size: 0.9em;
-    background-color: #007bff; /* Primary blue for actions */
-    color: white !important;
+/* Styling for ALL buttons/links styled as buttons WITHIN .card-actions */
+.card-actions .button, /* Targets <button class="button ..."> and <a class="button ..."> */
+.card-actions a.button { /* More specific for <a> tags styled as buttons */
+    display: block; /* Make them full width */
+    width: 100%;
+    box-sizing: border-box; /* Important! */
+    padding: 10px 15px;
+    font-size: 0.95em;
     text-decoration: none !important;
     border-radius: 5px;
     text-align: center;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    border: none;
-    /* width: auto; Remove fixed/full width unless specifically needed per button type */
-    /* margin-top: 0; Remove top margin if .card-actions handles spacing */
-}
-/* Change the "View Details" buttons on Course Cards to orange if desired */
-/* In CourseCard.jsx, you can give it a specific class like .button-view-details */
-.card .button-view-details { /* Example for orange course buttons */
-    background-color: #fd7e14; /* Orange */
-}
-.card .button-view-details:hover {
-    background-color: #e86a00; /* Darker orange */
+    cursor: pointer;
+    border: none; /* Default no border for card buttons */
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    /* box-shadow: 0 1px 2px rgba(0,0,0,0.1); */ /* Optional: subtle shadow for buttons */
 }
 
+/* Add margin to all buttons within card-actions, except the last one */
+.card-actions .button:not(:last-child),
+.card-actions a.button:not(:last-child) {
+    margin-bottom: 10px; /* <<< THIS IS THE KEY FOR VERTICAL SPACING */
+}
 
-.card .button.button-primary:hover,
-.card .action-button:hover {
-    background-color: #0056b3; /* Darker blue */
+/* Hover effect for all buttons in card-actions */
+.card-actions .button:hover,
+.card-actions a.button:hover {
     transform: translateY(-1px);
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.15); */ /* Optional hover shadow */
 }
 
+/* Specific Button Colors/Styles - these will apply ON TOP of the base .card-actions .button style */
+.card-actions .button-primary {
+    background-color: #007bff;
+    color: white !important;
+}
+.card-actions .button-primary:hover {
+    background-color: #0069d9;
+}
+
+.card-actions .button-view-details { /* For the orange "View Details" button on course cards */
+    background-color: #fd7e14;
+    color: white !important; /* Ensure text is visible */
+}
+.card-actions .button-view-details:hover {
+    background-color: #e86a00;
+}
+
+.card-actions .button-edit { /* For "Update Progress" */
+    background-color: #ffc107;
+    color: #212529 !important; /* Dark text on yellow */
+}
+.card-actions .button-edit:hover {
+    background-color: #e0a800;
+}
+
+.card-actions .button-danger { /* For "Unenroll" */
+    background-color: #dc3545;
+    color: white !important;
+}
+.card-actions .button-danger:hover {
+    background-color: #c82333;
+}
+
+.card-actions .button-disabled { /* For "Already Enrolled" */
+    background-color: #6c757d;
+    color: #e9ecef !important;
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+.card-actions .button-disabled:hover {
+    background-color: #6c757d; /* No color change on hover */
+    transform: none; /* No lift effect on hover */
+}
 /* Specific styles for .branch-card from previous suggestions are good, ensure they don't conflict heavily */
 /* You might consolidate some .branch-card h3, p styles into .card h3, p if they are similar */
 .branch-card .card-content {
@@ -276,27 +323,28 @@ table tr:hover {
 
 /* General .button and .button-primary (outside of cards/forms) */
 /* These might be used for standalone buttons on pages, less common */
-.button {
-    /* display: inline-block; */ /* Already in index.css basic reset */
-    /* padding: 12px 20px; */ /* Already in index.css basic reset */
-    /* border-radius: 6px; */ /* Already in index.css basic reset */
+.button { /* General .button class if used elsewhere */
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
     text-decoration: none;
     font-weight: 500;
     text-align: center;
     cursor: pointer;
-    /* transition: background-color 0.2s ease, transform 0.2s ease; */ /* Already in index.css */
-    /* border: none; */ /* Already in index.css basic reset */
+    border: 1px solid transparent; /* Default border */
+    transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
-.button-primary { /* For general primary buttons not in forms/cards */
+.button.button-primary { /* For general purpose primary buttons like "Enroll in More Courses" on dashboard */
     background-color: #007bff;
     color: white !important;
+    border-color: #007bff; /* Match background */
 }
-.button-primary:hover {
+.button.button-primary:hover {
     background-color: #0069d9;
+    border-color: #0062cc;
     transform: translateY(-2px);
 }
-
 
 /* Utility classes (already good) */
 .text-center { text-align: center; }
