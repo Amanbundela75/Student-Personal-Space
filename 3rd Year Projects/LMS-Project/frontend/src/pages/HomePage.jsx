@@ -15,6 +15,22 @@ const HomePage = () => {
     return (
         <div className="homepage">
             {/* Hero Section */}
+            {/* Background Video */}
+            <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="background-video"
+            >
+                <source src="/videos/Home_Background.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+
+            {/* Video Overlay for better text readability */}
+            <div className="video-overlay"></div>
+
+            {/* Hero Content (यह वीडियो के ऊपर दिखेगा) */}
             <section className="hero-section">
                 <div className="hero-content">
                     <h1 className="hero-title">Unlock Your Potential with Aman's LMS</h1>
