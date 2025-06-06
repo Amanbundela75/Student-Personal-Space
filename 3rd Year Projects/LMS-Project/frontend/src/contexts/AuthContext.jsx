@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }) => {
         return response.data; // Return full response for component to handle messages
     };
 
-    const register = async (userData) => {
-        const response = await axios.post(`${API_URL}/register`, userData);
+    const register = async (formDataObject) => {
+        const response = await axios.post(`${API_URL}/register`, formDataObject);
         // Optionally auto-login or prompt user to login after successful registration
         // For now, just return the response
         return response.data;
