@@ -1,4 +1,5 @@
 const User = require('../models/User.js');
+const Attendance = require('../models/Attendance');
 const Branch = require('../models/Branch.js'); // For validating branchId on registration
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -86,6 +87,21 @@ exports.loginUser = async (req, res) => {
         const isMatch = await user.matchPassword(password);
         if (!isMatch) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        }
+
+        if (user && isMatch /* && faceVerified (अगर लागू हो) */) {
+            // ... (टोकन जेनरेट करने से पहले) ...
+
+            // अटेंडेंस रिकॉर्ड करें (सिर्फ स्टूडेंट्स के लिए, अगर एडमिन के लिए नहीं चाहते)
+            if (user.role === 'student') {
+                try {
+                    await Attendance.create({user: user._id});
+                    console.log(`Attendance recorded for user: ${user.email}`);
+                } catch (attendanceError) {
+                    console.error("Error recording attendance:", attendanceError);
+                    // इसे लॉगिन को फेल नहीं करना चाहिए, बस एक एरर लॉग करें
+                }
+            }
         }
 
         user.lastLoginTimestamp = new Date();
