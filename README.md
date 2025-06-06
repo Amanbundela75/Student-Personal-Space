@@ -8,19 +8,16 @@ This Learning Management System (LMS) is designed to provide a seamless educatio
 
 ## 📸 Screenshots
 
-![2025-05-31 (1)](https://github.com/user-attachments/assets/fc0b880c-5f3c-4e95-815f-866946c8b4ea)
+![2025-06-05 (5)](https://github.com/user-attachments/assets/fdefef8d-1600-4e69-8178-6e99661205f6)
 
-![2025-05-31 (4)](https://github.com/user-attachments/assets/b5d4fddd-4bd4-4822-91a3-22a4d1403fb6)
+![2025-06-05 (6)](https://github.com/user-attachments/assets/fae586ae-33ce-4bb3-8e84-08f6e7a50799)
 
-![2025-05-31 (2)](https://github.com/user-attachments/assets/3f794c69-4459-4e45-b04b-702ca801b073)
+![2025-06-05 (7)](https://github.com/user-attachments/assets/1a32b15b-5aec-4e71-a421-62d615843978)
 
-![2025-05-31 (3)](https://github.com/user-attachments/assets/ef194e03-3dfe-4b76-81c4-0f82e0a4bff9)
+![2025-06-05 (8)](https://github.com/user-attachments/assets/29c6f4cb-c6da-4c97-b6ff-b6e0934ffd41)
 
-![2025-05-31 (5)](https://github.com/user-attachments/assets/99b085c5-0e52-43b4-9f39-4605caf7470d)
+![2025-06-05 (9)](https://github.com/user-attachments/assets/7ec9d91e-9eba-4aa4-9a00-57cb426701dc)
 
-![2025-05-31 (6)](https://github.com/user-attachments/assets/33b59ea5-1a55-41b2-ac55-89a4ba4b1e21)
-
-![2025-05-31 (7)](https://github.com/user-attachments/assets/22cf01a6-2480-47a1-866b-448e6247ed8d)
 
 ## ✨ Features
 
