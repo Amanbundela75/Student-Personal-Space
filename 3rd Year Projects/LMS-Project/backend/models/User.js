@@ -17,6 +17,12 @@ const UserSchema = new mongoose.Schema({
         ref: 'Branch',
         default: null,
     },
+    idCardImageUrl: { type: String },
+    idCardVerificationStatus: {
+        type: String,
+        enum: ['pending', 'verified', 'rejected', 'not_uploaded'],
+        default: 'not_uploaded'
+    },
     lastLoginTimestamp: { type: Date },
     // isActiveNow: { type: Boolean, default: false }, // More complex to manage directly here
     createdAt: { type: Date, default: Date.now },
