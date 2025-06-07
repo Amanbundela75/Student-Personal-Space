@@ -26,7 +26,7 @@ import AdminEnrollmentManagementPage from './pages/AdminEnrollmentManagementPage
 import BranchListPage from './pages/BranchListPage.jsx';
 import CourseListPage from './pages/CourseListPage.jsx';
 import CourseDetailPage from './pages/CourseDetailPage.jsx';
-import StudyCoursePage from './pages/StudyCoursePage';
+import StudyCoursePage from './pages/StudyCoursePage.jsx';
 
 
 import NotFoundPage from './pages/NotFoundPage.jsx';
