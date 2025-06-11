@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL + '/courses.js';
+const API_URL = import.meta.env.VITE_API_URL + '/courses';
 
 // Public
 export const fetchCourses = async (branchId = null) => {

@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 
 import StudentDashboardPage from './pages/StudentDashboardPage.jsx';
 import MyCoursesPage from './pages/MyCoursesPage.jsx';
@@ -48,6 +49,7 @@ function App() {
                     <Route path="/branches" element={<BranchListPage />} />
                     <Route path="/courses" element={<CourseListPage />} />
                     <Route path="/courses/:courseId" element={<CourseDetailPage />} />
+                    <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
                     {/* Routes for any logged-in user */}
                     <Route element={<PrivateRoute />}>

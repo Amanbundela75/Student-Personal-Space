@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL + '/auth.js'; // Profile routes are under /auth
+const API_URL = import.meta.env.VITE_API_URL + '/auth'; // Profile routes are under /auth.js
 
 export const fetchUserProfile = async (token) => {
     const config = { headers: { Authorization: `Bearer ${token}` } };

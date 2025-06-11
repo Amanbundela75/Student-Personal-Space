@@ -7,7 +7,7 @@ require('../models/User.js');
 // @access  Private (Student)
 exports.enrollInCourse = async (req, res) => {
     const { courseId } = req.body;
-    const userId = req.user.id; // From auth middleware
+    const userId = req.user.id; // From auth.js middleware
 
     if (!courseId) {
         return res.status(400).json({ success: false, message: 'Course ID is required' });
@@ -160,7 +160,7 @@ exports.getEnrollmentByIdAdmin = async (req, res) => {
 // @access  Private (Student for own, Admin for any)
 exports.unenrollFromCourse = async (req, res) => {
     const enrollmentId = req.params.id;
-    const currentUser = req.user; // From auth middleware
+    const currentUser = req.user; // From auth.js middleware
 
     try {
         const enrollment = await Enrollment.findById(enrollmentId);

@@ -1,7 +1,7 @@
 // frontend/src/components/student/BranchSelector.js
 import React, { useState, useEffect } from 'react';
-import { fetchBranches } from '../../api/branches';
-import { updateUserProfileApi, fetchUserProfile } from '../../api/profile'; // Assuming profile API can update branch
+import { fetchBranches } from '../../api/branches.js';
+import { updateUserProfileApi, fetchUserProfile } from '../../api/profile.js'; // Assuming profile API can update branch
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const BranchSelector = () => {

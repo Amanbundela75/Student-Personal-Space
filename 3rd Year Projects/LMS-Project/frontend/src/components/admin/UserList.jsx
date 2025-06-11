@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAllUsersAdmin, deleteUserByAdminApi } from '../../api/admin';
+import { fetchAllUsersAdmin, deleteUserByAdminApi } from '../../api/admin.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { Link } from 'react-router-dom';
 

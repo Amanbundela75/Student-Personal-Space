@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import { enrollInCourseApi } from '../../api/enrollments';
+import { enrollInCourseApi } from '../../api/enrollments.js';
 
 const CourseCard = ({ course, onEnrollSuccess, isEnrolled }) => {
     const navigate = useNavigate();

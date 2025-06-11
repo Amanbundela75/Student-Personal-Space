@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import { updateEnrollmentProgressApi, unenrollFromCourseApi } from '../../api/enrollments';
+import { updateEnrollmentProgressApi, unenrollFromCourseApi } from '../../api/enrollments.js';
 
 
 const EnrolledCourseCard = ({ enrollment, onUnenrollSuccess }) => {

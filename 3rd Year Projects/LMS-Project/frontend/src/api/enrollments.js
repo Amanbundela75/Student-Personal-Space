@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL + '/enrollments.js';
+const API_URL = import.meta.env.VITE_API_URL + '/enrollments';
 
 // Student
 export const enrollInCourseApi = async (courseId, token) => {

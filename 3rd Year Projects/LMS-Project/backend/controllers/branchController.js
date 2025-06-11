@@ -7,7 +7,8 @@ const Course = require('../models/Course.js'); // To handle courses when deletin
 exports.getAllBranches = async (req, res) => {
     try {
         const branches = await Branch.find({}).sort({ name: 1 });
-        res.status(200).json({ success: true, count: branches.length, data: branches });
+        // Frontend 'response.data.data' expect kar raha hai
+        res.status(200).json({ success: true, count: branches.length, branches: branches });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server Error' });
     }

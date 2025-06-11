@@ -1,34 +1,44 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db.js');
 
-// Load env vars (MUST be at the very top before any other imports that might use them)
-dotenv.config();
-
-// Connect to database
-connectDB();
-
-// Route files
+// --- (1) Saare Route Files ko Sahi se Import Karein ---
 const authRoutes = require('./routes/authRoutes.js');
 const branchRoutes = require('./routes/branchRoutes.js');
 const courseRoutes = require('./routes/courseRoutes.js');
 const enrollmentRoutes = require('./routes/enrollmentRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 
+// Load environment variables
+dotenv.config();
+
+// Database connection
+connectDB();
+
 const app = express();
 
-// Middleware
-app.use(cors()); // Enable CORS for all routes (configure specific origins in production)
-app.use(express.json()); // To parse JSON request bodies
-app.use(express.urlencoded({ extended: true })); // To parse URL-encoded request bodies
+// --- (2) CORS Middleware ---
+// Yeh bilkul sahi jagah par hai, saare routes se pehle.
+const corsOptions = {
+    origin: 'http://localhost:5173', // Aapka frontend ka URL
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
-// Mount routers
-app.use('/api/auth.js', authRoutes);
-app.use('/api/branches.js', branchRoutes);
-app.use('/api/courses.js', courseRoutes);
-app.use('/api/enrollments.js', enrollmentRoutes);
-app.use('/api/admin.js', adminRoutes);
+// --- (3) Body Parser Middleware ---
+// JSON aur URL-encoded data ko handle karne ke liye.
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// --- (4) ROUTES KO REGISTER KAREIN ---
+// Yahan hum Express ko batate hain ki kaunsa URL kis route file ko handle karega.
+app.use('/api/auth', authRoutes);
+app.use('/api/branches', branchRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Simple root route
 app.get('/', (req, res) => {
@@ -44,6 +54,7 @@ app.use((err, req, res, next) => {
     });
 });
 
+app.use('/uploads', express.static(path.resolve(__dirname, 'uploads')));
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () =>

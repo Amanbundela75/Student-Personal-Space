@@ -1,18 +1,24 @@
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL + '/branches.js';
 
-// Public
+const API_URL = `${import.meta.env.VITE_API_URL}/api/branches`; // Sahi URL
+
 export const fetchBranches = async () => {
-    const response = await axios.get(API_URL);
-    return response.data.data; // Assuming backend sends { success: true, data: [...] }
+    try {
+        const response = await axios.get(API_URL);
+        // Backend ab 'data' key mein array bhejega.
+        return response.data.branches;
+    } catch (error) {
+        console.error('Error fetching branches:', error.response?.data || error.message);
+        throw error;
+    }
 };
 
+// --- Baki functions (Admin ke liye) ---
 export const fetchBranchById = async (id) => {
     const response = await axios.get(`${API_URL}/${id}`);
     return response.data.data;
 };
 
-// Admin
 export const createBranch = async (branchData, token) => {
     const config = { headers: { Authorization: `Bearer ${token}` } };
     const response = await axios.post(API_URL, branchData, config);

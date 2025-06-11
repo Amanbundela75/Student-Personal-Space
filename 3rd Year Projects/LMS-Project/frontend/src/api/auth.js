@@ -1,43 +1,42 @@
-// frontend/src/api/auth.js
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL + '/auth.js';
+// Backend ka base URL
+const BASE_URL = import.meta.env.VITE_API_URL; // Yeh .env file se "http://localhost:5001" laayega
 
-export const register = async (userData) => {
+/**
+ * User ko register karta hai
+ */
+export const register = async (formData) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, userData);
-        if (response.data.token) {
-            localStorage.setItem('lms_user', JSON.stringify(response.data));
-        }
+        // SAHI URL: http://localhost:5001/api/auth/register
+        // URL se '.js' hata diya gaya hai
+        const response = await axios.post(`${BASE_URL}/api/auth/register`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error) {
-        throw error.response.data.message || 'Registration failed';
+        console.error('API Register Error:', error.response?.data || error.message);
+        throw error.response?.data || { success: false, message: 'Server error during registration.' };
     }
 };
 
-export const login = async (userData) => {
+/**
+ * User ko login karta hai
+ */
+export const login = async (email, password, faceImageBase64) => {
     try {
-        const response = await axios.post(`${API_URL}/login`, userData);
-        if (response.data.token) {
-            localStorage.setItem('lms_user', JSON.stringify(response.data));
-        }
+        // SAHI URL: http://localhost:5001/api/auth/login
+        // URL se '.js' hata diya gaya hai
+        const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+            email,
+            password,
+            faceImageBase64,
+        });
         return response.data;
     } catch (error) {
-        throw error.response.data.message || 'Login failed';
+        console.error('API Login Error:', error.response?.data || error.message);
+        throw error.response?.data || { success: false, message: 'Server error during login.' };
     }
 };
-
-export const logout = () => {
-    localStorage.removeItem('lms_user');
-};
-
-export const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem('lms_user'));
-};
-
-// You would also create api/branches.js, api/courses.js etc.
-// Example: frontend/src/api/branches.js
-// export const fetchBranches = async () => {
-//     const response = await axios.get(`${process.env.REACT_APP_API_URL}/branches`);
-//     return response.data;
-// };

@@ -10,7 +10,7 @@ const StudyCoursePage = () => {
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { token } = useAuth(); // Needed if fetchCourseById requires auth, otherwise optional here
+    const { token } = useAuth(); // Needed if fetchCourseById requires auth.js, otherwise optional here
 
     useEffect(() => {
         const loadCourseDetails = async () => {

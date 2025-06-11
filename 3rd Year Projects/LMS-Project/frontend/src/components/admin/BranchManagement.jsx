@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchBranches, createBranch, updateBranch, deleteBranch } from '../../api/branches';
+import { fetchBranches, createBranch, updateBranch, deleteBranch } from '../../api/branches.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const BranchManagement = () => {
