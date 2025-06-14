@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchUserProfile } from "../api/profile.js";
-
-// (1) --- API functions ko import karein ---
 import * as authApi from '../api/auth.js';
 
 const AuthContext = createContext(null);
@@ -15,53 +13,49 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            fetchUserProfile(token)
-                .then(data => {
-                    if (data.user) {
-                        setCurrentUser({ token, user: data.user });
-                    }
-                })
-                .catch(() => {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('lms_user');
-                })
-                .finally(() => setLoading(false));
+        const userDetails = localStorage.getItem('lms_user');
+        if (userDetails) {
+            try {
+                const parsedDetails = JSON.parse(userDetails);
+                // Set the user state first
+                setCurrentUser(parsedDetails);
+
+                // Then fetch the latest profile
+                fetchUserProfile() // Token automatically lagega
+                    .then(data => {
+                        if (data.user) {
+                            // Update user data, but keep the token from login
+                            setCurrentUser(prev => ({ ...prev, user: data.user }));
+                        }
+                    })
+                    .catch(() => {
+                        // Agar profile fetch fail ho, to logout kar dein
+                        localStorage.removeItem('lms_user');
+                        setCurrentUser(null);
+                    })
+                    .finally(() => setLoading(false));
+            } catch (e) {
+                localStorage.removeItem('lms_user');
+                setLoading(false);
+            }
         } else {
             setLoading(false);
         }
     }, []);
 
     const login = async (email, password, faceImage) => {
-        try {
-            // (2) Imported function 'authApi.login' ko call karein
-            const response = await authApi.login(email, password, faceImage);
-
-            if (response.success && response.token) {
-                localStorage.setItem('token', response.token);
-                // lms_user ko bhi save kar sakte hain agar zaroorat ho
-                localStorage.setItem('lms_user', JSON.stringify(response));
-                setCurrentUser(response);
-                return { success: true, user: response.user };
-            } else {
-                return { success: false, message: response.message };
-            }
-        } catch (error) {
-            console.error("Login error in context:", error);
-            throw error;
+        const response = await authApi.login(email, password, faceImage);
+        if (response.success && response.token) {
+            localStorage.setItem('lms_user', JSON.stringify(response));
+            setCurrentUser(response);
+            return { success: true, user: response.user };
+        } else {
+            return { success: false, message: response.message };
         }
-    };
-
-    const register = async (formDataObject) => {
-        // (3) Imported function 'authApi.register' ko call karein
-        const response = await authApi.register(formDataObject);
-        return response;
     };
 
     const logout = () => {
         localStorage.removeItem('lms_user');
-        localStorage.removeItem('token');
         setCurrentUser(null);
     };
 
@@ -69,10 +63,10 @@ export const AuthProvider = ({ children }) => {
         currentUser,
         loading,
         login,
-        register,
         logout,
         isAuthenticated: !!currentUser,
         isAdmin: currentUser?.user?.role === 'admin',
+        token: currentUser?.token // Agar kahin token ki zaroorat pade to
     };
 
     return (
