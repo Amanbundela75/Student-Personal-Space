@@ -1,40 +1,54 @@
-import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL + '/enrollments';
+import apiClient from './axiosConfig';
 
-// Student
-export const enrollInCourseApi = async (courseId, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.post(API_URL, { courseId }, config);
+// =========== STUDENT ROUTES ===========
+// In sabhi functions mein token automatically 'axiosConfig' se jud jayega
+
+export const fetchMyEnrollments = async () => {
+    try {
+        const response = await apiClient.get('/api/enrollments/my');
+        // Pichle error ko fix karne ke liye .data return karein
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching my enrollments:', error.response?.data || error.message);
+        throw error.response?.data || error;
+    }
+};
+
+export const enrollInCourseApi = async (courseId) => {
+    const response = await apiClient.post('/api/enrollments', { courseId });
     return response.data;
 };
 
-export const fetchMyEnrollments = async (token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.get(`${API_URL}/my`, config);
-    return response.data.data;
-};
-
-export const updateEnrollmentProgressApi = async (enrollmentId, progress, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.put(`${API_URL}/${enrollmentId}/progress`, { progress }, config);
+export const updateEnrollmentProgressApi = async (enrollmentId, progress) => {
+    const response = await apiClient.put(`/api/enrollments/${enrollmentId}/progress`, { progress });
     return response.data;
 };
 
-export const unenrollFromCourseApi = async (enrollmentId, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.delete(`${API_URL}/${enrollmentId}`, config);
+export const unenrollFromCourseApi = async (enrollmentId) => {
+    const response = await apiClient.delete(`/api/enrollments/${enrollmentId}`);
     return response.data;
-}
-
-// Admin
-export const fetchAllEnrollmentsAdmin = async (token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.get(`${API_URL}/all`, config);
-    return response.data.data;
 };
 
-export const fetchEnrollmentByIdAdmin = async (enrollmentId, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.get(`${API_URL}/admin/${enrollmentId}`, config); // Using the specific admin route
-    return response.data.data;
+
+// =========== ADMIN ROUTES ===========
+// Yeh functions pichli baar miss ho gaye the
+
+export const fetchAllEnrollmentsAdmin = async () => {
+    try {
+        const response = await apiClient.get('/api/enrollments/all');
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching all enrollments for admin:', error.response?.data || error.message);
+        throw error.response?.data || error;
+    }
+};
+
+export const fetchEnrollmentByIdAdmin = async (enrollmentId) => {
+    try {
+        const response = await apiClient.get(`/api/enrollments/admin/${enrollmentId}`);
+        return response.data.data;
+    } catch (error) {
+        console.error(`Error fetching enrollment ${enrollmentId} for admin:`, error.response?.data || error.message);
+        throw error.response?.data || error;
+    }
 };
