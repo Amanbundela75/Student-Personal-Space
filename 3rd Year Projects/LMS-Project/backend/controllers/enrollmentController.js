@@ -52,20 +52,20 @@ exports.enrollInCourse = async (req, res) => {
 // @access  Private (Student)
 exports.getMyEnrollments = async (req, res) => {
     try {
-        // Privacy: Fetch only enrollments for the currently logged-in user
         const enrollments = await Enrollment.find({ user: req.user.id })
-            .populate('course', 'title description branch instructor') // Populate course details
             .populate({
                 path: 'course',
+                select: 'title description branch instructor', // Course se jo fields chahiye
                 populate: {
-                    path: 'branch',
-                    select: 'name' // Further populate branch name within course
+                    path: 'branch', // Course ke andar branch ko populate karein
+                    select: 'name'   // Branch se sirf 'name' field chahiye
                 }
             })
             .sort({ enrolledAt: -1 });
 
         res.status(200).json({ success: true, count: enrollments.length, data: enrollments });
     } catch (error) {
+        console.error('Get My Enrollments Error:', error); // Error ko log karein
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
