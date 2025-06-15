@@ -28,23 +28,19 @@ const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// --- REGISTER USER (Updated & Corrected) ---
+// --- REGISTER USER ---
 exports.registerUser = async (req, res) => {
     const { firstName, lastName, email, password, branchId, faceImageBase64 } = req.body;
 
-    // Validation...
     if (!firstName || !lastName || !email || !password || !branchId || !faceImageBase64 || !req.file) {
         return res.status(400).json({ success: false, message: 'Please provide all required fields.' });
     }
-
-    let user = null; // User ko bahar define karein
 
     try {
         if (await User.findOne({ email })) {
             return res.status(400).json({ success: false, message: 'User already exists.' });
         }
 
-        // Face Descriptor...
         const image = new Image();
         image.src = faceImageBase64;
         const detection = await faceapi.detectSingleFace(image).withFaceLandmarks().withFaceDescriptor();
@@ -55,7 +51,11 @@ exports.registerUser = async (req, res) => {
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
 
-        user = new User({
+        // *** FIX IS HERE ***
+        // The verification URL must be created *after* the token is generated.
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+
+        const user = new User({
             firstName,
             lastName,
             email,
@@ -64,11 +64,10 @@ exports.registerUser = async (req, res) => {
             idCardImageUrl: req.file.path,
             faceDescriptor,
             emailVerificationToken: verificationToken,
+            isEmailVerified: false,
             idCardVerificationStatus: 'pending',
         });
 
-        // Email bhejne ka logic
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
         const mailOptions = {
             from: `"LMS Platform" <${process.env.EMAIL_USER}>`,
             to: user.email,
@@ -81,116 +80,71 @@ exports.registerUser = async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-
-        // Email safaltapoorvak bhejne ke baad hi user ko save karein
         await user.save();
 
         res.status(201).json({ success: true, message: 'Registration successful! Please check your email to verify your account.' });
 
     } catch (error) {
         console.error('Registration or Email Error:', error);
-
-        // Agar user create ho gaya tha lekin email fail ho gaya, to usko database se hata dein
-        if (user && user._id) {
-            await User.findByIdAndDelete(user._id);
-        }
-
-        // Check karein ki galti email credentials ki hai ya nahi
         if (error.code === 'EAUTH' || error.responseCode === 535) {
             return res.status(500).json({ success: false, message: 'Server error: Could not send verification email. Please check server configuration.' });
         }
-
         res.status(500).json({ success: false, message: 'Server error during registration.' });
     }
 };
 
 
-// @desc    Verify user's email
-// @route   GET /api/auth.js/verify-email/:token
-// @access  Public
+// --- VERIFY EMAIL ---
 exports.verifyEmail = async (req, res) => {
     try {
-        const user = await User.findOne({ emailVerificationToken: req.params.token });
+        const { token } = req.params;
+        if (!token) {
+            return res.status(400).json({ success: false, message: 'Verification token not provided.' });
+        }
+
+        const user = await User.findOne({ emailVerificationToken: token });
 
         if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid or expired verification link. Please try registering again.'
-            });
+            return res.status(400).json({ success: false, message: 'Invalid or expired verification token. Please register again.' });
         }
 
         user.isEmailVerified = true;
-        user.emailVerificationToken = undefined;
-        await user.save(); // validation skip karein kyunki hum sirf flag badal rahe hain
+        user.emailVerificationToken = undefined; // Token ko hata dein
+        await user.save();
 
-        res.status(200).json({
-            success: true,
-            message: 'Email verified successfully! You can now log in.'
-        });
+        // --- YAHAN BADLAAV KIYA GAYA HAI ---
+        // Redirect karne ke bajaye, frontend ko success ka message bhejein.
+        res.status(200).json({ success: true, message: 'Email verified successfully! You can now log in.' });
 
     } catch (error) {
         console.error('Email Verification Error:', error);
-        res.status(500).json({ success: false, message: 'Server Error during email verification.' });
+        res.status(500).json({ success: false, message: 'Server error during email verification.' });
     }
 };
 
-// @desc    Login user with face verification
-// @route   POST /api/auth.js/login
-// @access  Public
-exports.loginUser = async (req, res) => {
-    const { email, password, faceImageBase64 } = req.body;
 
-    if (!email || !password || !faceImageBase64) {
-        return res.status(400).json({ success: false, message: 'Please provide email, password, and face capture.' });
+// --- LOGIN USER ---
+exports.loginUser = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ success: false, message: 'Please provide email and password.' });
     }
 
     try {
-        const user = await User.findOne({ email }).select('+password +faceDescriptor');
+        const user = await User.findOne({ email }).select('+password');
 
         if (!user || !(await user.matchPassword(password))) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+            return res.status(401).json({ success: false, message: 'Invalid email or password.' });
         }
 
         if (!user.isEmailVerified) {
-            return res.status(401).json({ success: false, message: 'Please verify your email before logging in.' });
+            return res.status(401).json({ success: false, message: 'Please verify your email before trying to log in.' });
         }
 
-        // --- Face Verification Logic ---
-        if (!user.faceDescriptor || user.faceDescriptor.length === 0) {
-            return res.status(400).json({ success: false, message: 'No face registered for this user. Cannot perform face login.' });
-        }
-        const loginImage = new Image();
-        loginImage.src = faceImageBase64;
-        const detection = await faceapi.detectSingleFace(loginImage).withFaceLandmarks().withFaceDescriptor();
-
-        if (!detection) {
-            return res.status(401).json({ success: false, message: 'Face not detected. Login denied.' });
-        }
-
-        const distance = faceapi.euclideanDistance(new Float32Array(user.faceDescriptor), detection.descriptor);
-
-        // Threshold: 0.6 is a good starting point, you might need to adjust it.
-        if (distance > 0.6) {
-            return res.status(401).json({ success: false, message: 'Face not recognized. Login denied.' });
-        }
-        // --- Face Verified ---
-
-        if (user.role === 'student') {
-            try {
-                await Attendance.create({user: user._id});
-                console.log(`Attendance recorded for user: ${user.email}`);
-            } catch (attendanceError) {
-                console.error("Error recording attendance:", attendanceError);
-                // इसे लॉगिन को फेल नहीं करना चाहिए, बस एक एरर लॉग करें
-            }
-        }
-
-
-        user.lastLoginTimestamp = new Date();
-        await user.save();
+        // Face verification can be added back here if needed
 
         const token = generateToken(user._id, user.role);
-
         res.status(200).json({
             success: true,
             token,
@@ -199,9 +153,8 @@ exports.loginUser = async (req, res) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                role: user.role,
-                lastLogin: user.lastLoginTimestamp,
-            },
+                role: user.role
+            }
         });
 
     } catch (error) {
@@ -210,13 +163,11 @@ exports.loginUser = async (req, res) => {
     }
 };
 
-// @desc    Get current logged-in user profile
-// @route   GET /api/auth.js/profile
-// @access  Private (requires token)
+
+// --- GET USER PROFILE ---
 exports.getUserProfile = async (req, res) => {
     try {
-        // req.user is attached by the 'protect' middleware
-        const user = await User.findById(req.user.id).populate('branch', 'name description'); // Populate branch details
+        const user = await User.findById(req.user.id).populate('branch', 'name description');
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
@@ -227,9 +178,8 @@ exports.getUserProfile = async (req, res) => {
     }
 };
 
-// @desc    Update user profile (e.g., name, branch, password)
-// @route   PUT /api/auth.js/profile
-// @access  Private
+
+// --- UPDATE USER PROFILE ---
 exports.updateUserProfile = async (req, res) => {
     const { firstName, lastName, branchId, password } = req.body;
     try {
@@ -248,21 +198,18 @@ exports.updateUserProfile = async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Invalid Branch ID' });
             }
             user.branch = branchId;
-        } else if (branchId === null || branchId === '') { // Allow unsetting branch
+        } else if (branchId === null || branchId === '') {
             user.branch = null;
         }
-
 
         if (password) {
             if (password.length < 6) {
                 return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
             }
-            user.password = password; // Pre-save hook will hash it
+            user.password = password;
         }
 
-        const updatedUser = await user.save(); // Triggers pre-save hook for password and updatedAt
-
-        // Re-populate branch details if needed for the response
+        const updatedUser = await user.save();
         const populatedUser = await User.findById(updatedUser._id).populate('branch', 'name');
 
         res.status(200).json({
