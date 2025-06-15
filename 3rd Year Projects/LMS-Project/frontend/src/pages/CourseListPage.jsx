@@ -18,58 +18,65 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const query = useQuery();
-    const { isAuthenticated, token, currentUser } = useAuth();
+    const { isAuthenticated, currentUser } = useAuth(); // 'token' ki zaroorat nahi
 
     const initialBranchId = query.get('branchId');
 
-    const loadCoursesAndEnrollments = async (branchFilter) => {
-        setLoading(true);
-        setError('');
-        try {
-            const coursesData = await fetchCourses(branchFilter);
-            setCourses(coursesData || []);
-
-            if (isAuthenticated && currentUser?.user?.role === 'student') {
-                const enrollmentsData = await fetchMyEnrollments(token);
-                const ids = new Set(enrollmentsData.map(e => e.course._id));
-                setEnrolledCourseIds(ids);
-            }
-        } catch (err) {
-            setError('Failed to load courses. Please try again later.');
-            console.error(err);
-        }
-        setLoading(false);
-    };
-
     useEffect(() => {
         const loadInitialData = async () => {
+            setLoading(true);
+            setError('');
             try {
+                // Branches fetch karein
                 const branchesData = await fetchBranches();
                 setBranches(branchesData || []);
                 if (initialBranchId) {
                     setSelectedBranch(initialBranchId);
                 }
+
+                // Courses fetch karein
+                const coursesData = await fetchCourses(initialBranchId);
+                setCourses(coursesData || []);
+
+                // Agar user logged in hai to uske enrollments fetch karein
+                if (isAuthenticated && currentUser?.user?.role === 'student') {
+                    const enrollmentsData = await fetchMyEnrollments();
+                    const ids = new Set(enrollmentsData.map(e => e.course._id));
+                    setEnrolledCourseIds(ids);
+                }
             } catch (err) {
-                console.error("Failed to load branches", err);
-                setError("Could not load branch filter options.");
+                setError('Failed to load course data. Please try again later.');
+                console.error("Error loading course list data:", err);
             }
-            // Load courses based on initialBranchId or all if none
-            loadCoursesAndEnrollments(initialBranchId);
+            setLoading(false);
         };
+
         loadInitialData();
-    }, [initialBranchId, isAuthenticated, token, currentUser]); // Add dependencies
+    }, [initialBranchId, isAuthenticated, currentUser]); // Dependency se 'token' hataya
+
 
     const handleBranchChange = (e) => {
         const newBranchId = e.target.value;
         setSelectedBranch(newBranchId);
-        loadCoursesAndEnrollments(newBranchId); // Reload courses for the new branch
+        // Branch change hone par sirf courses reload karein
+        const loadCourses = async () => {
+            setLoading(true);
+            try {
+                const coursesData = await fetchCourses(newBranchId);
+                setCourses(coursesData || []);
+            } catch (err) {
+                setError('Failed to filter courses.');
+            }
+            setLoading(false);
+        };
+        loadCourses();
     };
 
     const handleEnrollSuccess = (enrolledCourseId) => {
         setEnrolledCourseIds(prevIds => new Set([...prevIds, enrolledCourseId]));
     };
 
-    if (error) return <p className="error-message">{error}</p>;
+    if (error) return <p style={{color: 'red'}}>{error}</p>;
 
     return (
         <div className="container">
@@ -88,14 +95,15 @@ const CourseListPage = () => {
                 courses.length === 0 ? (
                     <p>No courses available for the selected criteria.</p>
                 ) : (
-                    <div className="card-list">
+                    <div className="row mt-4">
                         {courses.map(course => (
-                            <CourseCard
-                                key={course._id}
-                                course={course}
-                                onEnrollSuccess={handleEnrollSuccess}
-                                isEnrolled={enrolledCourseIds.has(course._id)}
-                            />
+                            <div className="col-md-4 mb-4" key={course._id}>
+                                <CourseCard
+                                    course={course}
+                                    onEnrollSuccess={handleEnrollSuccess}
+                                    isEnrolled={enrolledCourseIds.has(course._id)}
+                                />
+                            </div>
                         ))}
                     </div>
                 )
