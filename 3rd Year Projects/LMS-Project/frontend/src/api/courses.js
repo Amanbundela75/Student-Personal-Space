@@ -1,36 +1,39 @@
-import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL + '/courses';
+import apiClient from './axiosConfig';
 
-// Public
-export const fetchCourses = async (branchId = null) => {
-    let url = API_URL;
-    if (branchId) {
-        url += `?branchId=${branchId}`;
+export const fetchCourses = async () => {
+    try {
+        const response = await apiClient.get('/api/courses');
+        // 'response.data' ki jagah 'response.data.data' return karein
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching courses:', error.response?.data || error.message);
+        throw error.response?.data || error;
     }
-    const response = await axios.get(url);
-    return response.data.data;
 };
 
 export const fetchCourseById = async (id) => {
-    const response = await axios.get(`${API_URL}/${id}`);
-    return response.data.data;
+    try {
+        const response = await apiClient.get(`/api/courses/${id}`);
+        // 'response.data' ki jagah 'response.data.data' return karein
+        return response.data.data;
+    } catch (error) {
+        console.error(`Error fetching course ${id}:`, error.response?.data || error.message);
+        throw error.response?.data || error;
+    }
 };
 
-// Admin
-export const createCourse = async (courseData, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.post(API_URL, courseData, config);
+// Admin functions waise hi rahenge...
+export const createCourse = async (courseData) => {
+    const response = await apiClient.post('/api/courses', courseData);
     return response.data;
 };
 
-export const updateCourse = async (id, courseData, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.put(`${API_URL}/${id}`, courseData, config);
+export const updateCourse = async (id, courseData) => {
+    const response = await apiClient.put(`/api/courses/${id}`, courseData);
     return response.data;
 };
 
-export const deleteCourse = async (id, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.delete(`${API_URL}/${id}`, config);
+export const deleteCourse = async (id) => {
+    const response = await apiClient.delete(`/api/courses/${id}`);
     return response.data;
 };
