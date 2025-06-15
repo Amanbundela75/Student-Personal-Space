@@ -47,7 +47,13 @@ const EnrolledCourseCard = ({ enrollment, onUnenrollSuccess }) => {
 
 
     if (!enrollment || !enrollment.course) {
-        return <div className="card"><p>Course data not available.</p></div>;
+        return (
+            <div className="card h-100">
+                <div className="card-body">
+                    <p className="text-muted">Course data is not available.</p>
+                </div>
+            </div>
+        );
     }
 
     return (
