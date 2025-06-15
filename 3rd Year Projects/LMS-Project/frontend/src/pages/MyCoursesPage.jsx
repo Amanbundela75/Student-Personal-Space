@@ -7,50 +7,58 @@ const MyCoursesPage = () => {
     const [enrollments, setEnrollments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { token, isAuthenticated, currentUser } = useAuth();
-
-    const loadEnrollments = async () => {
-        if (isAuthenticated && currentUser?.user?.role === 'student') {
-            setLoading(true);
-            setError('');
-            try {
-                const data = await fetchMyEnrollments(token);
-                setEnrollments(data || []);
-            } catch (err) {
-                setError('Failed to load your courses.');
-                console.error(err);
-            }
-            setLoading(false);
-        } else {
-            setLoading(false);
-            setError("You must be logged in as a student to see your courses.");
-        }
-    };
-
+    const { isAuthenticated, currentUser } = useAuth(); // 'token' ki zaroorat nahi
 
     useEffect(() => {
+        const loadEnrollments = async () => {
+            // Sirf authenticated student ke liye data fetch karein
+            if (isAuthenticated && currentUser?.user?.role === 'student') {
+                setLoading(true);
+                setError('');
+                try {
+                    // --- YAHAN BADLAAV KIYA GAYA HAI ---
+                    // Ab 'response' seedha aapka data (array) hai
+                    const enrollmentsData = await fetchMyEnrollments();
+                    setEnrollments(enrollmentsData || []);
+
+                } catch (err) {
+                    setError('Failed to load your courses.');
+                    console.error("Error in MyCoursesPage:", err);
+                }
+                setLoading(false);
+            } else if (!isAuthenticated) {
+                setError("Please log in to see your courses.");
+                setLoading(false);
+            } else {
+                setLoading(false);
+            }
+        };
+
         loadEnrollments();
-    }, [isAuthenticated, token, currentUser]);
+    }, [isAuthenticated, currentUser]); // Dependency array se 'token' hataya
 
     const handleUnenrollSuccess = (unenrolledCourseId) => {
         setEnrollments(prevEnrollments => prevEnrollments.filter(e => e._id !== unenrolledCourseId));
     };
 
     if (loading) return <p>Loading your courses...</p>;
-    if (error) return <p className="error-message">{error}</p>;
+
+    if (error) return <p style={{color: 'red', textAlign: 'center', marginTop: '20px'}}>{error}</p>;
 
     return (
-        <div className="container"> {/* Removed h1 as it might be part of StudentDashboardPage */}
+        <div className="container mt-4">
+            <h2>My Courses</h2>
             {enrollments.length === 0 ? (
                 <p>You are not enrolled in any courses yet. <a href="/courses">Browse courses</a> to get started!</p>
             ) : (
-                <div className="card-list">
+                <div className="row">
                     {enrollments.map(enrollment => (
-                        <EnrolledCourseCard
-                            key={enrollment._id}
-                            enrollment={enrollment}
-                            onUnenrollSuccess={handleUnenrollSuccess}
-                        />
+                        <div className="col-md-4 mb-4" key={enrollment._id}>
+                            <EnrolledCourseCard
+                                enrollment={enrollment}
+                                onUnenrollSuccess={handleUnenrollSuccess}
+                            />
+                        </div>
                     ))}
                 </div>
             )}
