@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController.js');
-const { protect, admin } = require('../middleware/authMiddleware.js');
+const { protect} = require('../middleware/authMiddleware.js');
 const upload = require('../middleware/uploadMiddleware.js'); // (1) Multer middleware import karein
 
 // @route   POST /api/auth.js/register
@@ -23,8 +23,5 @@ router.get('/profile', protect, authController.getUserProfile);
 
 // @route   PUT /api/auth.js/profile
 router.put('/profile', protect, authController.updateUserProfile);
-
-// Admin routes (example)
-// router.get('/users', protect, admin, adminController.getUsers);
 
 module.exports = router;
