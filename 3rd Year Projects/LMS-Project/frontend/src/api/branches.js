@@ -1,12 +1,15 @@
-import axios from 'axios';
+import apiClient from './axiosConfig';
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/branches`; // Sahi URL
-
-export const fetchBranches = async () => {
+// --- YAHAN BADLAAV KIYA GAYA HAI ---
+export const fetchBranches = async (branchId = '') => {
     try {
-        const response = await axios.get(API_URL);
-        // Backend ab 'data' key mein array bhejega.
-        return response.data.branches;
+        // Agar branchId hai to use URL mein query parameter ke taur par bhejein
+        const url = branchId ? `/api/branches?_id=${branchId}` : '/api/branches';
+        const response = await apiClient.get(url);
+
+        // Backend se 'branches' key expect kar rahe hain, isliye response.data.branches return karein
+        // Agar response.data.branches undefined hai to khaali array return karein
+        return response.data.branches || [];
     } catch (error) {
         console.error('Error fetching branches:', error.response?.data || error.message);
         throw error;
@@ -14,25 +17,24 @@ export const fetchBranches = async () => {
 };
 
 // --- Baki functions (Admin ke liye) ---
+// Inko bhi theek kar dete hain taaki yeh automatic token ka use karein
+
 export const fetchBranchById = async (id) => {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await apiClient.get(`/api/branches/${id}`);
     return response.data.data;
 };
 
-export const createBranch = async (branchData, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.post(API_URL, branchData, config);
+export const createBranch = async (branchData) => {
+    const response = await apiClient.post('/api/branches', branchData);
     return response.data;
 };
 
-export const updateBranch = async (id, branchData, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.put(`${API_URL}/${id}`, branchData, config);
+export const updateBranch = async (id, branchData) => {
+    const response = await apiClient.put(`/api/branches/${id}`, branchData);
     return response.data;
 };
 
-export const deleteBranch = async (id, token) => {
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-    const response = await axios.delete(`${API_URL}/${id}`, config);
+export const deleteBranch = async (id) => {
+    const response = await apiClient.delete(`/api/branches/${id}`);
     return response.data;
 };
