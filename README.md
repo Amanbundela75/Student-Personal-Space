@@ -8,7 +8,7 @@ This Learning Management System (LMS) is designed to provide a seamless educatio
 
 ## 📸 Screenshots
 
-![2025-06-05 (5)](https://github.com/user-attachments/assets/fdefef8d-1600-4e69-8178-6e99661205f6)
+![2025-06-16](https://github.com/user-attachments/assets/cb1d0603-17ed-4494-9bcc-1bcf7fe131a5)
 
 ![2025-06-05 (6)](https://github.com/user-attachments/assets/fae586ae-33ce-4bb3-8e84-08f6e7a50799)
 
