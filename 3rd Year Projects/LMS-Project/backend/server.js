@@ -3,14 +3,14 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db.js');
-
+const cookieParser = require('cookie-parser');
 // --- (1) Saare Route Files ko Sahi se Import Karein ---
 const authRoutes = require('./routes/authRoutes.js');
 const branchRoutes = require('./routes/branchRoutes.js');
 const courseRoutes = require('./routes/courseRoutes.js');
 const enrollmentRoutes = require('./routes/enrollmentRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
-
+const testRoutes = require('./routes/testRoutes');
 // Load environment variables
 dotenv.config();
 
@@ -27,6 +27,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+app.use(cookieParser());
 // --- (3) Body Parser Middleware ---
 // JSON aur URL-encoded data ko handle karne ke liye.
 app.use(express.json());
@@ -39,7 +40,7 @@ app.use('/api/branches', branchRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/tests', testRoutes);
 // Simple root route
 app.get('/', (req, res) => {
     res.send('LMS API is alive and running...');
