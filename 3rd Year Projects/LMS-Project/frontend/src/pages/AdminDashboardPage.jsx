@@ -27,7 +27,14 @@ const AdminDashboardPage = () => {
                     <p>View all student enrollments.</p>
                     <Link to="/admin/enrollments" className="button button-primary">View Enrollments</Link>
                 </div>
-                {/* Add more admin sections like analytics, settings etc. */}
+
+                {/* --- YAHAN PAR NAYA CARD JODA GAYA HAI --- */}
+                <div className="card">
+                    <h3>Test Management</h3>
+                    <p>Create, view, and manage all tests for courses.</p>
+                    <Link to="/admin/tests" className="button button-primary">Manage Tests</Link>
+                </div>
+
             </div>
         </div>
     );
