@@ -12,35 +12,30 @@ import VerifyEmailPage from './pages/VerifyEmailPage';
 
 import StudentDashboardPage from './pages/StudentDashboardPage.jsx';
 import MyCoursesPage from './pages/MyCoursesPage.jsx';
-// For student's specific "My Courses" tab if needed
 
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
 import AdminUserManagementPage from './pages/AdminUserManagementPage.jsx';
 import AdminBranchManagementPage from './pages/AdminBranchManagementPage.jsx';
 import AdminCourseManagementPage from './pages/AdminCourseManagementPage.jsx';
 import AdminEnrollmentManagementPage from './pages/AdminEnrollmentManagementPage.jsx';
-
-// Placeholder for AdminEditUserPage - you would create this
-// import AdminEditUserPage from './pages/AdminEditUserPage';
-
+import TestManagementPage from './pages/TestManagementPage.jsx';
+import CreateTestPage from './pages/CreateTestPage.jsx'; // <-- YAHAN JODEIN (1/2)
 
 import BranchListPage from './pages/BranchListPage.jsx';
 import CourseListPage from './pages/CourseListPage.jsx';
 import CourseDetailPage from './pages/CourseDetailPage.jsx';
 import StudyCoursePage from './pages/StudyCoursePage.jsx';
 
-
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import { useAuth } from './contexts/AuthContext.jsx';
 
-
 function App() {
-    const { isAuthenticated } = useAuth(); // Useful for conditional redirects at App level if needed
+    const { isAuthenticated } = useAuth();
 
     return (
         <>
             <Navbar />
-            <main> {/* Wrap routes in a main tag for semantics */}
+            <main>
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<HomePage />} />
@@ -61,17 +56,17 @@ function App() {
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
                         <Route path="/my-courses" element={<MyCoursesPage />} />
                         <Route path="/courses/:courseId/study" element={<StudyCoursePage />} />
-                        {<Route path="/courses/:courseId/study" element={<StudyCoursePage />} />}
                     </Route>
 
                     {/* Admin Routes */}
                     <Route element={<PrivateRoute roles={['admin']} />}>
                         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                         <Route path="/admin/users" element={<AdminUserManagementPage />} />
-                        {/* <Route path="/admin/users/:userId/edit" element={<AdminEditUserPage />} /> */}
                         <Route path="/admin/branches" element={<AdminBranchManagementPage />} />
                         <Route path="/admin/courses" element={<AdminCourseManagementPage />} />
                         <Route path="/admin/enrollments" element={<AdminEnrollmentManagementPage />} />
+                        <Route path="/admin/tests" element={<TestManagementPage />} />
+                        <Route path="/admin/tests/create" element={<CreateTestPage />} /> {/* <-- YAHAN JODEIN (2/2) */}
                     </Route>
 
                     {/* Not Found Route */}
