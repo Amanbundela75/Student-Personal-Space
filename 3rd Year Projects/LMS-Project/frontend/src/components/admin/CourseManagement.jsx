@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCourses, createCourse, updateCourse, deleteCourse } from '../../api/courses.js'; // Ensure .jsx if it contains JSX, or .js
-import { fetchBranches } from '../../api/branches.js'; // Ensure .jsx if it contains JSX, or .js
+import { fetchCourses, createCourse, updateCourse, deleteCourse } from '../../api/courses.js';
+import { fetchBranches } from '../../api/branches.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const CourseManagement = () => {
@@ -15,7 +15,7 @@ const CourseManagement = () => {
         _id: '',
         title: '',
         description: '',
-        branchId: '', // Changed from branch to branchId to match backend expectation
+        branchId: '',
         instructor: '',
     });
 
@@ -25,7 +25,7 @@ const CourseManagement = () => {
         setIsLoading(true);
         setError('');
         try {
-            const coursesData = await fetchCourses(); // Fetches all courses
+            const coursesData = await fetchCourses();
             const branchesData = await fetchBranches();
             setCourses(coursesData || []);
             setBranches(branchesData || []);
@@ -44,8 +44,8 @@ const CourseManagement = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setCurrentCourse(prev => ({ ...prev,
-        }));
+        // FIX: Update the state with the new value using the input's name
+        setCurrentCourse(prev => ({ ...prev, [name]: value }));
     };
 
     const resetForm = () => {
@@ -67,7 +67,7 @@ const CourseManagement = () => {
             const payload = {
                 title: currentCourse.title,
                 description: currentCourse.description,
-                branchId: currentCourse.branchId, // Ensure this matches backend expectation
+                branchId: currentCourse.branchId,
                 instructor: currentCourse.instructor,
             };
             if (isEditing) {
@@ -96,7 +96,7 @@ const CourseManagement = () => {
             _id: course._id,
             title: course.title,
             description: course.description,
-            branchId: course.branch._id, // Assuming course object has populated branch with _id
+            branchId: course.branch._id,
             instructor: course.instructor || '',
         });
         setError('');
