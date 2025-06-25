@@ -11,6 +11,8 @@ const courseRoutes = require('./routes/courseRoutes.js');
 const enrollmentRoutes = require('./routes/enrollmentRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const testRoutes = require('./routes/testRoutes');
+const userRoutes = require('./routes/userRoutes.js'); // <-- YAHAN JODEIN (1/2)
+
 // Load environment variables
 dotenv.config();
 
@@ -20,27 +22,27 @@ connectDB();
 const app = express();
 
 // --- (2) CORS Middleware ---
-// Yeh bilkul sahi jagah par hai, saare routes se pehle.
 const corsOptions = {
     origin: 'http://localhost:5173', // Aapka frontend ka URL
+    credentials: true, // Cookies ke liye zaroori
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
 // --- (3) Body Parser Middleware ---
-// JSON aur URL-encoded data ko handle karne ke liye.
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // --- (4) ROUTES KO REGISTER KAREIN ---
-// Yahan hum Express ko batate hain ki kaunsa URL kis route file ko handle karega.
 app.use('/api/auth', authRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/tests', testRoutes);
+app.use('/api/users', userRoutes); // <-- YAHAN JODEIN (2/2)
+
 // Simple root route
 app.get('/', (req, res) => {
     res.send('LMS API is alive and running...');
@@ -67,6 +69,4 @@ app.listen(PORT, () =>
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
     console.error(`Unhandled Rejection: ${err.message}`);
-    // Close server & exit process (optional: might want a more graceful shutdown)
-    // server.close(() => process.exit(1));
 });
