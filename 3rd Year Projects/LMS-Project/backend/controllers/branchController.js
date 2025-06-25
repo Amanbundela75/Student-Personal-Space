@@ -7,8 +7,9 @@ const Course = require('../models/Course.js'); // To handle courses when deletin
 exports.getAllBranches = async (req, res) => {
     try {
         const branches = await Branch.find({}).sort({ name: 1 });
-        // Frontend 'response.data.data' expect kar raha hai
-        res.status(200).json({ success: true, count: branches.length, branches: branches });
+        // --- FIX YAHAN HAI ---
+        // Frontend ko 'data' key chahiye, 'branches' nahi.
+        res.status(200).json({ success: true, count: branches.length, data: branches });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server Error' });
     }
@@ -67,7 +68,6 @@ exports.updateBranch = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Branch not found' });
         }
 
-        // Check if new name conflicts with another existing branch
         if (name && name !== branch.name) {
             const existingBranch = await Branch.findOne({ name });
             if (existingBranch) {
@@ -102,8 +102,6 @@ exports.deleteBranch = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Branch not found' });
         }
 
-        // Optional: Decide how to handle courses associated with this branch
-        // Option 1: Prevent deletion if courses exist
         const coursesInBranch = await Course.countDocuments({ branch: req.params.id });
         if (coursesInBranch > 0) {
             return res.status(400).json({
@@ -111,9 +109,8 @@ exports.deleteBranch = async (req, res) => {
                 message: `Cannot delete branch. ${coursesInBranch} courses are associated with it. Please reassign or delete them first.`,
             });
         }
-        // Option 2: Set courses' branch to null (requires Course model change) or delete them (cascade delete)
 
-        await branch.deleteOne(); // Use deleteOne() or findByIdAndDelete(req.params.id)
+        await branch.deleteOne();
         res.status(200).json({ success: true, message: 'Branch deleted successfully' });
     } catch (error) {
         if (error.kind === 'ObjectId') {
