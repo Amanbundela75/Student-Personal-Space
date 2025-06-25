@@ -70,7 +70,7 @@ const TestManagementPage = () => {
                             tests.map(test => (
                                 <tr key={test._id}>
                                     <td>{test.title}</td>
-                                    <td>{test.course?.name || 'N/A'}</td>
+                                    <td>{test.course?.title || 'N/A'}</td>
                                     <td>{test.branch?.name || 'N/A'}</td>
                                     <td>{test.questions?.length || 0}</td>
                                     <td>
