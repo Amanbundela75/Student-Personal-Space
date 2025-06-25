@@ -1,39 +1,41 @@
 import apiClient from './axiosConfig';
 
-// --- YAHAN BADLAAV KIYA GAYA HAI ---
-export const fetchBranches = async (branchId = '') => {
+// Fetch all branches
+export const fetchBranches = async () => {
     try {
-        // Agar branchId hai to use URL mein query parameter ke taur par bhejein
-        const url = branchId ? `/api/branches?_id=${branchId}` : '/api/branches';
+        const url = '/api/branches';
         const response = await apiClient.get(url);
-
-        // Backend se 'branches' key expect kar rahe hain, isliye response.data.branches return karein
-        // Agar response.data.branches undefined hai to khaali array return karein
-        return response.data.branches || [];
+        // FIX: The backend sends the array in the 'data' key, not 'branches'
+        return response.data.data || [];
     } catch (error) {
         console.error('Error fetching branches:', error.response?.data || error.message);
-        throw error;
+        throw error; // Re-throw the error to be handled by the component
     }
 };
 
-// --- Baki functions (Admin ke liye) ---
-// Inko bhi theek kar dete hain taaki yeh automatic token ka use karein
+// --- Admin Functions ---
 
+// Fetch a single branch by its ID
 export const fetchBranchById = async (id) => {
     const response = await apiClient.get(`/api/branches/${id}`);
+    // This correctly expects the 'data' key for a single item
     return response.data.data;
 };
 
+// Create a new branch (sends token automatically via axios interceptor)
 export const createBranch = async (branchData) => {
     const response = await apiClient.post('/api/branches', branchData);
+    // Return the full response so the component can check `response.success`
     return response.data;
 };
 
+// Update an existing branch
 export const updateBranch = async (id, branchData) => {
     const response = await apiClient.put(`/api/branches/${id}`, branchData);
     return response.data;
 };
 
+// Delete a branch
 export const deleteBranch = async (id) => {
     const response = await apiClient.delete(`/api/branches/${id}`);
     return response.data;
