@@ -43,6 +43,14 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    // --- YEH FUNCTION ADD KIYA GAYA HAI ---
+    const register = async (formData) => {
+        // authApi.register function ko call karein aur response return karein
+        const response = await authApi.register(formData);
+        // Component response ko handle karega (e.g., success message dikhana)
+        return response;
+    };
+
     const login = async (email, password, faceImage) => {
         const response = await authApi.login(email, password, faceImage);
         if (response.success && response.token) {
@@ -59,14 +67,16 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
     };
 
+    // --- 'register' KO VALUE MEIN ADD KIYA GAYA HAI ---
     const value = {
         currentUser,
         loading,
+        register, // Ab 'register' function available hai
         login,
         logout,
         isAuthenticated: !!currentUser,
         isAdmin: currentUser?.user?.role === 'admin',
-        token: currentUser?.token // Agar kahin token ki zaroorat pade to
+        token: currentUser?.token
     };
 
     return (
