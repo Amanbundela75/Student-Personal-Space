@@ -18,6 +18,7 @@ const MyCoursesPage = () => {
                 try {
                     // --- YAHAN BADLAAV KIYA GAYA HAI ---
                     // Ab 'response' seedha aapka data (array) hai
+
                     const enrollmentsData = await fetchMyEnrollments();
                     setEnrollments(enrollmentsData || []);
 
