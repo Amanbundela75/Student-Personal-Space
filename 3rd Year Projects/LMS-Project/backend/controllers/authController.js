@@ -10,6 +10,7 @@ const { Canvas, Image, ImageData } = require('canvas');
 // Face-API setup
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 Promise.all([
+    // Hum yahan models ko project ke root se load karenge
     faceapi.nets.ssdMobilenetv1.loadFromDisk('./models'),
     faceapi.nets.faceLandmark68Net.loadFromDisk('./models'),
     faceapi.nets.faceRecognitionNet.loadFromDisk('./models'),
@@ -50,9 +51,6 @@ exports.registerUser = async (req, res) => {
         const faceDescriptor = Array.from(detection.descriptor);
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
-
-        // *** FIX IS HERE ***
-        // The verification URL must be created *after* the token is generated.
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
 
         const user = new User({
@@ -75,7 +73,7 @@ exports.registerUser = async (req, res) => {
             html: `<h3>Welcome to LMS Platform!</h3>
                    <p>Thank you for registering. Please click the link below to verify your email address:</p>
                    <a href="${verificationUrl}" style="background-color: #4CAF50; color: white; padding: 14px 25px; text-align: center; text-decoration: none; display: inline-block;">Verify Email</a>
-                   <p>Or copy and paste this URL into your browser:</p>
+                   <p>If that doesn't work, copy and paste this URL into your browser:</p>
                    <p>${verificationUrl}</p>`,
         };
 
@@ -109,11 +107,9 @@ exports.verifyEmail = async (req, res) => {
         }
 
         user.isEmailVerified = true;
-        user.emailVerificationToken = undefined; // Token ko hata dein
+        user.emailVerificationToken = undefined;
         await user.save();
 
-        // --- YAHAN BADLAAV KIYA GAYA HAI ---
-        // Redirect karne ke bajaye, frontend ko success ka message bhejein.
         res.status(200).json({ success: true, message: 'Email verified successfully! You can now log in.' });
 
     } catch (error) {
@@ -123,12 +119,13 @@ exports.verifyEmail = async (req, res) => {
 };
 
 
-// --- LOGIN USER ---
+// --- LOGIN USER (SECURITY FIX APPLIED) ---
 exports.loginUser = async (req, res) => {
-    const { email, password } = req.body;
+    // Ab hum frontend se 'faceImageBase64' bhi lenge
+    const { email, password, faceImageBase64 } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ success: false, message: 'Please provide email and password.' });
+    if (!email || !password || !faceImageBase64) {
+        return res.status(400).json({ success: false, message: 'Please provide email, password, and face image.' });
     }
 
     try {
@@ -142,8 +139,30 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Please verify your email before trying to log in.' });
         }
 
-        // Face verification can be added back here if needed
+        // --- YAHAN SECURITY FIX LAGU KIYA GAYA HAI ---
 
+        // 1. Login ke samay diye gaye image se face detect karein
+        const loginImage = new Image();
+        loginImage.src = faceImageBase64;
+        const loginDetection = await faceapi.detectSingleFace(loginImage).withFaceLandmarks().withFaceDescriptor();
+
+        if (!loginDetection) {
+            return res.status(400).json({ success: false, message: 'Face not detected in the login image. Please try again.' });
+        }
+
+        // 2. Database mein save kiye gaye descriptor se milaan karein
+        const storedDescriptor = new Float32Array(user.faceDescriptor);
+        const faceMatcher = new faceapi.FaceMatcher([storedDescriptor]);
+        const bestMatch = faceMatcher.findBestMatch(loginDetection.descriptor);
+
+        // 3. Check karein ki chehra match hua ya nahi
+        // bestMatch.distance 0 (perfect match) aur 1 (no match) ke beech hota hai.
+        // 0.4 se neeche ka distance ek accha match mana jaata hai.
+        if (bestMatch.label === 'unknown' || bestMatch.distance > 0.4) {
+            return res.status(401).json({ success: false, message: 'Face verification failed. Please ensure you are in a well-lit area and try again.' });
+        }
+
+        // Agar sab kuch sahi hai, tabhi token generate karein
         const token = generateToken(user._id, user.role);
         res.status(200).json({
             success: true,
