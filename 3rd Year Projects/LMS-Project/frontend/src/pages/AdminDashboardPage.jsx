@@ -27,14 +27,18 @@ const AdminDashboardPage = () => {
                     <p>View all student enrollments.</p>
                     <Link to="/admin/enrollments" className="button button-primary">View Enrollments</Link>
                 </div>
-
-                {/* --- YAHAN PAR NAYA CARD JODA GAYA HAI --- */}
                 <div className="card">
                     <h3>Test Management</h3>
                     <p>Create, view, and manage all tests for courses.</p>
                     <Link to="/admin/tests" className="button button-primary">Manage Tests</Link>
                 </div>
-
+                {/* --- START: NAYA CARD JODA GAYA HAI --- */}
+                <div className="card">
+                    <h3>Student Results</h3>
+                    <p>View all test results submitted by students.</p>
+                    <Link to="/admin/results" className="button button-primary">View Results</Link>
+                </div>
+                {/* --- END: NAYA CARD JODA GAYA HAI --- */}
             </div>
         </div>
     );
