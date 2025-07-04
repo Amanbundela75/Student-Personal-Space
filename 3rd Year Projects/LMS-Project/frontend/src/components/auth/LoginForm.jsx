@@ -1,5 +1,3 @@
-// frontend/src/components/auth.js/LoginForm.jsx
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
@@ -8,7 +6,7 @@ import FaceCaptureComponent from './FaceCaptureComponent.jsx';
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [faceImage, setFaceImage] = useState(null); // Face image ke liye state
+    const [faceImage, setFaceImage] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
@@ -29,7 +27,6 @@ const LoginForm = () => {
 
         setLoading(true);
         try {
-            // Login function ko email, password aur face image data bhejein
             const response = await login(email, password, faceImage);
             if (response.success) {
                 if (response.user.role === 'admin') {
@@ -48,26 +45,42 @@ const LoginForm = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <h2>Login</h2>
-            {error && <p className="error-message">{error}</p>}
+            {/* Error message ko top par rakhein */}
+            {error && <div className="alert alert-danger">{error}</div>}
 
-            <div>
-                <label>Email:</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
             </div>
 
-            <div>
-                <label>Password:</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
             </div>
 
-            <FaceCaptureComponent onCapture={handleFaceCaptured} />
-            {faceImage && <p style={{color: 'green', textAlign: 'center'}}>Face captured, ready to login!</p>}
+            <div className="form-group">
+                <label>Face Capture</label>
+                <FaceCaptureComponent onCapture={handleFaceCaptured} />
+                {faceImage && <p style={{ color: 'green', textAlign: 'center', marginTop: '10px' }}>Face captured, ready to login!</p>}
+            </div>
 
-            <button type="submit" disabled={loading}>
+            <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '1rem' }}>
                 {loading ? 'Logging in...' : 'Login'}
             </button>
-            <p>
+
+            <p style={{ textAlign: 'center', marginTop: '1.5rem' }}>
                 Don't have an account? <Link to="/register">Register here</Link>
             </p>
         </form>
