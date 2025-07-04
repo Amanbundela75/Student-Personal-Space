@@ -102,7 +102,7 @@ exports.updateCourse = async (req, res) => {
         course.title = title || course.title;
         course.description = description || course.description;
         course.instructor = instructor !== undefined ? instructor : course.instructor;
-        course.youtubeVideos = youtubeVideos || course.youtubeVideos; // Default to empty array if not provided
+        course.youtubeVideos = youtubeVideos || course.youtubeVideos;
         course.notes = notes || course.notes;
 
         const updatedCourse = await course.save();
@@ -142,3 +142,55 @@ exports.deleteCourse = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
+
+// --- START: NEW FUNCTIONS FOR ADDING CONTENT ---
+
+// @desc    Add a YouTube video to a course
+// @route   POST /api/courses/:id/videos
+// @access  Private/Admin
+exports.addVideoToCourse = async (req, res) => {
+    const { title, videoId } = req.body;
+    if (!title || !videoId) {
+        return res.status(400).json({ success: false, message: 'Video title and YouTube Video ID are required.' });
+    }
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found.' });
+        }
+
+        course.youtubeVideos.push({ title, videoId });
+        await course.save();
+
+        res.status(201).json({ success: true, data: course });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error while adding video.' });
+    }
+};
+
+// @desc    Add a note to a course
+// @route   POST /api/courses/:id/notes
+// @access  Private/Admin
+exports.addNoteToCourse = async (req, res) => {
+    const { title, content, url } = req.body;
+    if (!title) {
+        return res.status(400).json({ success: false, message: 'Note title is required.' });
+    }
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ success: false, message: 'Course not found.' });
+        }
+
+        course.notes.push({ title, content, url });
+        await course.save();
+
+        res.status(201).json({ success: true, data: course });
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error while adding note.' });
+    }
+};
+
+// --- END: NEW FUNCTIONS FOR ADDING CONTENT ---
