@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchCourses, createCourse, updateCourse, deleteCourse } from '../../api/courses.js';
 import { fetchBranches } from '../../api/branches.js';
 import { useAuth } from '../../contexts/AuthContext.jsx';
@@ -20,6 +21,7 @@ const CourseManagement = () => {
     });
 
     const { token } = useAuth();
+    const navigate = useNavigate();
 
     const loadCoursesAndBranches = async () => {
         setIsLoading(true);
@@ -44,7 +46,6 @@ const CourseManagement = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        // FIX: Update the state with the new value using the input's name
         setCurrentCourse(prev => ({ ...prev, [name]: value }));
     };
 
@@ -63,7 +64,6 @@ const CourseManagement = () => {
         setError('');
         setSuccess('');
         try {
-            let response;
             const payload = {
                 title: currentCourse.title,
                 description: currentCourse.description,
@@ -71,19 +71,16 @@ const CourseManagement = () => {
                 instructor: currentCourse.instructor,
             };
             if (isEditing) {
-                response = await updateCourse(currentCourse._id, payload, token);
+                await updateCourse(currentCourse._id, payload, token);
                 setSuccess("Course updated successfully!");
             } else {
-                response = await createCourse(payload, token);
+                await createCourse(payload, token);
                 setSuccess("Course created successfully!");
             }
-            if (response.success) {
-                loadCoursesAndBranches();
-                resetForm();
-            } else {
-                setError(response.message || "Operation failed.");
-            }
-        } catch (err) {
+            loadCoursesAndBranches();
+            resetForm();
+        } catch (err)
+        {
             console.error("Course operation error:", err);
             setError(err.response?.data?.message || err.message || "An error occurred.");
         }
@@ -99,6 +96,7 @@ const CourseManagement = () => {
             branchId: course.branch._id,
             instructor: course.instructor || '',
         });
+        window.scrollTo(0, 0); // Scroll to top to see the form
         setError('');
         setSuccess('');
     };
@@ -108,14 +106,10 @@ const CourseManagement = () => {
             setIsLoading(true);
             setError('');
             try {
-                const response = await deleteCourse(courseId, token);
-                if (response.success) {
-                    setSuccess("Course deleted successfully!");
-                    loadCoursesAndBranches();
-                    resetForm();
-                } else {
-                    setError(response.message || "Failed to delete course.");
-                }
+                await deleteCourse(courseId, token);
+                setSuccess("Course deleted successfully!");
+                loadCoursesAndBranches();
+                resetForm();
             } catch (err) {
                 console.error("Delete course error:", err);
                 setError(err.response?.data?.message || err.message || "Error deleting course.");
@@ -124,13 +118,17 @@ const CourseManagement = () => {
         }
     };
 
+    const handleManageContent = (courseId) => {
+        navigate(`/admin/course/${courseId}/content`);
+    };
 
     return (
         <div>
             <h3>{isEditing ? 'Edit Course' : 'Create New Course'}</h3>
-            {error && <p className="error-message">{error}</p>}
-            {success && <p className="success-message">{success}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
             <form onSubmit={handleSubmit}>
+                {/* Form fields remain the same */}
                 <div>
                     <label htmlFor="title">Title:</label>
                     <input type="text" name="title" id="title" value={currentCourse.title} onChange={handleInputChange} required />
@@ -158,7 +156,7 @@ const CourseManagement = () => {
                 {isEditing && <button type="button" onClick={resetForm} disabled={isLoading} style={{marginLeft: '10px', backgroundColor: 'grey'}}>Cancel Edit</button>}
             </form>
 
-            <h3>Existing Courses</h3>
+            <h3 style={{ marginTop: '2rem' }}>Existing Courses</h3>
             {isLoading && courses.length === 0 && <p>Loading courses...</p>}
             {!isLoading && courses.length === 0 && <p>No courses found. Create one above!</p>}
             {courses.length > 0 && (
@@ -178,8 +176,13 @@ const CourseManagement = () => {
                             <td>{course.branch ? course.branch.name : 'N/A'}</td>
                             <td>{course.instructor || 'N/A'}</td>
                             <td>
+                                {/* --- START: BADLAV YAHAN KIYE GAYE HAIN --- */}
                                 <button onClick={() => handleEdit(course)} className="action-button edit-button" disabled={isLoading}>Edit</button>
-                                <button onClick={() => handleDelete(course._id, course.title)} className="action-button delete-button" disabled={isLoading}>Delete</button>
+                                <button onClick={() => handleDelete(course._id, course.title)} className="action-button delete-button" style={{ marginLeft: '5px' }} disabled={isLoading}>Delete</button>
+                                <button onClick={() => handleManageContent(course._id)} className="action-button edit-button" style={{ marginLeft: '5px' }} disabled={isLoading}>
+                                    Manage Content
+                                </button>
+                                {/* --- END: BADLAV YAHAN KIYE GAYE HAIN --- */}
                             </td>
                         </tr>
                     ))}
