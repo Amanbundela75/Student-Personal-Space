@@ -1,55 +1,141 @@
-/* frontend/src/index.css - SUGGESTED CLEANER VERSION */
+/* Global Styles for Aman's LMS */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+  Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.6;
   font-weight: 400;
-
-  /* Default light theme colors */
-  color: #213547;
-  background-color: #ffffff; /* Base background for the entire HTML document */
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-a {
-  font-weight: 500;
-  text-decoration: none; /* Remove underline by default */
-  color: #007bff; /* Default link color */
-}
-a:hover {
-  color: #0056b3; /* Darker on hover */
+  /* Color Palette */
+  --primary-color: #007bff;
+  --primary-color-hover: #0056b3;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --light-bg: #f8f9fa;
+  --dark-text: #212529;
+  --light-text: #ffffff;
+  --border-color: #dee2e6;
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f4f7f6; /* Your main app background from App.css - body in index.css can be simpler */
-  color: #333; /* Your main app text color from App.css */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif; /* Moved your preferred font-family here */
+  background-color: var(--light-bg);
+  color: var(--dark-text);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 0; /* Common reset for headings */
-  color: #2c3e50; /* A consistent dark color for headings */
-  font-weight: 600; /* Good default weight */
+a {
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--primary-color);
+  transition: color 0.2s ease-in-out;
+}
+a:hover {
+  color: var(--primary-color-hover);
 }
 
-h1 { font-size: 2.2em; margin-bottom: 0.75em; }
-h2 { font-size: 1.8em; margin-bottom: 0.6em; }
-h3 { font-size: 1.5em; margin-bottom: 0.5em; }
+/* === UTILITY CLASSES === */
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
 
-/* Basic button reset - more specific button styles will be in App.css or component CSS */
-button, input[type="submit"], input[type="button"] {
-  font-family: inherit;
-  font-size: 1em;
+/* === FORM STYLES === */
+.form-container {
+  max-width: 480px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--dark-text);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-sizing: border-box; /* Important for padding and width to work together */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* === BUTTON STYLES === */
+.btn {
+  display: inline-block;
+  width: 100%; /* Make buttons take full width inside forms */
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  border-radius: 6px; /* Consistent border radius */
-  padding: 0.6em 1.2em; /* Default padding */
-  border: 1px solid transparent; /* Default border */
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  border-radius: 6px;
+  padding: 0.75rem 1.2rem;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-sizing: border-box;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border-color: var(--primary-color);
+}
+.btn-primary:hover {
+  background-color: var(--primary-color-hover);
+  border-color: var(--primary-color-hover);
+  color: var(--light-text); /* Ensure text color remains on hover */
+}
+
+/* === ALERT STYLES === */
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
