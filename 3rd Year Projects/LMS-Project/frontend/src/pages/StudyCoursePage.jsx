@@ -1,25 +1,22 @@
-// frontend/src/pages/StudyCoursePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchCourseById } from '../api/courses.js'; // Ensure correct path
-import { useAuth } from '../contexts/AuthContext.jsx'; // Ensure correct path
-import YouTube from 'react-youtube'; // You'll need to install this: npm install react-youtube
+import { fetchCourseById } from '../api/courses.js';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import YouTube from 'react-youtube';
 
 const StudyCoursePage = () => {
     const { courseId } = useParams();
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { token } = useAuth(); // Needed if fetchCourseById requires auth.js, otherwise optional here
+    const { token } = useAuth();
 
     useEffect(() => {
         const loadCourseDetails = async () => {
             setLoading(true);
             setError('');
             try {
-                // Pass token if your fetchCourseById endpoint is protected
-                // For public course content viewing, token might not be needed for fetchCourseById
-                const courseData = await fetchCourseById(courseId /*, token (if needed) */);
+                const courseData = await fetchCourseById(courseId);
                 setCourse(courseData);
             } catch (err) {
                 console.error("Failed to load course details:", err);
@@ -30,14 +27,12 @@ const StudyCoursePage = () => {
         if (courseId) {
             loadCourseDetails();
         }
-    }, [courseId /*, token (if needed) */]);
+    }, [courseId]);
 
-    // YouTube player options
     const playerOptions = {
         height: '390',
         width: '640',
         playerVars: {
-            // https://developers.google.com/youtube/player_parameters
             autoplay: 0,
         },
     };
@@ -48,7 +43,15 @@ const StudyCoursePage = () => {
 
     return (
         <div className="container">
-            <h1>Studying: {course.title}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', marginBottom: '20px' }}>
+                <h1>Studying: {course.title}</h1>
+                <Link to={`/course/${courseId}/tests`}>
+                    <button className="button button-primary">
+                        View Available Tests
+                    </button>
+                </Link>
+            </div>
+
             <p>{course.description}</p>
             <Link to="/my-courses" className="button" style={{marginBottom: '20px', display:'inline-block'}}>Back to My Courses</Link>
 
@@ -98,4 +101,5 @@ const StudyCoursePage = () => {
     );
 };
 
+// --- YEH LINE THEEK KAR DI GAYI HAI ---
 export default StudyCoursePage;
