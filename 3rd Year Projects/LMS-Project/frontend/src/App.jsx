@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar.jsx';
 import Footer from './components/layout/Footer.jsx';
 import PrivateRoute from './components/layout/PrivateRoute.jsx';
 
+// --- (Saare imports jaise hain waise hi rahenge) ---
 // Public Pages
 import HomePage from './pages/HomePage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
@@ -51,12 +52,19 @@ function App() {
                     <Route path="/courses/:courseId" element={<CourseDetailPage />} />
                     <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
-                    {/* General Private Routes */}
+                    {/* --- START: YAHAN BADE BADLAV HAIN --- */}
+
+                    {/* General Private Routes for all logged-in users */}
                     <Route element={<PrivateRoute />}>
                         <Route path="/profile" element={<ProfilePage />} />
                     </Route>
 
-                    {/* Student Private Routes */}
+                    {/* Routes for BOTH Student and Admin */}
+                    <Route element={<PrivateRoute roles={['student', 'admin']} />}>
+                        <Route path="/results/:resultId" element={<ResultDetailPage />} />
+                    </Route>
+
+                    {/* Student ONLY Private Routes */}
                     <Route element={<PrivateRoute roles={['student']} />}>
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
                         <Route path="/my-courses" element={<MyCoursesPage />} />
@@ -64,10 +72,9 @@ function App() {
                         <Route path="/course/:courseId/tests" element={<AvailableTests />} />
                         <Route path="/test/:testId/attempt" element={<TestAttemptPage />} />
                         <Route path="/my-results" element={<MyResultsPage />} />
-                        <Route path="/results/:resultId" element={<ResultDetailPage />} />
                     </Route>
 
-                    {/* Admin Private Routes */}
+                    {/* Admin ONLY Private Routes */}
                     <Route element={<PrivateRoute roles={['admin']} />}>
                         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                         <Route path="/admin/users" element={<AdminUserManagementPage />} />
@@ -78,11 +85,10 @@ function App() {
                         <Route path="/admin/tests" element={<TestManagementPage />} />
                         <Route path="/admin/tests/create" element={<CreateTestPage />} />
                         <Route path="/admin/results" element={<AdminAllResultsPage />} />
-                        {/* --- START: BADLAV YAHAN KIYA GAYA HAI --- */}
-                        {/* Result Detail page ka route admin ke liye bhi add karein */}
-                        <Route path="/results/:resultId" element={<ResultDetailPage />} />
-                        {/* --- END: BADLAV YAHAN KIYA GAYA HAI --- */}
+                        {/* ResultDetailPage yahan se hata diya gaya hai */}
                     </Route>
+
+                    {/* --- END: BADLAV KHATAM --- */}
 
                     {/* Not Found Route */}
                     <Route path="*" element={<NotFoundPage />} />
