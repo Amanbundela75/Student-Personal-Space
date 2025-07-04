@@ -1,8 +1,7 @@
-// frontend/src/components/layout/Navbar.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext.jsx'; // .jsx extension
-import './Navbar.css'; // Navbar के लिए एक अलग CSS फ़ाइल बनाएंगे
+import { useAuth } from '../../contexts/AuthContext.jsx';
+import './Navbar.css';
 
 const Navbar = () => {
     const { currentUser, logout, isAdmin } = useAuth();
@@ -17,7 +16,6 @@ const Navbar = () => {
         <nav className="app-navbar">
             <div className="navbar-container">
                 <Link to="/" className="navbar-logo">
-                    {/* आप यहाँ अपना लोगो टेक्स्ट या इमेज डाल सकते हैं */}
                     Aman's LMS
                 </Link>
                 <div className="nav-menu">
@@ -29,7 +27,12 @@ const Navbar = () => {
                             {isAdmin ? (
                                 <Link to="/admin/dashboard" className="nav-item">Admin Dashboard</Link>
                             ) : (
-                                <Link to="/student/dashboard" className="nav-item">My Dashboard</Link>
+                                <>
+                                    {/* Student ke liye links */}
+                                    <Link to="/student/dashboard" className="nav-item">My Dashboard</Link>
+                                    {/* YEH LINK ADD KIYA GAYA HAI */}
+                                    <Link to="/my-results" className="nav-item">My Results</Link>
+                                </>
                             )}
                             <Link to="/profile" className="nav-item">Profile</Link>
                             <span className="nav-user-greeting">Hi, {currentUser.user.firstName}</span>
