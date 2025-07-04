@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchUserProfile } from "../api/profile.js";
 import * as authApi from '../api/auth.js';
 
-const AuthContext = createContext(null);
+// --- BAS YAHAN 'export' ADD KIYA GAYA HAI ---
+export const AuthContext = createContext(null);
 
 export const useAuth = () => {
     return useContext(AuthContext);
@@ -43,11 +44,8 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // --- YEH FUNCTION ADD KIYA GAYA HAI ---
     const register = async (formData) => {
-        // authApi.register function ko call karein aur response return karein
         const response = await authApi.register(formData);
-        // Component response ko handle karega (e.g., success message dikhana)
         return response;
     };
 
@@ -67,11 +65,10 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
     };
 
-    // --- 'register' KO VALUE MEIN ADD KIYA GAYA HAI ---
     const value = {
         currentUser,
         loading,
-        register, // Ab 'register' function available hai
+        register,
         login,
         logout,
         isAuthenticated: !!currentUser,
