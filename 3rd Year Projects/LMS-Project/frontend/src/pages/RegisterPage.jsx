@@ -4,7 +4,10 @@ import RegisterForm from '../components/auth/RegisterForm.jsx';
 const RegisterPage = () => {
     return (
         <div className="container">
-            <RegisterForm />
+            <div className="form-container">
+                <h2>Create a New Account</h2>
+                <RegisterForm />
+            </div>
         </div>
     );
 };
