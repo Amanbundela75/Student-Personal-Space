@@ -15,11 +15,9 @@ const RegisterForm = () => {
     });
     const [branches, setBranches] = useState([]);
     const [idCardImage, setIdCardImage] = useState(null);
-    const [faceImage, setFaceImage] = useState(null); // base64 string
+    const [faceImage, setFaceImage] = useState(null);
 
     const [error, setError] = useState('');
-    // Success message ke liye ab state ki zaroorat nahi, kyunki hum alert use karenge.
-    // const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
     const { register } = useAuth();
     const navigate = useNavigate();
@@ -29,15 +27,12 @@ const RegisterForm = () => {
             try {
                 const fetchedBranches = await fetchBranches();
                 setBranches(fetchedBranches || []);
-                if (fetchedBranches && fetchedBranches.length > 0) {
-                    setFormData(prev => ({ ...prev, branchId: fetchedBranches[0]._id }));
-                }
             } catch (err) {
                 setError('Failed to load branches.');
             }
         };
         loadBranches();
-    }, [setError]);
+    }, []);
 
     const { firstName, lastName, email, password, confirmPassword, branchId } = formData;
 
@@ -59,6 +54,7 @@ const RegisterForm = () => {
 
         if (password !== confirmPassword) return setError('Passwords do not match');
         if (password.length < 6) return setError('Password must be at least 6 characters long.');
+        if (!branchId) return setError('Please select your branch.');
         if (!idCardImage) return setError('Please upload your ID card.');
         if (!faceImage) return setError('Please capture your face image.');
 
@@ -76,11 +72,7 @@ const RegisterForm = () => {
         try {
             const response = await register(registrationData);
             if (response.success) {
-                // --- UPDATE YAHAN HAI ---
-                // User ko confirmation ke liye ek dialogue box (alert) dikhayein.
                 alert(response.message || 'Registration successful! Please check your email to verify.');
-
-                // Alert band karne ke baad user ko login page par bhej dein.
                 navigate('/login');
             } else {
                 setError(response.message || 'Registration failed.');
@@ -92,36 +84,54 @@ const RegisterForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <h2>Register</h2>
-            {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleSubmit} encType="multipart/form-data" style={{ marginTop: '1.5rem' }}>
+            {error && <div className="alert alert-danger">{error}</div>}
 
-            {/* Success message wala <p> tag hata diya hai */}
-
-            <div><label>First Name:</label><input type="text" name="firstName" value={firstName} onChange={onChange} required /></div>
-            <div><label>Last Name:</label><input type="text" name="lastName" value={lastName} onChange={onChange} required /></div>
-            <div><label>Email:</label><input type="email" name="email" value={email} onChange={onChange} required /></div>
-            <div><label>Password:</label><input type="password" name="password" value={password} onChange={onChange} required /></div>
-            <div><label>Confirm Password:</label><input type="password" name="confirmPassword" value={confirmPassword} onChange={onChange} required /></div>
-
-            <div>
-                <label>Select Branch:</label>
-                <select name="branchId" value={branchId} onChange={onChange} required>
-                    <option value="" disabled>-- Select Branch --</option>
+            <div className="form-group">
+                <label htmlFor="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" value={firstName} onChange={onChange} required />
+            </div>
+            <div className="form-group">
+                <label htmlFor="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" value={lastName} onChange={onChange} required />
+            </div>
+            <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input type="email" id="email" name="email" value={email} onChange={onChange} required />
+            </div>
+            <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input type="password" id="password" name="password" value={password} onChange={onChange} required />
+            </div>
+            <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" value={confirmPassword} onChange={onChange} required />
+            </div>
+            <div className="form-group">
+                <label htmlFor="branchId">Select Branch</label>
+                {/* Note: We need to add styling for 'select' in index.css for it to look perfect */}
+                <select id="branchId" name="branchId" value={branchId} onChange={onChange} required style={{width: '100%', padding: '0.75rem', fontSize: '1rem', border: '1px solid var(--border-color)', borderRadius: '6px'}}>
+                    <option value="" disabled>-- Select your branch --</option>
                     {branches.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
                 </select>
             </div>
-
-            <div>
-                <label>Upload ID Card:</label>
-                <input type="file" name="idCard" onChange={handleIdCardChange} accept="image/*" required />
+            <div className="form-group">
+                <label htmlFor="idCard">Upload ID Card</label>
+                <input type="file" id="idCard" name="idCard" onChange={handleIdCardChange} accept="image/*" required />
+            </div>
+            <div className="form-group">
+                <label>Face Capture</label>
+                <FaceCaptureComponent onCapture={handleFaceCaptured} />
+                {faceImage && <p style={{ color: 'green', textAlign: 'center', marginTop: '10px' }}>Face captured!</p>}
             </div>
 
-            <FaceCaptureComponent onCapture={handleFaceCaptured} />
-            {faceImage && <p style={{color: 'green', textAlign: 'center'}}>Face captured!</p>}
+            <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '1rem' }}>
+                {loading ? 'Registering...' : 'Register'}
+            </button>
 
-            <button type="submit" disabled={loading}>{loading ? 'Registering...' : 'Register'}</button>
-            <p>Already have an account? <Link to="/login">Login here</Link></p>
+            <p style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                Already have an account? <Link to="/login">Login here</Link>
+            </p>
         </form>
     );
 };
