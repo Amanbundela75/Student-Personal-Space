@@ -1,6 +1,6 @@
 /* frontend/src/App.css */
 
-/* General body styling (already in your index.css or App.css, ensure it's what you want) */
+/* General body styling */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -10,8 +10,8 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f4f7f6; /* Light grey page background */
-    color: #333; /* Default text color */
-    line-height: 1.6; /* Improved readability */
+    color: #333; /* Default text color - THIS WAS THE CAUSE OF THE ISSUE */
+    line-height: 1.6;
 }
 
 code {
@@ -26,57 +26,45 @@ code {
 .container {
     width: 90%;
     max-width: 1100px;
-    margin: 30px auto; /* Consistent top/bottom margin for pages */
-    padding: 30px;    /* More padding inside containers */
+    margin: 30px auto;
+    padding: 30px;
     background-color: #fff;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
     border-radius: 8px;
 }
 
-/* Remove generic nav styles from App.css if Navbar.css is handling Navbar specifically */
-/*
-nav { ... }
-nav a, nav button { ... }
-nav .logo { ... }
-nav .nav-links { ... }
-nav .user-info { ... }
-*/
-
-/* Page Titles (e.g., "Explore Our Branches", "Available Courses", "Login") */
+/* Page Titles */
 .page-title {
-    font-size: 2em; /* Consistent size for main page titles */
+    font-size: 2em;
     color: #2c3e50;
     text-align: center;
     margin-bottom: 30px;
     font-weight: 600;
 }
-/* In your JSX, use <h1 className="page-title">Explore Our Branches</h1> */
 
-
-/* Form styling - For Login, Register, and potentially Admin forms */
+/* Form styling */
 form {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Increased gap */
-    padding: 30px; /* More padding */
-    border: 1px solid #dee2e6; /* Lighter border */
-    border-radius: 8px; /* Consistent radius */
-    background-color: #ffffff; /* Cleaner background */
-    /* margin-bottom: 20px; /* Container will handle outer margin */
-    max-width: 500px; /* Limit form width */
+    gap: 20px;
+    padding: 30px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: #ffffff;
+    max-width: 500px;
     margin-left: auto;
-    margin-right: auto; /* Center forms on the page */
+    margin-right: auto;
 }
 
-form div { /* Wrapper for label + input */
+form div {
     display: flex;
     flex-direction: column;
 }
 
 form label {
-    margin-bottom: 8px; /* More space */
-    font-weight: 500; /* Slightly less bold */
-    color: #495057; /* Dark grey label color */
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #495057;
 }
 
 form input[type="text"],
@@ -84,9 +72,9 @@ form input[type="email"],
 form input[type="password"],
 form select,
 form textarea {
-    padding: 12px 15px; /* More padding in inputs */
-    border: 1px solid #ced4da; /* Standard input border */
-    border-radius: 6px; /* Consistent radius */
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
     font-size: 1em;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -96,20 +84,19 @@ form input[type="email"]:focus,
 form input[type="password"]:focus,
 form select:focus,
 form textarea:focus {
-    border-color: #007bff; /* Highlight focus */
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Bootstrap-like focus glow */
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
 }
 
 form textarea {
-    min-height: 100px; /* Slightly taller */
+    min-height: 100px;
     resize: vertical;
 }
 
-/* Form Submit Button - make it distinct */
 form button[type="submit"] {
     padding: 12px 20px;
-    background-color: #007bff; /* Primary blue */
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 6px;
@@ -117,15 +104,15 @@ form button[type="submit"] {
     font-size: 1.05em;
     font-weight: 500;
     transition: background-color 0.2s ease, transform 0.1s ease;
-    margin-top: 10px; /* Space above submit button */
+    margin-top: 10px;
 }
 
 form button[type="submit"]:hover {
-    background-color: #0069d9; /* Darker blue */
+    background-color: #0069d9;
     transform: translateY(-1px);
 }
 
-form .form-link-text { /* For "Don't have an account? Register here" */
+form .form-link-text {
     text-align: center;
     margin-top: 15px;
     font-size: 0.9em;
@@ -139,35 +126,35 @@ form .form-link-text a:hover {
 }
 
 
-/* Table Styling (Looks okay, minor tweaks) */
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow for tables */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 table th, table td {
-    border: 1px solid #dee2e6; /* Lighter border */
-    padding: 12px 15px; /* More padding */
+    border: 1px solid #dee2e6;
+    padding: 12px 15px;
     text-align: left;
 }
 
 table th {
-    background-color: #f8f9fa; /* Very light grey for table header */
-    font-weight: 600; /* Bolder header text */
+    background-color: #f8f9fa;
+    font-weight: 600;
     color: #495057;
 }
 
 table tr:nth-child(even) {
-    background-color: #fdfdfe; /* Very subtle striping */
+    background-color: #fdfdfe;
 }
 table tr:hover {
-    background-color: #f1f3f5; /* Hover effect for rows */
+    background-color: #f1f3f5;
 }
 
 
-/* Card List (already good from previous suggestions) */
+/* Card List */
 .card-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -182,7 +169,7 @@ table tr:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 25px;
     display: flex;
-    flex-direction: column; /* This is important for card layout */
+    flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -191,10 +178,9 @@ table tr:hover {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-/* This div will contain the main text content of the card */
 .card-content {
-    flex-grow: 1; /* Allows this section to grow, pushing actions to the bottom */
-    margin-bottom: 15px; /* Space before the actions start */
+    flex-grow: 1;
+    margin-bottom: 15px;
 }
 
 .card h3 {
@@ -208,54 +194,47 @@ table tr:hover {
     font-size: 0.9em;
     color: #555;
     line-height: 1.6;
-    margin-bottom: 10px; /* Space between paragraphs */
+    margin-bottom: 10px;
 }
 .card p:last-child {
-    margin-bottom: 0; /* Remove margin from last paragraph in content area */
+    margin-bottom: 0;
 }
 
 
-/* Card Actions - Container for buttons at the bottom */
+/* Card Actions */
 .card-actions {
-    margin-top: auto; /* Ensures it's pushed to the bottom of the flex card */
+    margin-top: auto;
     padding-top: 15px;
     border-top: 1px solid #f1f3f5;
     display: flex;
-    flex-direction: column; /* Stack buttons vertically */
-    /* gap: 10px; */ /* We'll use margin on buttons instead for more control/compatibility */
+    flex-direction: column;
 }
 
-/* Styling for ALL buttons/links styled as buttons WITHIN .card-actions */
-.card-actions .button, /* Targets <button class="button ..."> and <a class="button ..."> */
-.card-actions a.button { /* More specific for <a> tags styled as buttons */
-    display: block; /* Make them full width */
+.card-actions .button,
+.card-actions a.button {
+    display: block;
     width: 100%;
-    box-sizing: border-box; /* Important! */
+    box-sizing: border-box;
     padding: 10px 15px;
     font-size: 0.95em;
     text-decoration: none !important;
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
-    border: none; /* Default no border for card buttons */
+    border: none;
     transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-    /* box-shadow: 0 1px 2px rgba(0,0,0,0.1); */ /* Optional: subtle shadow for buttons */
 }
 
-/* Add margin to all buttons within card-actions, except the last one */
 .card-actions .button:not(:last-child),
 .card-actions a.button:not(:last-child) {
-    margin-bottom: 10px; /* <<< THIS IS THE KEY FOR VERTICAL SPACING */
+    margin-bottom: 10px;
 }
 
-/* Hover effect for all buttons in card-actions */
 .card-actions .button:hover,
 .card-actions a.button:hover {
     transform: translateY(-1px);
-    /* box-shadow: 0 2px 4px rgba(0,0,0,0.15); */ /* Optional hover shadow */
 }
 
-/* Specific Button Colors/Styles - these will apply ON TOP of the base .card-actions .button style */
 .card-actions .button-primary {
     background-color: #007bff;
     color: white !important;
@@ -264,23 +243,23 @@ table tr:hover {
     background-color: #0069d9;
 }
 
-.card-actions .button-view-details { /* For the orange "View Details" button on course cards */
+.card-actions .button-view-details {
     background-color: #fd7e14;
-    color: white !important; /* Ensure text is visible */
+    color: white !important;
 }
 .card-actions .button-view-details:hover {
     background-color: #e86a00;
 }
 
-.card-actions .button-edit { /* For "Update Progress" */
+.card-actions .button-edit {
     background-color: #ffc107;
-    color: #212529 !important; /* Dark text on yellow */
+    color: #212529 !important;
 }
 .card-actions .button-edit:hover {
     background-color: #e0a800;
 }
 
-.card-actions .button-danger { /* For "Unenroll" */
+.card-actions .button-danger {
     background-color: #dc3545;
     color: white !important;
 }
@@ -288,42 +267,37 @@ table tr:hover {
     background-color: #c82333;
 }
 
-.card-actions .button-disabled { /* For "Already Enrolled" */
+.card-actions .button-disabled {
     background-color: #6c757d;
     color: #e9ecef !important;
     cursor: not-allowed;
     opacity: 0.75;
 }
 .card-actions .button-disabled:hover {
-    background-color: #6c757d; /* No color change on hover */
-    transform: none; /* No lift effect on hover */
+    background-color: #6c757d;
+    transform: none;
 }
-/* Specific styles for .branch-card from previous suggestions are good, ensure they don't conflict heavily */
-/* You might consolidate some .branch-card h3, p styles into .card h3, p if they are similar */
 .branch-card .card-content {
     flex-grow: 1;
 }
-.branch-card h3 { /* Override generic .card h3 if needed */
+.branch-card h3 {
     font-size: 1.4em;
     color: #343a40;
 }
-.branch-card p { /* Override generic .card p if needed */
+.branch-card p {
     font-size: 0.95em;
     color: #6c757d;
 }
-.branch-card .card-actions .button.button-primary { /* "View Courses in..." button */
-    display: block; /* Make it full width inside its actions container */
+.branch-card .card-actions .button.button-primary {
+    display: block;
     width: 100%;
-    background-color: #007bff; /* Consistent blue */
+    background-color: #007bff;
 }
 .branch-card .card-actions .button.button-primary:hover {
     background-color: #0056b3;
 }
 
-
-/* General .button and .button-primary (outside of cards/forms) */
-/* These might be used for standalone buttons on pages, less common */
-.button { /* General .button class if used elsewhere */
+.button {
     display: inline-block;
     padding: 10px 20px;
     border-radius: 6px;
@@ -331,14 +305,14 @@ table tr:hover {
     font-weight: 500;
     text-align: center;
     cursor: pointer;
-    border: 1px solid transparent; /* Default border */
+    border: 1px solid transparent;
     transition: background-color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
-.button.button-primary { /* For general purpose primary buttons like "Enroll in More Courses" on dashboard */
+.button.button-primary {
     background-color: #007bff;
     color: white !important;
-    border-color: #007bff; /* Match background */
+    border-color: #007bff;
 }
 .button.button-primary:hover {
     background-color: #0069d9;
@@ -346,10 +320,13 @@ table tr:hover {
     transform: translateY(-2px);
 }
 
-/* Utility classes (already good) */
 .text-center { text-align: center; }
-.error-message { /* ... */ }
-.success-message { /* ... */ }
 
-/* Footer (already good) */
-footer { /* ... */ }
+/*
+   ============================================================
+   FIX FOR STATS BAR - ADDED AT THE END OF App.css
+   ============================================================
+*/
+.stats-section .stat-label {
+    color: #ffffff;
+}
