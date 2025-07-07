@@ -1,23 +1,21 @@
-/* frontend/src/pages/HomePage.css */
+/*
+   ================================================================
+   FINAL & COMPLETE CSS for HomePage (All Sections Fixed + Stats Bar)
+   ================================================================
+*/
 
-.homepage {
-    /* Overall page structure if needed */
-}
-
-/* Hero Section */
+/* --- 1. Hero Section --- */
 .hero-section {
-    position: relative; /* यह बहुत ज़रूरी है ताकि अंदर के absolute elements काम करें */
-    color: #ffffff;
-    min-height: 80vh; /* ऊँचाई थोड़ी ज़्यादा */
-    padding: 80px 20px;
+    position: relative;
+    height: 90vh;
+    color: white;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     text-align: center;
     overflow: hidden;
 }
 
-/* Background Video Styling */
 .background-video {
     position: absolute;
     top: 50%;
@@ -25,174 +23,394 @@
     transform: translate(-50%, -50%);
     min-width: 100%;
     min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
-    object-fit: cover;
-
-    /* NEW: Limit overflowing due to stretching */
-    max-width: 100vw;
-    max-height: 100vh;
-    overflow: hidden; /* वीडियो को बिना खींचे पूरे एरिया को कवर करने के लिए */
+    z-index: 1;
 }
 
-
-/* Video Overlay Styling */
 .video-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(44, 62, 80, 0.7); /* हल्का गहरा नीला ओवरले */
-    z-index: 0; /* यह वीडियो के ऊपर लेकिन कंटेंट के नीचे होगा */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
 }
 
 .hero-content {
-    position: relative; /* या z-index को काम करने के लिए absolute/fixed */
-    z-index: 1; /* यह सुनिश्चित करेगा कि कंटेंट ओवरले और वीडियो के ऊपर हो */
+    position: relative;
+    z-index: 3;
     max-width: 800px;
+    padding: 20px;
 }
 
 .hero-title {
-    font-size: 3.5em;
+    font-size: 3.2em;
     font-weight: 700;
+    text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
     margin-bottom: 20px;
-    line-height: 1.2;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero-subtitle {
-    font-size: 1.3em;
-    margin-bottom: 40px;
-    line-height: 1.6;
-    opacity: 0.9;
+    font-size: 1.2em;
+    margin-bottom: 30px;
 }
 
 .hero-cta-buttons .button {
-    margin: 0 10px;
-    padding: 15px 30px; /* Larger buttons */
-    font-size: 1.1em;
-    border-radius: 8px; /* Slightly more rounded */
-    text-transform: uppercase;
+    margin: 5px 10px;
+    padding: 12px 28px;
+    font-size: 1em;
     font-weight: bold;
-    letter-spacing: 0.5px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
 }
 
-.button.button-hero-primary {
-    background-color: #3498db; /* Your primary action color */
+.button-hero-primary {
+    background-color: #3498db;
     color: white;
     border: none;
 }
-
-.button.button-hero-primary:hover {
+.button-hero-primary:hover {
     background-color: #2980b9;
     transform: translateY(-2px);
 }
 
-.button.button-hero-secondary {
+.button-hero-secondary {
     background-color: transparent;
     color: white;
-    border: 2px solid white; /* White border for secondary button */
+    border: 2px solid white;
 }
-
-.button.button-hero-secondary:hover {
+.button-hero-secondary:hover {
     background-color: white;
-    color: #2c3e50; /* Text color changes on hover */
+    color: #2c3e50;
     transform: translateY(-2px);
 }
 
-
-/* Features Section */
-.features-section {
-    padding: 60px 20px;
-    background-color: #f8f9fa; /* Light background for contrast */
+/* --- 2. Generic Section Styles --- */
+.features-section,
+.stats-section,
+.featured-courses-section,
+.testimonials-section,
+.cta-section {
+    padding: 70px 20px;
 }
 
 .section-title {
     text-align: center;
-    font-size: 2.5em;
+    font-size: 2.4em;
     color: #2c3e50;
     margin-bottom: 50px;
     font-weight: 600;
 }
 
+/* --- 3. Features Section --- */
+.features-section {
+    background-color: #f8f9fa;
+}
+
 .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 30px;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .feature-card {
-    background-color: #ffffff;
+    background: white;
     padding: 30px;
     border-radius: 8px;
-    text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    transition: all 0.3s ease;
+    flex-basis: 300px;
+    flex-grow: 1;
 }
-
 .feature-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .feature-icon {
-    font-size: 3em; /* Adjust as needed, or use actual image/SVG icons */
+    font-size: 3em;
+    color: #3498db;
     margin-bottom: 20px;
-    display: block;
-    color: #3498db; /* Icon color */
 }
 
 .feature-card h3 {
-    font-size: 1.5em;
+    font-size: 1.4em;
     color: #343a40;
     margin-bottom: 10px;
-    font-weight: 600;
 }
 
-.feature-card p {
-    font-size: 0.95em;
-    color: #6c757d;
-    line-height: 1.7;
+/* --- 4. Statistics Section (BULLETPROOF FIX) --- */
+.stats-section {
+    background-color: #2c3e50;
+    padding: 50px 20px;
 }
 
-
-/* Call to Action Section (Optional) */
-.cta-section {
-    padding: 60px 20px;
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     text-align: center;
-    background-color: #3498db; /* Primary color background */
-    color: white;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.cta-section h2 {
-    font-size: 2.2em;
+.stat-item {
+    padding: 20px;
+}
+
+.stat-number {
+    font-size: 2.8em;
+    font-weight: 700;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+
+/* --- 5. Featured Courses Section --- */
+.featured-courses-section {
+    background-color: #ffffff;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.course-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.course-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.course-card .content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.course-card h4 {
+    font-size: 1.2em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+.course-card p {
+    color: #6c757d;
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+.button-small {
+    background: #3498db;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    align-self: flex-start;
+}
+.button-small:hover {
+    background: #2980b9;
+}
+
+/* --- 6. Testimonials Section --- */
+.testimonials-section {
+    background-color: #f8f9fa;
+}
+
+.testimonial-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+}
+.testimonial-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid #3498db;
+}
+
+.testimonial-card p {
+    font-style: italic;
+    color: #34495e;
+    font-size: 1.05em;
     margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.testimonial-name {
     font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1em;
+}
+
+/* --- 7. Responsive Design --- */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5em;
+    }
+    .section-title {
+        font-size: 2em;
+    }
+    .hero-cta-buttons {
+        flex-direction: column;
+    }
+    .hero-cta-buttons .button {
+        width: 80%;
+        margin-bottom: 15px;
+    }
+}
+
+/* --- 8. Testimonial Carousel --- */
+.testimonial-carousel-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.testimonial-card-wrapper {
+    padding: 20px 10px;
+}
+
+.testimonial-card {
+    margin: 0 auto;
+}
+
+.slick-prev,
+.slick-next {
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    font-size: 40px;
+    color: #2c3e50;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.slick-prev:hover:before,
+.slick-next:hover:before {
+    opacity: 1;
+}
+
+.slick-dots li button:before {
+    font-size: 12px;
+    color: #2c3e50;
+    opacity: 0.3;
+}
+
+.slick-dots li.slick-active button:before {
+    color: #3498db;
+    opacity: 1;
+}
+
+/*
+   ============================================================
+   STYLING FOR CALL TO ACTION (CTA) SECTION (YAHAN BADLAAV HUA HAI)
+   ============================================================
+*/
+
+.cta-section {
+    position: relative; /* Yeh zaroori hai overlay ke liye */
+    padding: 100px 20px; /* Thoda aur bada aur grand look */
+    text-align: center;
+    color: white;
+
+    /* Background Image Settings */
+    background-image: url('/images/cta-background.jpg');
+    background-size: cover; /* Image ko poori jagah mein failao */
+    background-position: center; /* Image ko center mein rakho */
+    background-attachment: fixed; /* Isse parallax effect aayega */
+
+    /* Yeh fallback color hai, agar image load na ho */
+    background-color: #2c3e50;
+}
+
+/* Image ke upar dark filter lagane ke liye */
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 62, 80, 0.7); /* Dark blue color ka 70% transparent filter */
+    z-index: 1; /* Filter ko content ke peeche rakho */
+}
+
+/* Content ko filter ke upar laane ke liye */
+.cta-content {
+    position: relative;
+    z-index: 2; /* Content ko sabse upar rakho */
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* CTA ke text ko thoda behtar banayein */
+.cta-section h2 {
+    font-size: 2.8em; /* Title bada karein */
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Text ke peeche halki shadow */
+    color: white; /* Text ka color white rakhein */
 }
 
 .cta-section p {
-    font-size: 1.1em;
-    margin-bottom: 30px;
-    opacity: 0.9;
+    font-size: 1.2em;
+    margin-bottom: 35px;
+    opacity: 1; /* Opacity poori rakhein */
 }
 
-.button.button-cta {
-    background-color: #ffffff;
-    color: #3498db; /* Text color matches the CTA background */
-    padding: 15px 35px;
-    font-size: 1.1em;
+.cta-section .button-cta {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 18px 40px; /* Button ko thoda aur bada karein */
+    font-size: 1.2em;
     font-weight: bold;
     border-radius: 8px;
     border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Button ke neeche shadow */
+    transition: all 0.3s ease;
 }
 
-.button.button-cta:hover {
-    background-color: #f1f3f5; /* Slightly off-white hover */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.cta-section .button-cta:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
 }
