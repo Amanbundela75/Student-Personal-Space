@@ -41,6 +41,9 @@
     z-index: 3;
     max-width: 800px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .hero-title {
@@ -54,6 +57,52 @@
     font-size: 1.2em;
     margin-bottom: 30px;
 }
+
+/* ======================================= */
+/*      Hero Search Bar (FIXED)     */
+/* ======================================= */
+.hero-search-form {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: row; /* YEH LINE FIX HAI */
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 50px;
+}
+
+.hero-search-input {
+    width: 100%;
+    padding: 15px 25px;
+    border: 1px solid transparent;
+    border-radius: 50px 0 0 50px;
+    font-size: 1rem;
+    outline: none;
+    color: #333;
+}
+
+.hero-search-input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+.hero-search-button {
+    padding: 15px 30px;
+    border: none;
+    background-color: #3498db;
+    color: white;
+    border-radius: 0 50px 50px 0;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.hero-search-button:hover {
+    background-color: #2980b9;
+}
+
 
 .hero-cta-buttons .button {
     margin: 5px 10px;
@@ -92,6 +141,7 @@
 .stats-section,
 .featured-courses-section,
 .testimonials-section,
+.faq-section,
 .cta-section {
     padding: 70px 20px;
 }
@@ -135,7 +185,6 @@
 
 .feature-icon {
     font-size: 3em;
-    color: #3498db;
     margin-bottom: 20px;
 }
 
@@ -162,6 +211,7 @@
 
 .stat-item {
     padding: 20px;
+    color: #ecf0f1;
 }
 
 .stat-number {
@@ -169,6 +219,11 @@
     font-weight: 700;
     color: #3498db;
     margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 1.1em;
+    color: #bdc3c7;
 }
 
 
@@ -277,7 +332,126 @@
     font-size: 1.1em;
 }
 
-/* --- 7. Responsive Design --- */
+/* --- 7. FAQ Section --- */
+.faq-section {
+    background-color: #ffffff;
+}
+
+.faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.faq-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.faq-item:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.faq-question {
+    padding: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #343a40;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question span {
+    font-size: 1.2rem;
+    color: #3498db;
+    transition: transform 0.3s ease;
+}
+
+.faq-answer {
+    overflow: hidden;
+}
+
+.faq-answer p {
+    padding: 0 20px 20px 20px;
+    margin: 0;
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+
+/* --- 8. CTA Section --- */
+.cta-section {
+    position: relative;
+    padding: 100px 20px;
+    text-align: center;
+    color: white;
+    background-image: url('/images/cta-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #2c3e50;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(44, 62, 80, 0.7);
+    z-index: 1;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.cta-section h2 {
+    font-size: 2.8em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    color: white;
+}
+
+.cta-section p {
+    font-size: 1.2em;
+    margin-bottom: 35px;
+    opacity: 1;
+}
+
+.cta-section .button-cta {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 18px 40px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.cta-section .button-cta:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+}
+
+
+/* --- 9. Responsive Design --- */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5em;
@@ -287,14 +461,30 @@
     }
     .hero-cta-buttons {
         flex-direction: column;
+        align-items: center;
     }
     .hero-cta-buttons .button {
         width: 80%;
         margin-bottom: 15px;
     }
+    .hero-search-form {
+        flex-direction: column;
+        max-width: 90%;
+        box-shadow: none;
+        background-color: transparent;
+        border-radius: 0;
+    }
+    .hero-search-input {
+        border-radius: 8px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .hero-search-button {
+        border-radius: 8px;
+    }
 }
 
-/* --- 8. Testimonial Carousel --- */
+/* --- 10. Testimonial Carousel --- */
 .testimonial-carousel-container {
     max-width: 800px;
     margin: 0 auto;
@@ -338,79 +528,4 @@
 .slick-dots li.slick-active button:before {
     color: #3498db;
     opacity: 1;
-}
-
-/*
-   ============================================================
-   STYLING FOR CALL TO ACTION (CTA) SECTION (YAHAN BADLAAV HUA HAI)
-   ============================================================
-*/
-
-.cta-section {
-    position: relative; /* Yeh zaroori hai overlay ke liye */
-    padding: 100px 20px; /* Thoda aur bada aur grand look */
-    text-align: center;
-    color: white;
-
-    /* Background Image Settings */
-    background-image: url('/images/cta-background.jpg');
-    background-size: cover; /* Image ko poori jagah mein failao */
-    background-position: center; /* Image ko center mein rakho */
-    background-attachment: fixed; /* Isse parallax effect aayega */
-
-    /* Yeh fallback color hai, agar image load na ho */
-    background-color: #2c3e50;
-}
-
-/* Image ke upar dark filter lagane ke liye */
-.cta-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(44, 62, 80, 0.7); /* Dark blue color ka 70% transparent filter */
-    z-index: 1; /* Filter ko content ke peeche rakho */
-}
-
-/* Content ko filter ke upar laane ke liye */
-.cta-content {
-    position: relative;
-    z-index: 2; /* Content ko sabse upar rakho */
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-/* CTA ke text ko thoda behtar banayein */
-.cta-section h2 {
-    font-size: 2.8em; /* Title bada karein */
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Text ke peeche halki shadow */
-    color: white; /* Text ka color white rakhein */
-}
-
-.cta-section p {
-    font-size: 1.2em;
-    margin-bottom: 35px;
-    opacity: 1; /* Opacity poori rakhein */
-}
-
-.cta-section .button-cta {
-    background-color: #3498db;
-    color: #ffffff;
-    padding: 18px 40px; /* Button ko thoda aur bada karein */
-    font-size: 1.2em;
-    font-weight: bold;
-    border-radius: 8px;
-    border: none;
-    text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Button ke neeche shadow */
-    transition: all 0.3s ease;
-}
-
-.cta-section .button-cta:hover {
-    background-color: #2980b9;
-    transform: translateY(-3px);
 }
