@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react'; // useState import kiya hai
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // AnimatePresence import kiya hai
 
 // SLIDER IMPORTS
 import Slider from "react-slick";
@@ -41,6 +41,43 @@ const TestimonialCard = ({ testimonial }) => (
     </div>
 );
 
+// --- FAQ Accordion Component ---
+const FAQItem = ({ faq }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const itemVariants = {
+        open: { opacity: 1, height: 'auto' },
+        closed: { opacity: 0, height: 0 }
+    };
+
+    return (
+        <div className="faq-item">
+            <motion.div
+                className="faq-question"
+                onClick={() => setIsOpen(!isOpen)}
+                whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+            >
+                {faq.question}
+                <motion.span animate={{ rotate: isOpen ? 180 : 0 }}>▼</motion.span>
+            </motion.div>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        className="faq-answer"
+                        variants={itemVariants}
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    >
+                        <p>{faq.answer}</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 
 // --- Data ---
 
@@ -56,11 +93,29 @@ const testimonials = [
     { id: 3, name: "Sunita Kaur", feedback: "The flexible learning schedule helped me a lot. The courses are amazing!", avatar: "/images/students/sunita.jpg" }
 ];
 
+// --- FAQ Data ---
+const faqs = [
+    { id: 1, question: "Do I get a certificate after completing a course?", answer: "Yes, upon successful completion of any course, you will receive a verifiable certificate from Aman's LMS to showcase your new skills." },
+    { id: 2, question: "Can I access courses on my mobile device?", answer: "Absolutely! Our platform is fully responsive, allowing you to learn on the go from your mobile, tablet, or desktop." },
+    { id: 3, question: "What are the payment options available?", answer: "We accept all major credit cards, debit cards, and UPI payments through a secure payment gateway." },
+    { id: 4, question: "Is there a trial period for courses?", answer: "We don't offer a trial period, but many of our courses have a free preview of the first few lessons, so you can decide if the course is right for you." }
+];
 
 // --- Main HomePage Component ---
 
 const HomePage = () => {
     const { currentUser, isAdmin } = useAuth();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            // Abhi ke liye console par log kar rahe hain.
+            // Baad mein isko search page par redirect karenge.
+            console.log("Searching for:", searchQuery);
+            alert(`Searching for: ${searchQuery}`);
+        }
+    };
 
     // Slider settings
     const testimonialSettings = {
@@ -76,12 +131,12 @@ const HomePage = () => {
         cssEase: 'linear'
     };
 
-    // Animation variants for Hero Section
+    // Animation variants
     const heroContentVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: {
             opacity: 1, y: 0,
-            transition: { staggerChildren: 0.3, delayChildren: 0.5 }
+            transition: { staggerChildren: 0.2, delayChildren: 0.5 }
         }
     };
 
@@ -95,10 +150,7 @@ const HomePage = () => {
         visible: {
             opacity: 1,
             y: 0,
-            transition: {
-                duration: 0.6,
-                ease: "easeOut"
-            }
+            transition: { duration: 0.6, ease: "easeOut" }
         }
     };
 
@@ -125,6 +177,21 @@ const HomePage = () => {
                     <motion.p variants={itemVariants} className="hero-subtitle">
                         Your premier destination for quality online education, tailored to your learning journey.
                     </motion.p>
+
+                    {/* ================================= */}
+                    {/*      SEARCH BAR (YAHAN ADD HUA HAI)     */}
+                    {/* ================================= */}
+                    <motion.form variants={itemVariants} className="hero-search-form" onSubmit={handleSearch}>
+                        <input
+                            type="text"
+                            className="hero-search-input"
+                            placeholder="What do you want to learn today?"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button type="submit" className="hero-search-button">Search</button>
+                    </motion.form>
+
                     <motion.div variants={itemVariants} className="hero-cta-buttons">
                         <Link to="/courses" className="button button-hero-primary">Explore Courses</Link>
                         {!currentUser && <Link to="/register" className="button button-hero-secondary">Get Started</Link>}
@@ -233,8 +300,26 @@ const HomePage = () => {
             </motion.section>
 
             {/* =================================================== */}
-            {/*      Call to Action Section (YAHAN BADLAAV HUA HAI)     */}
+            {/*      FAQ Section (YAHAN ADD HUA HAI)     */}
             {/* =================================================== */}
+            <motion.section
+                className="faq-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <div className="container">
+                    <h2 className="section-title">Frequently Asked Questions</h2>
+                    <div className="faq-list">
+                        {faqs.map(faq => (
+                            <FAQItem key={faq.id} faq={faq} />
+                        ))}
+                    </div>
+                </div>
+            </motion.section>
+
+            {/* Call to Action Section */}
             <motion.section
                 className="cta-section"
                 variants={sectionVariants}
