@@ -194,7 +194,7 @@
     margin-bottom: 10px;
 }
 
-/* --- 4. Statistics Section (BULLETPROOF FIX) --- */
+/* --- Statistics Section (BULLETPROOF FIX) --- */
 .stats-section {
     background-color: #2c3e50;
     padding: 50px 20px;
@@ -211,7 +211,6 @@
 
 .stat-item {
     padding: 20px;
-    color: #ecf0f1;
 }
 
 .stat-number {
@@ -221,11 +220,12 @@
     margin-bottom: 5px;
 }
 
+/* ===== YEH FINAL CODE HAI ===== */
 .stat-label {
     font-size: 1.1em;
-    color: #bdc3c7;
+    color: #bdc3c7 !important; /* Halkey grey color ko force kiya hai */
+    font-weight: normal !important; /* Ensure text mota na dikhe */
 }
-
 
 /* --- 5. Featured Courses Section --- */
 .featured-courses-section {
@@ -310,12 +310,13 @@
 }
 
 .testimonial-avatar {
-    width: 80px;
-    height: 80px;
+    width: 120px;  /* Size ko 80px se 100px kiya */
+    height: 120px; /* Size ko 80px se 100px kiya */
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 20px;
-    border: 3px solid #3498db;
+    margin: 0 auto 20px auto;
+    border: 4px solid #3498db; /* Border ko thoda mota kiya */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Thoda shadow effect daala */
 }
 
 .testimonial-card p {
