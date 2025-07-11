@@ -8,10 +8,17 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['student', 'admin'], default: 'student' },
     branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch' },
+
+    // --- NAYA FIELD YAHAN ADD KIYA HAI ---
+    enrolledCourses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course'
+    }],
+    // ------------------------------------
+
     idCardImageUrl: { type: String },
     faceDescriptor: { type: [Number] },
 
-    // --- Yeh fields zaroori hain ---
     isEmailVerified: {
         type: Boolean,
         default: false
@@ -20,7 +27,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         select: false
     },
-    // ---
 
     lastLoginTimestamp: { type: Date },
     idCardVerificationStatus: {
