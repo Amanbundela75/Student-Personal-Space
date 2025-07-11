@@ -18,7 +18,7 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const query = useQuery();
-    const { isAuthenticated, currentUser } = useAuth(); // 'token' ki zaroorat nahi
+    const { isAuthenticated, currentUser } = useAuth();
 
     const initialBranchId = query.get('branchId');
 
@@ -29,14 +29,16 @@ const CourseListPage = () => {
             try {
                 // Branches fetch karein
                 const branchesData = await fetchBranches();
+                // === YAHAN BADLAV KIYA GAYA HAI ===
+                // branchesData ab seedhe ek array hai, usse .data nikalne ki zaroorat nahi
                 setBranches(branchesData || []);
                 if (initialBranchId) {
                     setSelectedBranch(initialBranchId);
                 }
 
                 // Courses fetch karein
-                const coursesData = await fetchCourses(initialBranchId);
-                setCourses(coursesData || []);
+                const coursesResponse = await fetchCourses(initialBranchId);
+                setCourses(coursesResponse?.data || []);
 
                 // Agar user logged in hai to uske enrollments fetch karein
                 if (isAuthenticated && currentUser?.user?.role === 'student') {
@@ -52,18 +54,18 @@ const CourseListPage = () => {
         };
 
         loadInitialData();
-    }, [initialBranchId, isAuthenticated, currentUser]); // Dependency se 'token' hataya
+    }, [initialBranchId, isAuthenticated, currentUser]);
 
 
     const handleBranchChange = (e) => {
         const newBranchId = e.target.value;
         setSelectedBranch(newBranchId);
-        // Branch change hone par sirf courses reload karein
+
         const loadCourses = async () => {
             setLoading(true);
             try {
-                const coursesData = await fetchCourses(newBranchId);
-                setCourses(coursesData || []);
+                const coursesResponse = await fetchCourses(newBranchId);
+                setCourses(coursesResponse?.data || []);
             } catch (err) {
                 setError('Failed to filter courses.');
             }
@@ -85,6 +87,7 @@ const CourseListPage = () => {
                 <label htmlFor="branchFilter" style={{ marginRight: '10px' }}>Filter by Branch:</label>
                 <select id="branchFilter" value={selectedBranch} onChange={handleBranchChange}>
                     <option value="">All Branches</option>
+                    {/* Ab 'branches' state mein data hoga aur dropdown aana chahiye */}
                     {branches.map(branch => (
                         <option key={branch._id} value={branch._id}>{branch.name}</option>
                     ))}
