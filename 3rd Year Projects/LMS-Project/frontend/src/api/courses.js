@@ -1,11 +1,20 @@
 import apiClient from './axiosConfig';
 
 // Fetch all courses, optionally filtered by branch
-export const fetchCourses = async (branchId = '') => {
+export const fetchCourses = async (branchId) => {
     try {
-        const response = await apiClient.get(`/api/courses?branchId=${branchId}`);
-        // Backend se 'data' property return ho rahi hai
-        return response.data.data;
+        // === SIRF YE SECTION BADLA GAYA HAI ===
+        let url = '/api/courses';
+
+        // Sirf tabhi branchId ko URL mein jodo jab woh sach mein ho
+        if (branchId) {
+            url += `?branchId=${branchId}`;
+        }
+
+        const response = await apiClient.get(url);
+        // Poora { success, data } object return karein, taaki frontend use kar sake
+        return response.data;
+        // =====================================
     } catch (error) {
         console.error('Error fetching courses:', error.response?.data || error.message);
         throw error.response?.data || error;
