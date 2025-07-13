@@ -120,8 +120,10 @@
     color: white;
     border: none;
 }
+
 .button-hero-primary:hover {
     background-color: #2980b9;
+    color: white;
     transform: translateY(-2px);
 }
 
@@ -210,7 +212,10 @@
 }
 
 .stat-item {
+    background-color: white;
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .stat-number {
@@ -220,12 +225,18 @@
     margin-bottom: 5px;
 }
 
-/* ===== YEH FINAL CODE HAI ===== */
+/* ================================================= */
+/*      ====>   FINAL CORRECTED FIX IS HERE   <====      */
+/* ================================================= */
 .stat-label {
     font-size: 1.1em;
-    color: #bdc3c7 !important; /* Halkey grey color ko force kiya hai */
-    font-weight: normal !important; /* Ensure text mota na dikhe */
+    color: #555 !important; /* Dark Grey Color - Safed background par saaf dikhega */
+    font-weight: 600 !important; /* Text ko thoda bold kiya */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
 }
+
 
 /* --- 5. Featured Courses Section --- */
 .featured-courses-section {
@@ -310,13 +321,13 @@
 }
 
 .testimonial-avatar {
-    width: 120px;  /* Size ko 80px se 100px kiya */
-    height: 120px; /* Size ko 80px se 100px kiya */
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
     margin: 0 auto 20px auto;
-    border: 4px solid #3498db; /* Border ko thoda mota kiya */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Thoda shadow effect daala */
+    border: 4px solid #3498db;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .testimonial-card p {
