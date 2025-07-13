@@ -1,54 +1,85 @@
-import apiClient from './axiosConfig';
+// FINAL AND COMPLETE CODE FOR enrollments.js
+// Replace the entire content of your file with this.
 
-// =========== STUDENT ROUTES ===========
-// In sabhi functions mein token automatically 'axiosConfig' se jud jayega
+// =================================================================
+//      FOR STUDENTS
+// =================================================================
 
-export const fetchMyEnrollments = async () => {
-    try {
-        const response = await apiClient.get('/api/enrollments/my');
-        // Pichle error ko fix karne ke liye .data return karein
-        return response.data.data;
-    } catch (error) {
-        console.error('Error fetching my enrollments:', error.response?.data || error.message);
-        throw error.response?.data || error;
+// Function to get all enrollments for the logged-in student
+export const fetchMyEnrollments = async (token) => {
+    const response = await fetch('/api/enrollments/my', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to fetch enrollments');
+    return data.data;
+};
+
+// Function to enroll the current student in a course
+export const enrollInCourseApi = async (courseId, token) => {
+    const response = await fetch('/api/enrollments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ courseId })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to enroll in course');
+    return data;
+};
+
+// Function to unenroll a student from a course
+export const unenrollFromCourseApi = async (enrollmentId, token) => {
+    const response = await fetch(`/api/enrollments/${enrollmentId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to unenroll');
+    return data;
+};
+
+// Function to mark content as complete
+export const markContentCompleteApi = async (enrollmentId, contentId, token) => {
+    const response = await fetch(`/api/enrollments/${enrollmentId}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ contentId })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to mark as complete');
+    return data;
+};
+
+// Function to mark content as incomplete
+export const markContentIncompleteApi = async (enrollmentId, contentId, token) => {
+    const response = await fetch(`/api/enrollments/${enrollmentId}/incomplete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ contentId })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Failed to mark as incomplete');
+    return data;
+};
+
+// =================================================================
+//      FOR ADMINS
+// =================================================================
+
+/**
+ * Fetches all enrollments for the admin dashboard.
+ * @param {string} token - The admin's authentication token.
+ * @returns {Promise<Array>} - A list of all enrollments.
+ */
+export const fetchAllEnrollmentsAdmin = async (token) => {
+    const response = await fetch('/api/enrollments', { // Admin GET request to the base route
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch all enrollments');
     }
-};
-
-export const enrollInCourseApi = async (courseId) => {
-    const response = await apiClient.post('/api/enrollments', { courseId });
-    return response.data;
-};
-
-export const updateEnrollmentProgressApi = async (enrollmentId, progress) => {
-    const response = await apiClient.put(`/api/enrollments/${enrollmentId}/progress`, { progress });
-    return response.data;
-};
-
-export const unenrollFromCourseApi = async (enrollmentId) => {
-    const response = await apiClient.delete(`/api/enrollments/${enrollmentId}`);
-    return response.data;
-};
-
-
-// =========== ADMIN ROUTES ===========
-// Yeh functions pichli baar miss ho gaye the
-
-export const fetchAllEnrollmentsAdmin = async () => {
-    try {
-        const response = await apiClient.get('/api/enrollments/all');
-        return response.data.data;
-    } catch (error) {
-        console.error('Error fetching all enrollments for admin:', error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
-};
-
-export const fetchEnrollmentByIdAdmin = async (enrollmentId) => {
-    try {
-        const response = await apiClient.get(`/api/enrollments/admin/${enrollmentId}`);
-        return response.data.data;
-    } catch (error) {
-        console.error(`Error fetching enrollment ${enrollmentId} for admin:`, error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
+    return data.data; // Assuming the API returns { success, data: [...] }
 };
