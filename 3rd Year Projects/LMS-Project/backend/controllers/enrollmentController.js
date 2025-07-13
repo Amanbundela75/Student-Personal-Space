@@ -19,7 +19,6 @@ exports.enrollInCourse = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Course not found' });
         }
 
-        // Privacy: Students can only enroll themselves.
         const existingEnrollment = await Enrollment.findOne({ user: userId, course: courseId });
         if (existingEnrollment) {
             return res.status(400).json({ success: false, message: 'You are already enrolled in this course' });
@@ -40,7 +39,7 @@ exports.enrollInCourse = async (req, res) => {
             const messages = Object.values(error.errors).map(val => val.message);
             return res.status(400).json({ success: false, message: messages.join(', ') });
         }
-        if (error.code === 11000) { // Duplicate key error (for unique index on user+course)
+        if (error.code === 11000) {
             return res.status(400).json({ success: false, message: 'Enrollment failed, possibly already enrolled.' });
         }
         res.status(500).json({ success: false, message: 'Server Error during enrollment' });
@@ -55,32 +54,80 @@ exports.getMyEnrollments = async (req, res) => {
         const enrollments = await Enrollment.find({ user: req.user.id })
             .populate({
                 path: 'course',
-                select: 'title description branch instructor', // Course se jo fields chahiye
+                select: 'title description branch instructor youtubeVideos notes', // Added content fields
                 populate: {
-                    path: 'branch', // Course ke andar branch ko populate karein
-                    select: 'name'   // Branch se sirf 'name' field chahiye
+                    path: 'branch',
+                    select: 'name'
                 }
             })
             .sort({ enrolledAt: -1 });
 
         res.status(200).json({ success: true, count: enrollments.length, data: enrollments });
     } catch (error) {
-        console.error('Get My Enrollments Error:', error); // Error ko log karein
+        console.error('Get My Enrollments Error:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
 
 
-// @desc    Update enrollment progress (by student for their own enrollment)
-// @route   PUT /api/enrollments/:id/progress
+// =================================================================
+//      NEW FUNCTIONALITY: Mark Content as Complete/Incomplete
+// =================================================================
+
+// @desc    Mark a piece of course content (video/note) as complete
+// @route   POST /api/enrollments/:enrollmentId/complete
 // @access  Private (Student)
-exports.updateEnrollmentProgress = async (req, res) => {
-    const { progress } = req.body;
-    const enrollmentId = req.params.id;
+exports.markContentAsComplete = async (req, res) => {
+    const { enrollmentId } = req.params;
+    const { contentId } = req.body;
     const userId = req.user.id;
 
-    if (progress === undefined || progress < 0 || progress > 100) {
-        return res.status(400).json({ success: false, message: 'Progress must be a number between 0 and 100.' });
+    if (!contentId) {
+        return res.status(400).json({ success: false, message: 'Content ID is required.' });
+    }
+
+    try {
+        const enrollment = await Enrollment.findById(enrollmentId).populate('course');
+
+        if (!enrollment) {
+            return res.status(404).json({ success: false, message: 'Enrollment not found.' });
+        }
+
+        if (enrollment.user.toString() !== userId) {
+            return res.status(403).json({ success: false, message: 'You are not authorized to update this enrollment.' });
+        }
+
+        const course = enrollment.course;
+        const allContentIds = [...course.youtubeVideos.map(v => v._id.toString()), ...course.notes.map(n => n._id.toString())];
+
+        if (!allContentIds.includes(contentId)) {
+            return res.status(404).json({ success: false, message: 'This content does not exist in this course.' });
+        }
+
+        // Add to completedContent array if it's not already there
+        if (!enrollment.completedContent.includes(contentId)) {
+            enrollment.completedContent.push(contentId);
+            await enrollment.save();
+        }
+
+        res.status(200).json({ success: true, data: enrollment });
+
+    } catch (error) {
+        console.error('Mark as Complete Error:', error);
+        res.status(500).json({ success: false, message: 'Server Error updating progress.' });
+    }
+};
+
+// @desc    Mark a piece of course content (video/note) as INCOMPLETE
+// @route   POST /api/enrollments/:enrollmentId/incomplete
+// @access  Private (Student)
+exports.markContentAsIncomplete = async (req, res) => {
+    const { enrollmentId } = req.params;
+    const { contentId } = req.body;
+    const userId = req.user.id;
+
+    if (!contentId) {
+        return res.status(400).json({ success: false, message: 'Content ID is required.' });
     }
 
     try {
@@ -90,29 +137,26 @@ exports.updateEnrollmentProgress = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Enrollment not found.' });
         }
 
-        // Privacy: Ensure the student is updating their own enrollment
         if (enrollment.user.toString() !== userId) {
             return res.status(403).json({ success: false, message: 'You are not authorized to update this enrollment.' });
         }
 
-        enrollment.progress = progress;
-        if (progress === 100 && !enrollment.completedAt) {
-            enrollment.completedAt = Date.now();
-        } else if (progress < 100) {
-            enrollment.completedAt = null; // Reset completion if progress drops below 100
-        }
-
-
+        // Remove from completedContent array
+        enrollment.completedContent = enrollment.completedContent.filter(id => id.toString() !== contentId);
         await enrollment.save();
-        const populatedEnrollment = await Enrollment.findById(enrollment._id)
-            .populate('course', 'title'); // Populate as needed
 
-        res.status(200).json({ success: true, data: populatedEnrollment });
+        res.status(200).json({ success: true, data: enrollment });
+
     } catch (error) {
+        console.error('Mark as Incomplete Error:', error);
         res.status(500).json({ success: false, message: 'Server Error updating progress.' });
     }
 };
 
+
+// =================================================================
+//      ADMIN and OTHER Functions (No Changes Below)
+// =================================================================
 
 // @desc    Get all enrollments (Admin only)
 // @route   GET /api/enrollments/all
@@ -120,8 +164,8 @@ exports.updateEnrollmentProgress = async (req, res) => {
 exports.getAllEnrollmentsAdmin = async (req, res) => {
     try {
         const enrollments = await Enrollment.find({})
-            .populate('user', 'firstName lastName email') // Populate user details
-            .populate('course', 'title') // Populate course details
+            .populate('user', 'firstName lastName email')
+            .populate('course', 'title')
             .sort({ enrolledAt: -1 });
 
         res.status(200).json({ success: true, count: enrollments.length, data: enrollments });
@@ -160,7 +204,7 @@ exports.getEnrollmentByIdAdmin = async (req, res) => {
 // @access  Private (Student for own, Admin for any)
 exports.unenrollFromCourse = async (req, res) => {
     const enrollmentId = req.params.id;
-    const currentUser = req.user; // From auth.js middleware
+    const currentUser = req.user;
 
     try {
         const enrollment = await Enrollment.findById(enrollmentId);
@@ -169,7 +213,6 @@ exports.unenrollFromCourse = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Enrollment not found.' });
         }
 
-        // Privacy Check: Student can only delete their own enrollment. Admin can delete any.
         if (currentUser.role !== 'admin' && enrollment.user.toString() !== currentUser.id) {
             return res.status(403).json({ success: false, message: 'You are not authorized to perform this action.' });
         }
