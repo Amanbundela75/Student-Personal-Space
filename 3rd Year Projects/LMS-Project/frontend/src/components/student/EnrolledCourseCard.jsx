@@ -1,34 +1,28 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
-import { updateEnrollmentProgressApi, unenrollFromCourseApi } from '../../api/enrollments.js';
-
+// Sirf unenroll function import karenge, update wala hata denge
+import { unenrollFromCourseApi } from '../../api/enrollments.js';
 
 const EnrolledCourseCard = ({ enrollment, onUnenrollSuccess }) => {
     const { token } = useAuth();
-    const [progress, setProgress] = useState(enrollment.progress || 0);
-    const [isEditingProgress, setIsEditingProgress] = useState(false);
-    const [newProgress, setNewProgress] = useState(enrollment.progress || 0);
 
-    const handleProgressUpdate = async () => {
-        if (newProgress < 0 || newProgress > 100) {
-            alert("Progress must be between 0 and 100.");
-            return;
-        }
-        try {
-            const response = await updateEnrollmentProgressApi(enrollment._id, parseInt(newProgress, 10), token);
-            if (response.success) {
-                setProgress(response.data.progress);
-                alert("Progress updated successfully!");
-                setIsEditingProgress(false);
-            } else {
-                alert(`Failed to update progress: ${response.message}`);
-            }
-        } catch (error) {
-            alert(`Error updating progress: ${error.response?.data?.message || error.message}`);
-        }
-    };
+    // Naye system se progress percentage calculate karenge
+    const progressPercentage = useMemo(() => {
+        if (!enrollment || !enrollment.course) return 0;
 
+        const totalContent =
+            (enrollment.course.youtubeVideos?.length || 0) +
+            (enrollment.course.notes?.length || 0);
+
+        if (totalContent === 0) return 0;
+
+        const completedCount = enrollment.completedContent?.length || 0;
+
+        return Math.round((completedCount / totalContent) * 100);
+    }, [enrollment]);
+
+    // Unenroll ka function waisa hi rahega
     const handleUnenroll = async () => {
         if (window.confirm(`Are you sure you want to unenroll from "${enrollment.course.title}"?`)) {
             try {
@@ -45,7 +39,6 @@ const EnrolledCourseCard = ({ enrollment, onUnenrollSuccess }) => {
         }
     };
 
-
     if (!enrollment || !enrollment.course) {
         return (
             <div className="card h-100">
@@ -57,31 +50,33 @@ const EnrolledCourseCard = ({ enrollment, onUnenrollSuccess }) => {
     }
 
     return (
-        <div className="card enrolled-course-card"> {/* एक और खास क्लास दे सकते हैं */}
+        <div className="card enrolled-course-card">
             <div className="card-content">
                 <h3>{enrollment.course.title}</h3>
-                {/* ... (बाकी कंटेंट: description, branch, enrolled on) ... */}
-                <p><strong>Current Progress:</strong> {progress}%</p>
-                {isEditingProgress ? (
-                    <div style={{display: 'flex', gap: '10px', alignItems: 'center', marginTop: '10px' }}> {/* प्रोग्रेस अपडेट के लिए फ्लेक्स */}
-                        <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            value={newProgress}
-                            onChange={(e) => setNewProgress(e.target.value)}
-                            style={{ width: '70px', padding: '8px' }}
-                        />
-                        <button onClick={handleProgressUpdate} className="button button-primary" style={{flexGrow: 1}}>Save</button>
-                        <button onClick={() => setIsEditingProgress(false)} className="button button-secondary" style={{flexGrow: 1}}>Cancel</button>
+                <p>Enrolled on: {new Date(enrollment.enrolledAt).toLocaleDateString()}</p>
+
+                {/* Naya Progress Bar Section */}
+                <div className="progress-section" style={{ marginTop: '15px' }}>
+                    <p style={{ marginBottom: '5px' }}><strong>Progress: {progressPercentage}%</strong></p>
+                    <div style={{
+                        width: '100%',
+                        backgroundColor: '#e0e0e0',
+                        borderRadius: '10px',
+                        height: '10px'
+                    }}>
+                        <div style={{
+                            width: `${progressPercentage}%`,
+                            backgroundColor: '#27ae60',
+                            borderRadius: '10px',
+                            height: '100%'
+                        }}></div>
                     </div>
-                ) : (
-                    <button onClick={() => setIsEditingProgress(true)} className="button button-edit" style={{width: '100%', marginTop: '10px'}}>Update Progress</button>
-                )}
+                </div>
             </div>
             <div className="card-actions">
-                <Link to={`/courses/${enrollment.course._id}/study`} className="button button-primary">
-                    Start Studying
+                {/* Link ka text "Go to Course" kar diya hai */}
+                <Link to={`/courses/${enrollment.course._id}`} className="button button-primary">
+                    Go to Course
                 </Link>
                 <button onClick={handleUnenroll} className="button button-danger">
                     Unenroll
