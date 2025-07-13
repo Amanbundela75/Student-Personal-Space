@@ -18,7 +18,8 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const query = useQuery();
-    const { isAuthenticated, currentUser } = useAuth();
+    // Auth context se token bhi nikalenge
+    const { isAuthenticated, currentUser, token } = useAuth();
 
     const initialBranchId = query.get('branchId');
 
@@ -27,22 +28,25 @@ const CourseListPage = () => {
             setLoading(true);
             setError('');
             try {
-                // Branches fetch karein
+                // Pehle branches aur courses fetch kar lete hain (ye public data hai)
                 const branchesData = await fetchBranches();
-                // === YAHAN BADLAV KIYA GAYA HAI ===
-                // branchesData ab seedhe ek array hai, usse .data nikalne ki zaroorat nahi
                 setBranches(branchesData || []);
+
                 if (initialBranchId) {
                     setSelectedBranch(initialBranchId);
                 }
 
-                // Courses fetch karein
                 const coursesResponse = await fetchCourses(initialBranchId);
-                setCourses(coursesResponse?.data || []);
+                // Ho sakta hai courses bhi seedhe array mein aa rahe hon, isliye dono cases handle kar lete hain
+                setCourses(coursesResponse?.data || coursesResponse || []);
 
-                // Agar user logged in hai to uske enrollments fetch karein
-                if (isAuthenticated && currentUser?.user?.role === 'student') {
-                    const enrollmentsData = await fetchMyEnrollments();
+                // =======================================================
+                //      YAHAN PAR ZAROORI BADLAV KIYA GAYA HAI
+                // =======================================================
+                // Agar user logged in hai aur student hai, tabhi enrollments fetch karein
+                if (isAuthenticated && currentUser?.user?.role === 'student' && token) {
+                    // fetchMyEnrollments ko TOKEN pass karna zaroori hai
+                    const enrollmentsData = await fetchMyEnrollments(token);
                     const ids = new Set(enrollmentsData.map(e => e.course._id));
                     setEnrolledCourseIds(ids);
                 }
@@ -54,7 +58,8 @@ const CourseListPage = () => {
         };
 
         loadInitialData();
-    }, [initialBranchId, isAuthenticated, currentUser]);
+        // dependency array mein 'token' ko bhi add karein
+    }, [initialBranchId, isAuthenticated, currentUser, token]);
 
 
     const handleBranchChange = (e) => {
@@ -65,7 +70,7 @@ const CourseListPage = () => {
             setLoading(true);
             try {
                 const coursesResponse = await fetchCourses(newBranchId);
-                setCourses(coursesResponse?.data || []);
+                setCourses(coursesResponse?.data || coursesResponse || []);
             } catch (err) {
                 setError('Failed to filter courses.');
             }
@@ -78,7 +83,7 @@ const CourseListPage = () => {
         setEnrolledCourseIds(prevIds => new Set([...prevIds, enrolledCourseId]));
     };
 
-    if (error) return <p style={{color: 'red'}}>{error}</p>;
+    if (error) return <p style={{color: 'red', textAlign: 'center', marginTop: '20px'}}>{error}</p>;
 
     return (
         <div className="container">
@@ -87,16 +92,15 @@ const CourseListPage = () => {
                 <label htmlFor="branchFilter" style={{ marginRight: '10px' }}>Filter by Branch:</label>
                 <select id="branchFilter" value={selectedBranch} onChange={handleBranchChange}>
                     <option value="">All Branches</option>
-                    {/* Ab 'branches' state mein data hoga aur dropdown aana chahiye */}
                     {branches.map(branch => (
                         <option key={branch._id} value={branch._id}>{branch.name}</option>
                     ))}
                 </select>
             </div>
 
-            {loading ? <p>Loading courses...</p> : (
+            {loading ? <p style={{textAlign: 'center', marginTop: '20px'}}>Loading courses...</p> : (
                 courses.length === 0 ? (
-                    <p>No courses available for the selected criteria.</p>
+                    <p style={{textAlign: 'center', marginTop: '20px'}}>No courses available for the selected criteria.</p>
                 ) : (
                     <div className="row mt-4">
                         {courses.map(course => (
