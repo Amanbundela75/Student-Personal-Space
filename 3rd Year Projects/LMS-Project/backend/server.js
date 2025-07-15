@@ -15,6 +15,7 @@ const enrollmentRoutes = require('./routes/enrollmentRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const testRoutes = require('./routes/testRoutes');
 const userRoutes = require('./routes/userRoutes.js');
+const feedbackRoutes = require('./routes/feedbackRoutes.js'); // <-- Feedback route import
 
 // --- Face-API.js ke liye zaroori setup ---
 const { Canvas, Image, ImageData } = canvas;
@@ -68,6 +69,7 @@ app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/feedback', feedbackRoutes); // <-- Feedback route register
 
 // Simple root route
 app.get('/', (req, res) => {
