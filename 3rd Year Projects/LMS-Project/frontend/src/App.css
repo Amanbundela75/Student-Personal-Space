@@ -330,3 +330,46 @@ table tr:hover {
 .stats-section .stat-label {
     color: #ffffff;
 }
+
+/* ======================================= */
+/*      COURSE GRID LAYOUT (NEW)           */
+/* ======================================= */
+
+/* 1. The Grid Container */
+.courses-grid {
+    display: grid;
+    /* This creates 3 columns on medium screens, 2 on smaller, and 1 on mobile */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px; /* Space between cards */
+    margin-top: 30px;
+}
+
+/* 2. Styling the Course Card within the Grid */
+.course-item-card {
+    /* Make the card fill the grid cell and use flexbox for internal layout */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-item-card .card-content {
+    flex-grow: 1; /* Allows the content to expand, pushing the buttons to the bottom */
+}
+
+.course-item-card .card-actions {
+    margin-top: auto; /* Pushes the action buttons to the very bottom of the card */
+}
+
+
+/* 3. Responsive Adjustments for Tablets and Mobiles */
+@media (max-width: 992px) {
+    .courses-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .courses-grid {
+        grid-template-columns: 1fr; /* 1 column for mobile phones */
+    }
+}

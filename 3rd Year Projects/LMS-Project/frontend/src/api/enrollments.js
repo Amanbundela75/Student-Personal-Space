@@ -65,6 +65,7 @@ export const markContentIncompleteApi = async (enrollmentId, contentId, token) =
 // =================================================================
 //      FOR ADMINS
 // =================================================================
+// src/api/enrollments.js
 
 /**
  * Fetches all enrollments for the admin dashboard.
@@ -72,14 +73,17 @@ export const markContentIncompleteApi = async (enrollmentId, contentId, token) =
  * @returns {Promise<Array>} - A list of all enrollments.
  */
 export const fetchAllEnrollmentsAdmin = async (token) => {
-    const response = await fetch('/api/enrollments', { // Admin GET request to the base route
+    // FINAL FIX: Using the correct URL from your backend routes
+    const response = await fetch('/api/enrollments/all', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
+
+    // The rest of the function was already correct
     const data = await response.json();
     if (!response.ok) {
         throw new Error(data.message || 'Failed to fetch all enrollments');
     }
-    return data.data; // Assuming the API returns { success, data: [...] }
+    return data.data;
 };
