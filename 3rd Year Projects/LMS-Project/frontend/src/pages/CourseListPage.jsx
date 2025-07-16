@@ -102,10 +102,11 @@ const CourseListPage = () => {
                 courses.length === 0 ? (
                     <p style={{textAlign: 'center', marginTop: '20px'}}>No courses available for the selected criteria.</p>
                 ) : (
-                    <div className="row mt-4">
+                    <div className="courses-grid">
                         {courses.map(course => (
                             <div className="col-md-4 mb-4" key={course._id}>
                                 <CourseCard
+                                    key={course._id}
                                     course={course}
                                     onEnrollSuccess={handleEnrollSuccess}
                                     isEnrolled={enrolledCourseIds.has(course._id)}
