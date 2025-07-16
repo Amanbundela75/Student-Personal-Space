@@ -8,16 +8,25 @@ This Learning Management System (LMS) is designed to provide a seamless educatio
 
 ## 📸 Screenshots
 
-![2025-06-16](https://github.com/user-attachments/assets/cb1d0603-17ed-4494-9bcc-1bcf7fe131a5)
+<img width="1366" height="609" alt="Screenshot (47)" src="https://github.com/user-attachments/assets/4cbe00e5-686a-41f6-bfe9-2bad6cedcfd1" />
+
+
+<img width="1366" height="593" alt="Screenshot (48)" src="https://github.com/user-attachments/assets/987dcde0-ef85-4f4c-bb49-fe4800c67288" />
+
 
 ![Screenshot (20)](https://github.com/user-attachments/assets/3f9bf9d3-309f-49ec-b00c-a0cd42867ece)
 
+
 ![2025-06-05 (7)](https://github.com/user-attachments/assets/1a32b15b-5aec-4e71-a421-62d615843978)
+
 
 ![Screenshot (21)](https://github.com/user-attachments/assets/8ad945ed-f19e-4f13-8f4d-14b6fe3aeba4)
 
+
 ![2025-06-05 (9)](https://github.com/user-attachments/assets/7ec9d91e-9eba-4aa4-9a00-57cb426701dc)
 
+
+<img width="1366" height="585" alt="Screenshot (51)" src="https://github.com/user-attachments/assets/003edb05-4ddc-467f-bf74-c2609b1ad1fa" />
 
 ## ✨ Features
 

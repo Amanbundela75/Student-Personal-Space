@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const {
+    // Naya controller function import kiya hai
+    getUserProfile,
     getUsers,
     getUserById,
     deleteUser,
@@ -8,11 +10,17 @@ const {
 } = require('../controllers/userController.js');
 const { protect, admin } = require('../middleware/authMiddleware.js');
 
-// Ye saare routes protect aur admin middleware se guzrenge
-router.use(protect);
-router.use(admin);
+// --- Student Route ---
+// Yeh naya route hai. Koi bhi logged-in user (student ya admin)
+// apni profile details yahan se fetch kar sakta hai.
+// Ismein sirf 'protect' middleware laga hai, 'admin' nahi.
+router.route('/profile').get(protect, getUserProfile);
 
-router.route('/').get(getUsers);
-router.route('/:id').get(getUserById).delete(deleteUser).put(updateUser);
+
+// --- Admin Routes ---
+// Yeh routes sirf admin ke liye hain.
+// In par 'protect' aur 'admin' dono middleware lage hain.
+router.route('/').get(protect, admin, getUsers);
+router.route('/:id').get(protect, admin, getUserById).delete(protect, admin, deleteUser).put(protect, admin, updateUser);
 
 module.exports = router;

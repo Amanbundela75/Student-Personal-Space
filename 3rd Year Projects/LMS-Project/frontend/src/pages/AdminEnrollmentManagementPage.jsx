@@ -2,6 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllEnrollmentsAdmin } from '../api/enrollments.js';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
+// Ek chota helper component progress calculate karne ke liye
+const EnrollmentProgress = ({ enrollment }) => {
+    if (!enrollment.course) {
+        return <span>N/A</span>;
+    }
+
+    const totalContent = (enrollment.course.youtubeVideos?.length || 0) + (enrollment.course.notes?.length || 0);
+    if (totalContent === 0) {
+        return <span>0%</span>;
+    }
+
+    const completedCount = enrollment.completedContent?.length || 0;
+    const percentage = Math.round((completedCount / totalContent) * 100);
+
+    return <span>{percentage}%</span>;
+};
+
 
 const AdminEnrollmentManagementPage = () => {
     const [enrollments, setEnrollments] = useState([]);
@@ -41,8 +58,7 @@ const AdminEnrollmentManagementPage = () => {
                         <th>Email</th>
                         <th>Course Title</th>
                         <th>Enrolled On</th>
-                        <th>Progress</th>
-                        {/* <th>Actions</th> */}
+                        <th>Progress</th> {/* Ye ab naye system se calculate hoga */}
                     </tr>
                     </thead>
                     <tbody>
@@ -52,9 +68,8 @@ const AdminEnrollmentManagementPage = () => {
                             <td>{enrollment.user ? enrollment.user.email : 'N/A'}</td>
                             <td>{enrollment.course ? enrollment.course.title : 'N/A'}</td>
                             <td>{new Date(enrollment.enrolledAt).toLocaleDateString()}</td>
-                            <td>{enrollment.progress}%</td>
-                            {/* Admin could have actions like view details, edit progress, or unenroll user */}
-                            {/*<td> <Link to={`/admin/enrollments/${enrollment._id}`}>View</Link> </td>*/}
+                            {/* Purane 'enrollment.progress' ki jagah naya component use karenge */}
+                            <td><EnrollmentProgress enrollment={enrollment} /></td>
                         </tr>
                     ))}
                     </tbody>

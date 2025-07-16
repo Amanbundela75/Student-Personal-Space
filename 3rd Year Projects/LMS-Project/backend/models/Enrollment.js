@@ -15,16 +15,16 @@ const EnrollmentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    progress: { // Example: percentage completion
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 100,
-    },
-    completedAt: {
-        type: Date,
-        default: null,
-    }
+    /**
+     * Replaced the old 'progress' and 'completedAt' fields.
+     * This array will store the _id of each completed video or note.
+     * This is a much more robust way to track progress.
+     */
+    completedContent: [{
+        type: mongoose.Schema.Types.ObjectId,
+        // We don't need a 'ref' here because these IDs belong to sub-documents
+        // inside the Course model, not a separate collection.
+    }],
 });
 
 // Ensure a user can enroll in a specific course only once

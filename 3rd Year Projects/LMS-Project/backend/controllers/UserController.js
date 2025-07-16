@@ -1,5 +1,38 @@
+// === SIRF YE DO LINES ADD KI GAYI HAIN ===
+const Course = require('../models/Course.js');
+const Branch = require('../models/Branch.js');
+// =========================================
+
 const User = require('../models/User.js');
 const asyncHandler = require('../middleware/asyncHandler.js');
+
+// @desc    Get user profile
+// @route   GET /api/users/profile
+// @access  Private
+const getUserProfile = asyncHandler(async (req, res) => {
+    // 'protect' middleware se humein req.user mil jaata hai
+    const user = await User.findById(req.user._id)
+        .select('-password')
+        .populate('branch', 'name') // Ab yeh crash nahi hoga
+        .populate('enrolledCourses', 'title imageUrl'); // Aur na hi yeh
+
+    if (user) {
+        res.json({
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role,
+            branch: user.branch,
+            enrolledCourses: user.enrolledCourses,
+            createdAt: user.createdAt,
+        });
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
 
 // @desc    Get all users by Admin
 // @route   GET /api/users
@@ -67,6 +100,7 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+    getUserProfile,
     getUsers,
     getUserById,
     deleteUser,

@@ -1,0 +1,117 @@
+/* --- Student Dashboard General --- */
+.dashboard-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #333;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* --- Grid Layout --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Default for mobile */
+    gap: 2rem;
+}
+
+/* On wider screens, show two columns */
+@media (min-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 350px 1fr; /* Fixed width for profile, rest for courses */
+    }
+}
+
+
+/* --- Dashboard Cards --- */
+.dashboard-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.75rem;
+    color: #3498db;
+}
+
+/* --- Profile Summary Card --- */
+.profile-summary p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #555;
+}
+
+.profile-summary p strong {
+    color: #333;
+    margin-right: 8px;
+}
+
+.button-explore {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    text-align: center;
+    width: 100%;
+}
+
+.button-explore:hover {
+    background-color: #2980b9;
+}
+
+/* --- My Courses Container --- */
+.my-courses-container {
+    padding-top: 1.5rem;
+}
+
+
+/* --- Loading and Error States --- */
+.loading-spinner, .error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    font-size: 1.5rem;
+}
+
+.error-message {
+    color: #e74c3c;
+    background-color: #fbecec;
+    border: 1px solid #e74c3c;
+    padding: 2rem;
+    border-radius: 8px;
+}

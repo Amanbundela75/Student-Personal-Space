@@ -1,7 +1,7 @@
-import React, { useState } from 'react'; // useState import kiya hai
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { motion, AnimatePresence } from 'framer-motion'; // AnimatePresence import kiya hai
+import { motion, AnimatePresence } from 'framer-motion';
 
 // SLIDER IMPORTS
 import Slider from "react-slick";
@@ -82,9 +82,9 @@ const FAQItem = ({ faq }) => {
 // --- Data ---
 
 const featuredCourses = [
-    { id: 1, title: "Full Stack Web Development", desc: "Master MERN stack and build real-world projects.", img: "/images/courses/webdev.jpg" },
-    { id: 2, title: "Data Science Bootcamp", desc: "Learn Python, ML, and Data Analytics from scratch.", img: "/images/courses/datascience.jpg" },
-    { id: 3, title: "Digital Marketing Essentials", desc: "Grow your brand with effective online strategies.", img: "/images/courses/marketing.jpg" }
+    { id: 1, title: "Full Stack Web Development", desc: "Master MERN stack and build real-world projects.", img: "/images/web-design.jpg" },
+    { id: 2, title: "Data Science Bootcamp", desc: "Learn Python, ML, and Data Analytics from scratch.", img: "/images/data-science.jpg" },
+    { id: 3, title: "Digital Marketing Essentials", desc: "Grow your brand with effective online strategies.", img: "/images/digital-marketing.jpg" }
 ];
 
 const testimonials = [
@@ -110,8 +110,6 @@ const HomePage = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            // Abhi ke liye console par log kar rahe hain.
-            // Baad mein isko search page par redirect karenge.
             console.log("Searching for:", searchQuery);
             alert(`Searching for: ${searchQuery}`);
         }
@@ -177,10 +175,6 @@ const HomePage = () => {
                     <motion.p variants={itemVariants} className="hero-subtitle">
                         Your premier destination for quality online education, tailored to your learning journey.
                     </motion.p>
-
-                    {/* ================================= */}
-                    {/*      SEARCH BAR (YAHAN ADD HUA HAI)     */}
-                    {/* ================================= */}
                     <motion.form variants={itemVariants} className="hero-search-form" onSubmit={handleSearch}>
                         <input
                             type="text"
@@ -191,7 +185,6 @@ const HomePage = () => {
                         />
                         <button type="submit" className="hero-search-button">Search</button>
                     </motion.form>
-
                     <motion.div variants={itemVariants} className="hero-cta-buttons">
                         <Link to="/courses" className="button button-hero-primary">Explore Courses</Link>
                         {!currentUser && <Link to="/register" className="button button-hero-secondary">Get Started</Link>}
@@ -231,7 +224,7 @@ const HomePage = () => {
                 </div>
             </motion.section>
 
-            {/* Statistics Section */}
+            {/* ===== STATISTICS SECTION UPDATED ===== */}
             <motion.section
                 className="stats-section"
                 variants={sectionVariants}
@@ -242,15 +235,15 @@ const HomePage = () => {
                 <div className="container">
                     <div className="stats-grid">
                         <div className="stat-item">
-                            <h3 className="stat-number">10,000+</h3>
+                            <h3 className="stat-number">100+</h3>
                             <p className="stat-label">Happy Students</p>
                         </div>
                         <div className="stat-item">
-                            <h3 className="stat-number">50+</h3>
+                            <h3 className="stat-number">15+</h3>
                             <p className="stat-label">Expert Courses</p>
                         </div>
                         <div className="stat-item">
-                            <h3 className="stat-number">20+</h3>
+                            <h3 className="stat-number">5+</h3>
                             <p className="stat-label">Instructors</p>
                         </div>
                         <div className="stat-item">
@@ -299,9 +292,7 @@ const HomePage = () => {
                 </div>
             </motion.section>
 
-            {/* =================================================== */}
-            {/*      FAQ Section (YAHAN ADD HUA HAI)     */}
-            {/* =================================================== */}
+            {/* FAQ Section */}
             <motion.section
                 className="faq-section"
                 variants={sectionVariants}
