@@ -396,7 +396,6 @@
     background-image: url('/images/cta-background.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
     background-color: #2c3e50;
 }
 
