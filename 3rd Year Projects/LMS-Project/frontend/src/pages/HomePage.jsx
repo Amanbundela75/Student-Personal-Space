@@ -10,6 +10,9 @@ import "slick-carousel/slick/slick-theme.css";
 
 import './HomePage.css'; // Aapki CSS file
 
+// ==== FEEDBACK FORM IMPORT ====
+import FeedbackForm from '../components/student/FeedbackForm';
+
 // --- Components ---
 
 const FeatureIcon = ({ children }) => <span className="feature-icon">{children}</span>;
@@ -309,6 +312,22 @@ const HomePage = () => {
                     </div>
                 </div>
             </motion.section>
+
+            {/* ==== FEEDBACK SECTION FOR STUDENTS ==== */}
+            {!isAdmin &&
+                <motion.section
+                    className="feedback-section"
+                    variants={sectionVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                >
+                    <div className="container">
+                        <h2 className="section-title">Share Your Feedback</h2>
+                        <FeedbackForm />
+                    </div>
+                </motion.section>
+            }
 
             {/* Call to Action Section */}
             <motion.section
