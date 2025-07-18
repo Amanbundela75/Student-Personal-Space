@@ -1,6 +1,6 @@
 # Learning Management System (LMS) Platform
 
-A comprehensive full-stack platform for students to register, enroll in branches, and access relevant courses, with an admin panel for user and content management.
+A comprehensive full-stack platform for students to register, enroll in branches, and access relevant courses, with an admin panel for user and content management. Now includes a feedback system for student suggestions and platform improvement!
 
 ## 🌟 Overview
 
