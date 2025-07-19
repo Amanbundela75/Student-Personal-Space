@@ -30,7 +30,7 @@ This Learning Management System (LMS) is designed to provide a seamless educatio
 
 ## ✨ Features
 
-This LMS platform is packed with features designed for both students and administrators, ensuring a smooth and effective learning and management experience.
+This LMS platform offers a robust set of features for both students and administrators, making learning and management efficient and user-friendly.
 
 ### 👨‍🎓 For Students:
 
