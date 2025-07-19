@@ -4,7 +4,7 @@ A comprehensive full-stack platform for students to register, enroll in branches
 
 ## 🌟 Overview
 
-This Learning Management System (LMS) is designed to provide a seamless educational experience. Students can register, choose their academic branch or stream, and are then presented with a curated list of courses relevant to their selection. The system prioritizes student privacy, ensuring that individual progress and activities are not visible to other students. Administrators have a dedicated dashboard to manage users, branches, courses, and monitor student activity status on the platform.
+This Learning Management System (LMS) is designed to provide a seamless educational experience. Students can register, choose their academic branch or stream, and are then presented with a curated list of courses relevant to their selection. The system prioritizes student privacy, ensuring that individual progress and activities are not visible to other students. Administrators have a dedicated dashboard to manage users, branches, courses, monitor student activity, and review feedback submitted by students.
 
 ## 📸 Screenshots
 
