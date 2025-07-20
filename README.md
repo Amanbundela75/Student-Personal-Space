@@ -203,7 +203,8 @@ Don't forget to give the project a star! If you like the project. Thanks again!
 
 **How to contribute:**
 
-1.  Fork the Project
+1. **Fork the Repository**  
+   Click the "Fork" button at the top right of this repo to create your own copy.
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4.  Push to the Branch (`git push origin feature/AmazingFeature`)
