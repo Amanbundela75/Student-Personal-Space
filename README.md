@@ -10,7 +10,6 @@ This Learning Management System (LMS) is designed to provide a seamless educatio
 
 <img width="1366" height="609" alt="Screenshot (47)" src="https://github.com/user-attachments/assets/4cbe00e5-686a-41f6-bfe9-2bad6cedcfd1" />
 
-
 <img width="1366" height="593" alt="Screenshot (48)" src="https://github.com/user-attachments/assets/987dcde0-ef85-4f4c-bb49-fe4800c67288" />
 
 
