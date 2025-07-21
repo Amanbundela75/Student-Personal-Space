@@ -212,7 +212,12 @@ Don't forget to give the project a star! If you like the project. Thanks again!
 3. **Make Your Changes**  
    - Write clear, well-documented code.
    - If you’re adding a feature, update the README and relevant docs.
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+4. **Commit Your Changes**  
+   Use descriptive commit messages:
+   ```bash
+   git add .
+   git commit -m "feat: Add feature XYZ"
+   ```
 5.  Open a Pull Request
 
 ## 📝 License
