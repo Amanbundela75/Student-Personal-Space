@@ -222,6 +222,10 @@ Don't forget to give the project a star! If you like the project. Thanks again!
    ```bash
    git push origin feature/YourFeatureName
    ```
+6. **Open a Pull Request**  
+   Go to your fork on GitHub, select your branch, and click "New Pull Request".  
+   - Clearly describe your changes and link any related issues.
+   - Wait for review and feedback from maintainers.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
