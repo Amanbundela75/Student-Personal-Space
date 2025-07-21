@@ -10,7 +10,6 @@ const { Canvas, Image, ImageData } = require('canvas');
 // Face-API setup
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 Promise.all([
-    // Hum yahan models ko project ke root se load karenge
     faceapi.nets.ssdMobilenetv1.loadFromDisk('./models'),
     faceapi.nets.faceLandmark68Net.loadFromDisk('./models'),
     faceapi.nets.faceRecognitionNet.loadFromDisk('./models'),
@@ -29,7 +28,7 @@ const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// --- REGISTER USER ---
+// --- REGISTER USER (WITH DUPLICATE FACE DETECTION) ---
 exports.registerUser = async (req, res) => {
     const { firstName, lastName, email, password, branchId, faceImageBase64 } = req.body;
 
@@ -39,7 +38,7 @@ exports.registerUser = async (req, res) => {
 
     try {
         if (await User.findOne({ email })) {
-            return res.status(400).json({ success: false, message: 'User already exists.' });
+            return res.status(400).json({ success: false, message: 'User with this email already exists.' });
         }
 
         const image = new Image();
@@ -48,7 +47,24 @@ exports.registerUser = async (req, res) => {
         if (!detection) {
             return res.status(400).json({ success: false, message: 'Face not detected in the image.' });
         }
-        const faceDescriptor = Array.from(detection.descriptor);
+        const newFaceDescriptor = detection.descriptor;
+
+        // --- START: DUPLICATE FACE CHECK ---
+        const allUsersWithFaces = await User.find({ faceDescriptor: { $exists: true, $ne: [] } });
+        const faceMatcher = new faceapi.FaceMatcher(allUsersWithFaces.map(user =>
+            new faceapi.LabeledFaceDescriptors(user.email, [new Float32Array(user.faceDescriptor)])
+        ));
+
+        const bestMatch = faceMatcher.findBestMatch(newFaceDescriptor);
+
+        // A distance of less than 0.4 is considered a very close match.
+        if (bestMatch.label !== 'unknown' && bestMatch.distance < 0.4) {
+            return res.status(409).json({ // 409 Conflict is a good status code for this
+                success: false,
+                message: `This face is already registered with another account (${bestMatch.label}). Please log in or use a different account.`
+            });
+        }
+        // --- END: DUPLICATE FACE CHECK ---
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
@@ -60,7 +76,7 @@ exports.registerUser = async (req, res) => {
             password,
             branch: branchId,
             idCardImageUrl: req.file.path,
-            faceDescriptor,
+            faceDescriptor: Array.from(newFaceDescriptor), // Save the descriptor
             emailVerificationToken: verificationToken,
             isEmailVerified: false,
             idCardVerificationStatus: 'pending',
@@ -121,7 +137,6 @@ exports.verifyEmail = async (req, res) => {
 
 // --- LOGIN USER (SECURITY FIX APPLIED) ---
 exports.loginUser = async (req, res) => {
-    // Ab hum frontend se 'faceImageBase64' bhi lenge
     const { email, password, faceImageBase64 } = req.body;
 
     if (!email || !password || !faceImageBase64) {
@@ -139,9 +154,10 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Please verify your email before trying to log in.' });
         }
 
-        // --- YAHAN SECURITY FIX LAGU KIYA GAYA HAI ---
+        if (!user.faceDescriptor || user.faceDescriptor.length === 0) {
+            return res.status(400).json({ success: false, message: 'No face registered for this user. Cannot perform face verification.' });
+        }
 
-        // 1. Login ke samay diye gaye image se face detect karein
         const loginImage = new Image();
         loginImage.src = faceImageBase64;
         const loginDetection = await faceapi.detectSingleFace(loginImage).withFaceLandmarks().withFaceDescriptor();
@@ -150,19 +166,14 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Face not detected in the login image. Please try again.' });
         }
 
-        // 2. Database mein save kiye gaye descriptor se milaan karein
         const storedDescriptor = new Float32Array(user.faceDescriptor);
         const faceMatcher = new faceapi.FaceMatcher([storedDescriptor]);
         const bestMatch = faceMatcher.findBestMatch(loginDetection.descriptor);
 
-        // 3. Check karein ki chehra match hua ya nahi
-        // bestMatch.distance 0 (perfect match) aur 1 (no match) ke beech hota hai.
-        // 0.4 se neeche ka distance ek accha match mana jaata hai.
         if (bestMatch.label === 'unknown' || bestMatch.distance > 0.4) {
             return res.status(401).json({ success: false, message: 'Face verification failed. Please ensure you are in a well-lit area and try again.' });
         }
 
-        // Agar sab kuch sahi hai, tabhi token generate karein
         const token = generateToken(user._id, user.role);
         res.status(200).json({
             success: true,
