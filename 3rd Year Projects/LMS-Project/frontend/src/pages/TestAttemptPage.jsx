@@ -21,19 +21,18 @@ const TestAttemptPage = () => {
 
     // --- प्रॉक्टरिंग और सुरक्षा के लिए स्टेट्स ---
     const [proctoringStatus, setProctoringStatus] = useState('Initializing...');
-    const [fullscreenWarning, setFullscreenWarning] = useState(false); // फुल-स्क्रीन चेतावनी के लिए नया स्टेट
+    const [fullscreenWarning, setFullscreenWarning] = useState(false);
     const videoRef = useRef(null);
     const modelRef = useRef(null);
     const detectionIntervalRef = useRef(null);
-    const absenceCounterRef = useRef(0);
-    const warningTimeoutRef = useRef(null); // चेतावनी टाइमआउट के लिए रेफ
+    const absenceCounterRef = useRef(0); // अब यह इस्तेमाल होगा
+    const warningTimeoutRef = useRef(null);
 
     // --- टेस्ट को जबरदस्ती सबमिट करने के लिए फंक्शन ---
     const forceSubmitTest = async (reason) => {
         if (submitting) return;
 
         console.warn(`Force submitting test due to: ${reason}`);
-        // फुल-स्क्रीन से बाहर निकलें ताकि छात्र मैसेज देख सके
         if (document.fullscreenElement) {
             document.exitFullscreen();
         }
@@ -58,7 +57,6 @@ const TestAttemptPage = () => {
     // --- AI प्रॉक्टरिंग और सुरक्षा उपायों का सेटअप ---
     useEffect(() => {
         const setupProctoringAndSecurity = async () => {
-            // AI प्रॉक्टरिंग सेटअप...
             try {
                 await tf.ready();
                 setProctoringStatus('Loading AI Model...');
@@ -69,7 +67,6 @@ const TestAttemptPage = () => {
                     videoRef.current.srcObject = stream;
                     videoRef.current.onloadedmetadata = () => {
                         setProctoringStatus('Proctoring Active');
-                        // प्रॉक्टरिंग और सुरक्षा उपाय तभी शुरू करें जब सब कुछ तैयार हो
                         startProctoringAndSecurity();
                     };
                 }
@@ -81,16 +78,13 @@ const TestAttemptPage = () => {
         };
 
         const startProctoringAndSecurity = () => {
-            // फुल-स्क्रीन में जाएं
             document.documentElement.requestFullscreen().catch(err => {
                 console.error("Failed to enter fullscreen:", err);
                 setError("Please enable fullscreen mode to start the test.");
             });
 
-            // डिटेक्शन शुरू करें
             detectionIntervalRef.current = setInterval(detectFrame, 2000);
 
-            // सुरक्षा के लिए इवेंट लिस्नर जोड़ें
             document.addEventListener('fullscreenchange', handleFullscreenChange);
             document.addEventListener('visibilitychange', handleVisibilityChange);
             window.addEventListener('contextmenu', preventDefault);
@@ -99,15 +93,45 @@ const TestAttemptPage = () => {
             window.addEventListener('keydown', handleKeydown);
         };
 
-        const detectFrame = async () => { /* यह फंक्शन जैसा था वैसा ही रहेगा */ };
+        // --- फ्रेम डिटेक्ट करने का फंक्शन (सही किया हुआ) ---
+        const detectFrame = async () => {
+            if (!modelRef.current || !videoRef.current || videoRef.current.readyState < 3) {
+                return;
+            }
 
-        // --- सुरक्षा इवेंट हैंडलर ---
+            const predictions = await modelRef.current.detect(videoRef.current);
+            let personFound = false;
+            let phoneFound = false;
+
+            for (let i = 0; i < predictions.length; i++) {
+                if (predictions[i].class === 'person' && predictions[i].score > 0.6) {
+                    personFound = true;
+                }
+                if (predictions[i].class === 'cell phone' && predictions[i].score > 0.5) {
+                    phoneFound = true;
+                }
+            }
+
+            if (phoneFound) {
+                forceSubmitTest("Mobile phone detected.");
+            }
+
+            if (!personFound) {
+                absenceCounterRef.current += 1;
+                if (absenceCounterRef.current > 5) { // 10 सेकंड के बाद
+                    forceSubmitTest("Student not present in front of camera.");
+                }
+            } else {
+                absenceCounterRef.current = 0;
+            }
+        };
+
         const handleFullscreenChange = () => {
             if (!document.fullscreenElement) {
                 setFullscreenWarning(true);
                 warningTimeoutRef.current = setTimeout(() => {
                     forceSubmitTest("Exited fullscreen mode and did not return.");
-                }, 5000); // 5 सेकंड का ग्रेस पीरियड
+                }, 5000);
             } else {
                 setFullscreenWarning(false);
                 if (warningTimeoutRef.current) {
@@ -128,7 +152,6 @@ const TestAttemptPage = () => {
         };
 
         const handleKeydown = (e) => {
-            // PrintScreen, Ctrl+C, Ctrl+V को रोकने का प्रयास
             if (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'c' || e.key === 'v'))) {
                 e.preventDefault();
                 alert("This action is disabled during the test.");
@@ -137,14 +160,12 @@ const TestAttemptPage = () => {
 
         setupProctoringAndSecurity();
 
-        // --- क्लीनअप फंक्शन ---
         return () => {
             if (detectionIntervalRef.current) clearInterval(detectionIntervalRef.current);
             if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
             if (videoRef.current && videoRef.current.srcObject) {
                 videoRef.current.srcObject.getTracks().forEach(track => track.stop());
             }
-            // सभी इवेंट लिस्नर हटाएं
             document.removeEventListener('fullscreenchange', handleFullscreenChange);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('contextmenu', preventDefault);
@@ -153,9 +174,8 @@ const TestAttemptPage = () => {
             window.removeEventListener('keydown', handleKeydown);
             if (document.fullscreenElement) document.exitFullscreen();
         };
-    }, []); // यह इफेक्ट सिर्फ एक बार चलेगा
+    }, []);
 
-    // बाकी के useEffects और फंक्शन्स वैसे ही रहेंगे...
     useEffect(() => {
         if (!token) {
             setError("Please log in to attempt the test.");
@@ -222,7 +242,6 @@ const TestAttemptPage = () => {
 
     return (
         <div className="test-attempt-container" style={{ padding: '20px', maxWidth: '900px', margin: 'auto', userSelect: 'none' }}>
-            {/* --- फुल-स्क्रीन चेतावनी --- */}
             {fullscreenWarning && (
                 <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', zIndex: 2000, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <h2 style={{color: 'red'}}>Warning: Fullscreen Required</h2>
@@ -232,7 +251,6 @@ const TestAttemptPage = () => {
                 </div>
             )}
 
-            {/* --- वेबकैम और प्रॉक्टरिंग स्टेटस --- */}
             <div style={{ position: 'fixed', top: '20px', right: '20px', border: '2px solid #ccc', padding: '10px', backgroundColor: 'white', zIndex: 1000 }}>
                 <video ref={videoRef} autoPlay playsInline muted width="240" height="180" style={{ display: 'block' }} />
                 <p style={{ textAlign: 'center', margin: '5px 0 0', fontWeight: 'bold' }}>
