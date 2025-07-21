@@ -209,7 +209,9 @@ Don't forget to give the project a star! If you like the project. Thanks again!
    ```bash
    git checkout -b feature/YourFeatureName
    ```
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+3. **Make Your Changes**  
+   - Write clear, well-documented code.
+   - If you’re adding a feature, update the README and relevant docs.
 4.  Push to the Branch (`git push origin feature/AmazingFeature`)
 5.  Open a Pull Request
 
