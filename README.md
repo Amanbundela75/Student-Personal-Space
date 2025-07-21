@@ -218,7 +218,10 @@ Don't forget to give the project a star! If you like the project. Thanks again!
    git add .
    git commit -m "feat: Add feature XYZ"
    ```
-5.  Open a Pull Request
+5. **Push to Your Fork**  
+   ```bash
+   git push origin feature/YourFeatureName
+   ```
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
