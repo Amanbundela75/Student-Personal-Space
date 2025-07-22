@@ -4,7 +4,7 @@ import Navbar from './components/layout/Navbar.jsx';
 import Footer from './components/layout/Footer.jsx';
 import PrivateRoute from './components/layout/PrivateRoute.jsx';
 
-// --- (Saare imports jaise hain waise hi rahenge) ---
+// --- Saare purane imports ---
 import HomePage from './pages/HomePage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
@@ -31,13 +31,16 @@ import CreateTestPage from './pages/CreateTestPage.jsx';
 import AdminAllResultsPage from './pages/AdminAllResultsPage.jsx';
 import CourseContentManagementPage from './pages/CourseContentManagementPage.jsx';
 
+// --- Naya Portfolio Page Import Karein ---
+import StudentPortfolioPage from './pages/StudentPortfolioPage.jsx';
+
 function App() {
     return (
         <div className="app-container">
             <Navbar />
             <main>
                 <Routes>
-                    {/* Saare Routes jaise the waise hi rahenge */}
+                    {/* Public Routes */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/login" element={<LoginPage />} />
@@ -45,20 +48,27 @@ function App() {
                     <Route path="/courses" element={<CourseListPage />} />
                     <Route path="/courses/:courseId" element={<CourseDetailPage />} />
                     <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+
+                    {/* Common Private Routes */}
                     <Route element={<PrivateRoute />}>
                         <Route path="/profile" element={<ProfilePage />} />
                     </Route>
                     <Route element={<PrivateRoute roles={['student', 'admin']} />}>
                         <Route path="/results/:resultId" element={<ResultDetailPage />} />
                     </Route>
+
+                    {/* Student-Only Routes */}
                     <Route element={<PrivateRoute roles={['student']} />}>
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
+                        <Route path="/portfolio" element={<StudentPortfolioPage />} /> {/* <-- YEH NAYA ROUTE ADD KIYA GAYA HAI */}
                         <Route path="/my-courses" element={<MyCoursesPage />} />
                         <Route path="/courses/:courseId/study" element={<StudyCoursePage />} />
                         <Route path="/course/:courseId/tests" element={<AvailableTests />} />
                         <Route path="/test/:testId/attempt" element={<TestAttemptPage />} />
                         <Route path="/my-results" element={<MyResultsPage />} />
                     </Route>
+
+                    {/* Admin-Only Routes */}
                     <Route element={<PrivateRoute roles={['admin']} />}>
                         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                         <Route path="/admin/users" element={<AdminUserManagementPage />} />
@@ -70,6 +80,8 @@ function App() {
                         <Route path="/admin/tests/create" element={<CreateTestPage />} />
                         <Route path="/admin/results" element={<AdminAllResultsPage />} />
                     </Route>
+
+                    {/* Not Found Route */}
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </main>
