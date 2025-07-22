@@ -16,7 +16,7 @@ const adminRoutes = require('./routes/adminRoutes.js');
 const testRoutes = require('./routes/testRoutes');
 const userRoutes = require('./routes/userRoutes.js');
 const feedbackRoutes = require('./routes/feedbackRoutes.js');
-const portfolioRoutes = require('./routes/portfolioRoutes.js'); // <-- YEH NAYI LINE ADD KAREIN
+const portfolioRoutes = require('./routes/portfolioRoutes.js');
 
 // --- Face-API.js ke liye zaroori setup ---
 const { Canvas, Image, ImageData } = canvas;
@@ -68,7 +68,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/feedback', feedbackRoutes);
-app.use('/api/portfolio', portfolioRoutes); // <-- YEH NAYI LINE ADD KAREIN
+app.use('/api/portfolio', portfolioRoutes);
 
 // Simple root route
 app.get('/', (req, res) => {
@@ -79,7 +79,8 @@ app.get('/', (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Basic Error Handling Middleware
-app.use((err, req, res, next) => {
+// 'next' ko '_next' kar diya gaya hai taaki linter warning na de
+app.use((err, req, res, _next) => {
     console.error("Global Error Handler:", err.stack);
     res.status(err.statusCode || 500).json({
         success: false,
@@ -97,6 +98,8 @@ loadModels().then(() => {
     );
 });
 
-process.on('unhandledRejection', (err, promise) => {
+// Handle unhandled promise rejections
+// 'promise' ko '_promise' kar diya gaya hai
+process.on('unhandledRejection', (err, _promise) => {
     console.error(`Unhandled Rejection: ${err.message}`);
 });
