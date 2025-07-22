@@ -25,10 +25,9 @@ const TestAttemptPage = () => {
     const videoRef = useRef(null);
     const modelRef = useRef(null);
     const detectionIntervalRef = useRef(null);
-    const absenceCounterRef = useRef(0); // अब यह इस्तेमाल होगा
+    const absenceCounterRef = useRef(0);
     const warningTimeoutRef = useRef(null);
 
-    // --- टेस्ट को जबरदस्ती सबमिट करने के लिए फंक्शन ---
     const forceSubmitTest = async (reason) => {
         if (submitting) return;
 
@@ -54,13 +53,18 @@ const TestAttemptPage = () => {
         }
     };
 
-    // --- AI प्रॉक्टरिंग और सुरक्षा उपायों का सेटअप ---
     useEffect(() => {
         const setupProctoringAndSecurity = async () => {
             try {
+                // स्टेप 1: TensorFlow.js को तैयार करें
+                setProctoringStatus('Initializing AI Engine...');
                 await tf.ready();
-                setProctoringStatus('Loading AI Model...');
-                modelRef.current = await cocoSsd.load();
+
+                // स्टेप 2: AI मॉडल लोड करें (हल्के मॉडल का उपयोग करें)
+                setProctoringStatus('Loading AI Proctoring Model (this may take a moment)...');
+                modelRef.current = await cocoSsd.load({ modelUrl: 'https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/lite_mobilenet_v2/1/model.json' });
+
+                // स्टेप 3: वेबकैम एक्सेस करें
                 setProctoringStatus('Accessing Webcam...');
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
                 if (videoRef.current) {
@@ -72,7 +76,11 @@ const TestAttemptPage = () => {
                 }
             } catch (err) {
                 console.error("Proctoring setup failed:", err);
-                setError("Could not start proctoring. Please allow webcam access and refresh.");
+                if (err.name === 'NotAllowedError') {
+                    setError("Webcam access denied. Please allow camera permission in your browser settings and refresh the page.");
+                } else {
+                    setError("Could not start proctoring. Please check camera permissions and refresh.");
+                }
                 setProctoringStatus('Setup Failed');
             }
         };
@@ -93,7 +101,6 @@ const TestAttemptPage = () => {
             window.addEventListener('keydown', handleKeydown);
         };
 
-        // --- फ्रेम डिटेक्ट करने का फंक्शन (सही किया हुआ) ---
         const detectFrame = async () => {
             if (!modelRef.current || !videoRef.current || videoRef.current.readyState < 3) {
                 return;
@@ -118,7 +125,7 @@ const TestAttemptPage = () => {
 
             if (!personFound) {
                 absenceCounterRef.current += 1;
-                if (absenceCounterRef.current > 5) { // 10 सेकंड के बाद
+                if (absenceCounterRef.current > 5) {
                     forceSubmitTest("Student not present in front of camera.");
                 }
             } else {
@@ -233,7 +240,7 @@ const TestAttemptPage = () => {
             <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
                 <h2>Preparing Secure Test Environment</h2>
                 <p>{proctoringStatus}</p>
-                {proctoringStatus === 'Setup Failed' && <p style={{color: 'red'}}>Please check camera permissions and refresh.</p>}
+                {proctoringStatus === 'Setup Failed' && <p style={{color: 'red'}}>{error}</p>}
             </div>
         );
     }
