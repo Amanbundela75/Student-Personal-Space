@@ -30,7 +30,7 @@ const Navbar = () => {
                                 <>
                                     {/* Student ke liye links */}
                                     <Link to="/student/dashboard" className="nav-item">My Dashboard</Link>
-                                    {/* YEH LINK ADD KIYA GAYA HAI */}
+                                    <Link to="/portfolio" className="nav-item">My Portfolio</Link> {/* <-- YEH NAYI LINE ADD KI GAYI HAI */}
                                     <Link to="/my-results" className="nav-item">My Results</Link>
                                 </>
                             )}
