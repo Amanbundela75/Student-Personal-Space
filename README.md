@@ -163,7 +163,14 @@ After starting the backend and frontend, follow these steps to set up your first
    - Change the user's `role` field from `"student"` (default) to `"admin"`.
 Example in MongoDB Compass:  
    - Find the user document, click "Edit", and update `"role": "admin"`.
-
+ Example in mongosh:
+   ```js
+   use lms_database
+   db.users.updateOne(
+     { email: "admin@example.com" },
+     { $set: { role: "admin" } }
+   )
+   ```
 ## 🔧 Usage
 
 * **Students:** Register, log in, select a branch, browse courses for that branch, and enroll.
