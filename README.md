@@ -153,11 +153,8 @@ To get a local copy up and running, follow these simple steps.
 
 ### Initial Admin User Setup
 
-1.  After starting the backend, register a new user via the frontend application or Postman (e.g., `admin@example.com`).
-2.  Manually access your MongoDB database (using MongoDB Compass or `mongosh`).
-3.  Navigate to the `users` collection in your `lms_database`.
-4.  Find the user you just registered and update their `role` field from `"student"` (default) to `"admin"`.
-5.  You can now log in with these admin credentials to access admin functionalities.
+After starting the backend and frontend, follow these steps to set up your first admin user:
+
 
 ## 🔧 Usage
 
