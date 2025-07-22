@@ -15,7 +15,8 @@ const enrollmentRoutes = require('./routes/enrollmentRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const testRoutes = require('./routes/testRoutes');
 const userRoutes = require('./routes/userRoutes.js');
-const feedbackRoutes = require('./routes/feedbackRoutes.js'); // <-- Feedback route import
+const feedbackRoutes = require('./routes/feedbackRoutes.js');
+const portfolioRoutes = require('./routes/portfolioRoutes.js'); // <-- YEH NAYI LINE ADD KAREIN
 
 // --- Face-API.js ke liye zaroori setup ---
 const { Canvas, Image, ImageData } = canvas;
@@ -28,7 +29,6 @@ dotenv.config();
 async function loadModels() {
     console.log("Loading Face-API models...");
     try {
-        // Models ko 'backend/models' directory se load karein
         const modelPath = path.join(__dirname, 'models');
         await faceapi.nets.ssdMobilenetv1.loadFromDisk(modelPath);
         await faceapi.nets.faceLandmark68Net.loadFromDisk(modelPath);
@@ -36,7 +36,6 @@ async function loadModels() {
         console.log("Face-API models loaded successfully.");
     } catch (error) {
         console.error("Error loading Face-API models:", error);
-        // Agar model load na ho to server ko band kar dein
         process.exit(1);
     }
 }
@@ -48,8 +47,8 @@ const app = express();
 
 // --- CORS Middleware ---
 const corsOptions = {
-    origin: 'http://localhost:5173', // Aapka frontend ka URL
-    credentials: true, // Cookies ke liye zaroori
+    origin: 'http://localhost:5173',
+    credentials: true,
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
@@ -57,7 +56,6 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 
 // --- Body Parser Middleware ---
-// JSON payload ke size ko badhayein (face-api base64 string ke liye)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -69,7 +67,8 @@ app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/feedback', feedbackRoutes); // <-- Feedback route register
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/portfolio', portfolioRoutes); // <-- YEH NAYI LINE ADD KAREIN
 
 // Simple root route
 app.get('/', (req, res) => {
@@ -90,7 +89,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5001;
 
-// --- Server start karne se pehle models load karein ---
 loadModels().then(() => {
     app.listen(PORT, () =>
         console.log(
@@ -99,7 +97,6 @@ loadModels().then(() => {
     );
 });
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
     console.error(`Unhandled Rejection: ${err.message}`);
 });
