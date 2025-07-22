@@ -161,6 +161,8 @@ After starting the backend and frontend, follow these steps to set up your first
    - Navigate to the `users` collection in your LMS database.
    - Locate the user you just registered.
    - Change the user's `role` field from `"student"` (default) to `"admin"`.
+Example in MongoDB Compass:  
+   - Find the user document, click "Edit", and update `"role": "admin"`.
 
 ## 🔧 Usage
 
