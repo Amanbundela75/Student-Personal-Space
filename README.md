@@ -170,7 +170,14 @@ Example in MongoDB Compass:
      { email: "admin@example.com" },
      { $set: { role: "admin" } }
    )
+
    ```
+3. **Log in as Admin:**  
+   - Go back to the frontend and log in using the updated admin credentials.
+   - You now have access to all admin functionalities, including user/course/branch management and viewing student feedback.
+
+---
+
 ## 🔧 Usage
 
 * **Students:** Register, log in, select a branch, browse courses for that branch, and enroll.
