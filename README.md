@@ -153,11 +153,30 @@ To get a local copy up and running, follow these simple steps.
 
 ### Initial Admin User Setup
 
-1.  After starting the backend, register a new user via the frontend application or Postman (e.g., `admin@example.com`).
-2.  Manually access your MongoDB database (using MongoDB Compass or `mongosh`).
-3.  Navigate to the `users` collection in your `lms_database`.
-4.  Find the user you just registered and update their `role` field from `"student"` (default) to `"admin"`.
-5.  You can now log in with these admin credentials to access admin functionalities.
+After starting the backend and frontend, follow these steps to set up your first admin user:
+1. **Register a New User:**  
+   - Go to the frontend application (or use Postman) and register a new user (e.g., `admin@example.com`).
+2. **Promote User to Admin in MongoDB:**  
+   - Open your MongoDB database using **MongoDB Compass** or the **mongosh** shell.
+   - Navigate to the `users` collection in your LMS database.
+   - Locate the user you just registered.
+   - Change the user's `role` field from `"student"` (default) to `"admin"`.
+Example in MongoDB Compass:  
+   - Find the user document, click "Edit", and update `"role": "admin"`.
+ Example in mongosh:
+   ```js
+   use lms_database
+   db.users.updateOne(
+     { email: "admin@example.com" },
+     { $set: { role: "admin" } }
+   )
+
+   ```
+3. **Log in as Admin:**  
+   - Go back to the frontend and log in using the updated admin credentials.
+   - You now have access to all admin functionalities, including user/course/branch management and viewing student feedback.
+
+---
 
 ## 🔧 Usage
 
@@ -209,9 +228,29 @@ Don't forget to give the project a star! If you like the project. Thanks again!
    ```bash
    git checkout -b feature/YourFeatureName
    ```
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+3. **Make Your Changes**  
+   - Write clear, well-documented code.
+   - If you’re adding a feature, update the README and relevant docs.
+4. **Commit Your Changes**  
+   Use descriptive commit messages:
+   ```bash
+   git add .
+   git commit -m "feat: Add feature XYZ"
+   ```
+5. **Push to Your Fork**  
+   ```bash
+   git push origin feature/YourFeatureName
+   ```
+6. **Open a Pull Request**  
+   Go to your fork on GitHub, select your branch, and click "New Pull Request".  
+   - Clearly describe your changes and link any related issues.
+   - Wait for review and feedback from maintainers.
+  
+**Tips for great contributions:**
+- Open an issue first if you want to discuss major changes or ideas.
+- Follow the coding style and conventions used in the project.
+- Be respectful and collaborative in your interactions.
+- Star the project if you find it useful!
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
