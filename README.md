@@ -154,6 +154,8 @@ To get a local copy up and running, follow these simple steps.
 ### Initial Admin User Setup
 
 After starting the backend and frontend, follow these steps to set up your first admin user:
+1. **Register a New User:**  
+   - Go to the frontend application (or use Postman) and register a new user (e.g., `admin@example.com`).
 
 
 ## 🔧 Usage
