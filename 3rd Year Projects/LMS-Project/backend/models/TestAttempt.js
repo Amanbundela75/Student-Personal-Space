@@ -9,19 +9,23 @@ const testAttemptSchema = new Schema({
     },
     student: {
         type: Schema.Types.ObjectId,
-        ref: 'User', // Assuming you have a 'User' model
+        ref: 'User',
         required: true
     },
-    answers: {
-        type: Map,
-        of: String // Storing question ObjectID and the selected option
-    },
+    answers: [{ // <-- ISE UPDATE KIYA GAYA HAI
+        // Yeh har question ke liye student ka jawab store karega.
+        // Array ka index question ke index se match karega.
+        // Value chune gaye option ka index hoga.
+        // Agar student ne jawab nahi diya to null hoga.
+        type: Number,
+        default: null
+    }],
     score: {
         type: Number,
         default: 0
     },
     proctoringLogs: [{
-        type: String // e.g., "Left fullscreen", "Switched tab"
+        type: String
     }],
     submitted: {
         type: Boolean,
