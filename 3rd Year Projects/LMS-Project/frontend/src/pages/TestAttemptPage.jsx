@@ -41,7 +41,7 @@ const TestAttemptPage = () => {
     const modelRef = useRef(null);
     const detectionIntervalRef = useRef(null);
 
-    // --- STEP 1: Fetch Test Data ---
+    // Fetch Test Data
     useEffect(() => {
         const fetchTest = async () => {
             if (!token) {
@@ -57,7 +57,6 @@ const TestAttemptPage = () => {
                 setError('');
             } catch (err) {
                 setError(err.response?.data?.message || 'Failed to load the test data.');
-                console.error("Error fetching test:", err);
             } finally {
                 setLoading(false);
             }
@@ -65,9 +64,8 @@ const TestAttemptPage = () => {
         fetchTest();
     }, [testId, token]);
 
-    // --- STEP 2: Setup Proctoring ONLY AFTER test data is loaded ---
+    // Setup Proctoring
     useEffect(() => {
-        // Agar test data nahi hai, ya test proctored nahi hai, to kuch na karein.
         if (!test) {
             setProctoringStatus('Waiting for test data...');
             return;
@@ -82,8 +80,10 @@ const TestAttemptPage = () => {
                 setProctoringStatus('Initializing AI Engine...');
                 await tf.ready();
 
-                setProctoringStatus('Loading AI Model...');
-                modelRef.current = await cocoSsd.load();
+                setProctoringStatus('Loading AI Model (this may take a moment)...');
+                // --- YEH SABSE BADA BADLAV HAI ---
+                // Hum yahan 'lite_mobilenet_v2' model ka upyog kar rahe hain jo bahut tez hai.
+                modelRef.current = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
 
                 setProctoringStatus('Accessing Webcam...');
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
@@ -92,19 +92,15 @@ const TestAttemptPage = () => {
                     videoRef.current.srcObject = stream;
                     videoRef.current.onloadedmetadata = () => {
                         setProctoringStatus('Active');
-                        // Yahan aap security listeners (fullscreen, etc.) start kar sakte hain
                     };
                 }
             } catch (err) {
-                // YEH SABSE ZAROORI HISSA HAI
-                console.error("PROCTORING SETUP FAILED:", err); // Asli error ko console mein dekhein
+                console.error("PROCTORING SETUP FAILED:", err);
                 let errorMessage = "An unknown error occurred during setup.";
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
                     errorMessage = "Webcam access was denied. Please allow camera permission in your browser's site settings and refresh.";
                 } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
                     errorMessage = "No webcam was found on your device. Please connect a camera and refresh.";
-                } else if (err.message && err.message.includes('fetch')) {
-                    errorMessage = "Failed to load the AI model. Please check your internet connection and that you can access tfhub.dev.";
                 } else {
                     errorMessage = `A technical error occurred: ${err.name}. Please try again.`;
                 }
@@ -123,10 +119,25 @@ const TestAttemptPage = () => {
             }
             if (document.fullscreenElement) document.exitFullscreen();
         };
-    }, [test]); // YEH DEPENDENCY SABSE ZAROORI HAI!
+    }, [test]);
 
-    const handleOptionChange = (qIndex, oIndex) => { /* ... (Pehle jaisa hi) ... */ };
-    const handleSubmit = async (e) => { /* ... (Pehle jaisa hi) ... */ };
+    const handleOptionChange = (qIndex, oIndex) => {
+        const newAnswers = [...answers];
+        newAnswers[qIndex] = oIndex;
+        setAnswers(newAnswers);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            await testService.submitTest({ testId, answers }, token);
+            navigate('/my-results', { state: { message: 'Test submitted successfully!' } });
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to submit the test.');
+            setSubmitting(false);
+        }
+    };
 
     // --- RENDER LOGIC ---
     if (loading) {
@@ -141,12 +152,30 @@ const TestAttemptPage = () => {
         return <StatusDisplay status={proctoringStatus} error={error} />;
     }
 
-    // Jab sab theek ho, test render karein
     return (
         <div className="test-attempt-container">
-            {/* ... (Test questions form) ... */}
+            {test?.isProctored && (
+                <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 1000 }}>
+                    <video ref={videoRef} autoPlay playsInline muted width="200" height="150" style={{ border: '2px solid #ccc', borderRadius: '5px' }} />
+                </div>
+            )}
             <h2>{test?.title}</h2>
-            {/* Form ka baaki ka code yahan aayega */}
+            <form onSubmit={handleSubmit}>
+                {test?.questions.map((q, qIndex) => (
+                    <div key={q._id || qIndex} style={{ marginBottom: '20px' }}>
+                        <h4>{`Q${qIndex + 1}: ${q.questionText}`}</h4>
+                        {q.options.map((option, oIndex) => (
+                            <label key={oIndex} style={{ display: 'block', margin: '5px 0' }}>
+                                <input type="radio" name={`question-${qIndex}`} value={oIndex} checked={answers[qIndex] === oIndex} onChange={() => handleOptionChange(qIndex, oIndex)} />
+                                {` ${option}`}
+                            </label>
+                        ))}
+                    </div>
+                ))}
+                <button type="submit" disabled={submitting}>
+                    {submitting ? 'Submitting...' : 'Submit Test'}
+                </button>
+            </form>
         </div>
     );
 };
