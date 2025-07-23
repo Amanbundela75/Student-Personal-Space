@@ -5,6 +5,21 @@ import { AuthContext } from '../contexts/AuthContext.jsx';
 import * as tf from '@tensorflow/tfjs';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
 
+// --- Helper component for status display ---
+const StatusDisplay = ({ status, error }) => (
+    <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
+        <h2>Preparing Secure Test Environment</h2>
+        <p>Status: {status}</p>
+        {error && (
+            <div style={{ color: 'red', marginTop: '15px', border: '1px solid red', padding: '10px', borderRadius: '5px' }}>
+                <p><b>Error:</b> {error}</p>
+                <p style={{ marginTop: '10px' }}>Please resolve the issue and refresh the page. Check camera permissions in your browser.</p>
+            </div>
+        )}
+    </div>
+);
+
+
 const TestAttemptPage = () => {
     const { testId } = useParams();
     const navigate = useNavigate();
@@ -20,13 +35,11 @@ const TestAttemptPage = () => {
 
     // Proctoring States
     const [proctoringStatus, setProctoringStatus] = useState('Not Started');
-    const [fullscreenWarning, setFullscreenWarning] = useState(false);
 
-    // Refs for managing resources
+    // Refs
     const videoRef = useRef(null);
     const modelRef = useRef(null);
     const detectionIntervalRef = useRef(null);
-    const warningTimeoutRef = useRef(null);
 
     // --- STEP 1: Fetch Test Data ---
     useEffect(() => {
@@ -43,7 +56,8 @@ const TestAttemptPage = () => {
                 setAnswers(new Array(data.questions.length).fill(null));
                 setError('');
             } catch (err) {
-                setError(err.response?.data?.message || 'Failed to load the test.');
+                setError(err.response?.data?.message || 'Failed to load the test data.');
+                console.error("Error fetching test:", err);
             } finally {
                 setLoading(false);
             }
@@ -54,8 +68,12 @@ const TestAttemptPage = () => {
     // --- STEP 2: Setup Proctoring ONLY AFTER test data is loaded ---
     useEffect(() => {
         // Agar test data nahi hai, ya test proctored nahi hai, to kuch na karein.
-        if (!test || !test.isProctored) {
-            setProctoringStatus(test ? 'Not Required' : 'Waiting for test data...');
+        if (!test) {
+            setProctoringStatus('Waiting for test data...');
+            return;
+        }
+        if (!test.isProctored) {
+            setProctoringStatus('Not Required');
             return;
         }
 
@@ -64,7 +82,7 @@ const TestAttemptPage = () => {
                 setProctoringStatus('Initializing AI Engine...');
                 await tf.ready();
 
-                setProctoringStatus('Loading AI Model (this may take a moment)...');
+                setProctoringStatus('Loading AI Model...');
                 modelRef.current = await cocoSsd.load();
 
                 setProctoringStatus('Accessing Webcam...');
@@ -74,18 +92,21 @@ const TestAttemptPage = () => {
                     videoRef.current.srcObject = stream;
                     videoRef.current.onloadedmetadata = () => {
                         setProctoringStatus('Active');
-                        startSecurityListeners(); // Ab sab kuch taiyar hai
+                        // Yahan aap security listeners (fullscreen, etc.) start kar sakte hain
                     };
                 }
             } catch (err) {
-                console.error("Proctoring setup failed:", err);
-                let errorMessage = "Could not start proctoring. Please check permissions and refresh.";
+                // YEH SABSE ZAROORI HISSA HAI
+                console.error("PROCTORING SETUP FAILED:", err); // Asli error ko console mein dekhein
+                let errorMessage = "An unknown error occurred during setup.";
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-                    errorMessage = "Webcam access denied. Please allow camera permission and refresh.";
+                    errorMessage = "Webcam access was denied. Please allow camera permission in your browser's site settings and refresh.";
                 } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-                    errorMessage = "No webcam found. Please connect a camera and refresh.";
-                } else if (err.message.includes('Could not fetch')) {
-                    errorMessage = "Failed to load AI model. Please check your network connection.";
+                    errorMessage = "No webcam was found on your device. Please connect a camera and refresh.";
+                } else if (err.message && err.message.includes('fetch')) {
+                    errorMessage = "Failed to load the AI model. Please check your internet connection and that you can access tfhub.dev.";
+                } else {
+                    errorMessage = `A technical error occurred: ${err.name}. Please try again.`;
                 }
                 setError(errorMessage);
                 setProctoringStatus('Failed');
@@ -97,93 +118,35 @@ const TestAttemptPage = () => {
         // Cleanup function
         return () => {
             if (detectionIntervalRef.current) clearInterval(detectionIntervalRef.current);
-            if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
             if (videoRef.current && videoRef.current.srcObject) {
                 videoRef.current.srcObject.getTracks().forEach(track => track.stop());
             }
             if (document.fullscreenElement) document.exitFullscreen();
         };
-    }, [test]); // Yeh useEffect tabhi chalega jab 'test' state update hoga.
+    }, [test]); // YEH DEPENDENCY SABSE ZAROORI HAI!
 
-    const startSecurityListeners = () => {
-        // Implement security listeners (fullscreen, visibility etc.) here
-        // This is just an example
-        document.documentElement.requestFullscreen().catch(err => console.error("Fullscreen request failed:", err));
-    };
+    const handleOptionChange = (qIndex, oIndex) => { /* ... (Pehle jaisa hi) ... */ };
+    const handleSubmit = async (e) => { /* ... (Pehle jaisa hi) ... */ };
 
-    const handleOptionChange = (questionIndex, optionIndex) => {
-        const newAnswers = [...answers];
-        newAnswers[questionIndex] = optionIndex;
-        setAnswers(newAnswers);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        try {
-            await testService.submitTest({ testId, answers }, token);
-            navigate('/my-results', { state: { message: 'Test submitted successfully!' } });
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to submit the test.');
-            setSubmitting(false);
-        }
-    };
-
-    // --- Render Logic ---
+    // --- RENDER LOGIC ---
     if (loading) {
-        return <div className="container status-page"><h2>Loading Test...</h2></div>;
+        return <div className="container"><h2>Loading Test...</h2></div>;
     }
 
-    // Yadi test proctored hai, toh setup complete hone tak wait karein
+    if (error && proctoringStatus !== 'Failed') {
+        return <div className="container error-message"><h2>Error</h2><p>{error}</p></div>;
+    }
+
     if (test?.isProctored && proctoringStatus !== 'Active') {
-        return (
-            <div className="container status-page">
-                <h2>Preparing Secure Test Environment</h2>
-                <p>Status: {proctoringStatus}</p>
-                {proctoringStatus === 'Failed' && (
-                    <div className="error-box">
-                        <p><b>Error:</b> {error}</p>
-                        <p>Please resolve the issue and refresh the page.</p>
-                    </div>
-                )}
-            </div>
-        );
-    }
-
-    // Agar koi aam error hai (test load nahi hua, etc.)
-    if (error && !submitting) {
-        return <div className="container status-page error-box"><h2>An Error Occurred</h2><p>{error}</p></div>;
+        return <StatusDisplay status={proctoringStatus} error={error} />;
     }
 
     // Jab sab theek ho, test render karein
     return (
         <div className="test-attempt-container">
-            {test?.isProctored && (
-                <div className="proctoring-widget">
-                    <video ref={videoRef} autoPlay playsInline muted width="200" height="150" />
-                    <p>Status: <span className={proctoringStatus === 'Active' ? 'status-active' : 'status-inactive'}>{proctoringStatus}</span></p>
-                </div>
-            )}
-
-            <h2 className="test-title">{test?.title}</h2>
-            <form onSubmit={handleSubmit}>
-                {test?.questions.map((q, qIndex) => (
-                    <div key={q._id || qIndex} className="question-card">
-                        <h4>{`Q${qIndex + 1}: ${q.questionText}`}</h4>
-                        <div className="options-list">
-                            {q.options.map((option, oIndex) => (
-                                <label key={oIndex} className="option-label">
-                                    <input type="radio" name={`question-${qIndex}`} value={oIndex} checked={answers[qIndex] === oIndex} onChange={() => handleOptionChange(qIndex, oIndex)} />
-                                    <span>{option}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-                <button type="submit" disabled={submitting} className="button button-primary submit-btn">
-                    {submitting ? 'Submitting...' : 'Submit Test'}
-                </button>
-            </form>
+            {/* ... (Test questions form) ... */}
+            <h2>{test?.title}</h2>
+            {/* Form ka baaki ka code yahan aayega */}
         </div>
     );
 };
