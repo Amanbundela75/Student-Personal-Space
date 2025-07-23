@@ -187,7 +187,10 @@ Example in MongoDB Compass:
 - Track your progress in each course from the dashboard.
 - Manage your profile and update branch/password details.
 - Submit feedback to help improve the platform (feedback is only visible to admins).
-      
+  
+**For Admins:**
+- Log in using admin credentials.
+- Access the **Admin Dashboard** for complete control over users, branches, courses, and enrollments.      
 ```bash
 lms-project/
 ├── backend/
