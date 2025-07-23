@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import testService from '../services/TestServices.js';
 import { AuthContext } from '../contexts/AuthContext.jsx';
-
-// AI और वेबकैम के लिए ज़रूरी इम्पोर्ट्स
 import * as tf from '@tensorflow/tfjs';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
 
@@ -13,183 +11,31 @@ const TestAttemptPage = () => {
     const { currentUser } = useContext(AuthContext);
     const token = currentUser?.token;
 
+    // State Management
     const [test, setTest] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
-    // --- प्रॉक्टरिंग और सुरक्षा के लिए स्टेट्स ---
-    const [proctoringStatus, setProctoringStatus] = useState('Initializing...');
+    // Proctoring States
+    const [proctoringStatus, setProctoringStatus] = useState('Not Started');
     const [fullscreenWarning, setFullscreenWarning] = useState(false);
+
+    // Refs for managing resources
     const videoRef = useRef(null);
     const modelRef = useRef(null);
     const detectionIntervalRef = useRef(null);
-    const absenceCounterRef = useRef(0);
     const warningTimeoutRef = useRef(null);
 
-    const forceSubmitTest = async (reason) => {
-        if (submitting) return;
-
-        console.warn(`Force submitting test due to: ${reason}`);
-        if (document.fullscreenElement) {
-            document.exitFullscreen();
-        }
-        setError(`Test automatically submitted. Reason: ${reason}`);
-        setSubmitting(true);
-        if (detectionIntervalRef.current) clearInterval(detectionIntervalRef.current);
-        if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
-
-        try {
-            const submissionData = { testId, answers };
-            await testService.submitTest(submissionData, token);
-            setTimeout(() => {
-                navigate('/my-results', { state: { message: `Test submitted automatically due to: ${reason}` } });
-            }, 3000);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to submit the test.');
-            console.error(err);
-            setSubmitting(false);
-        }
-    };
-
+    // --- STEP 1: Fetch Test Data ---
     useEffect(() => {
-        const setupProctoringAndSecurity = async () => {
-            try {
-                // स्टेप 1: TensorFlow.js को तैयार करें
-                setProctoringStatus('Initializing AI Engine...');
-                await tf.ready();
-
-                // स्टेप 2: AI मॉडल लोड करें (हल्के मॉडल का उपयोग करें)
-                setProctoringStatus('Loading AI Proctoring Model (this may take a moment)...');
-                modelRef.current = await cocoSsd.load({ modelUrl: 'https://tfhub.dev/tensorflow/tfjs-model/ssd_mobilenet_v2/lite_mobilenet_v2/1/model.json' });
-
-                // स्टेप 3: वेबकैम एक्सेस करें
-                setProctoringStatus('Accessing Webcam...');
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.onloadedmetadata = () => {
-                        setProctoringStatus('Proctoring Active');
-                        startProctoringAndSecurity();
-                    };
-                }
-            } catch (err) {
-                console.error("Proctoring setup failed:", err);
-                if (err.name === 'NotAllowedError') {
-                    setError("Webcam access denied. Please allow camera permission in your browser settings and refresh the page.");
-                } else {
-                    setError("Could not start proctoring. Please check camera permissions and refresh.");
-                }
-                setProctoringStatus('Setup Failed');
-            }
-        };
-
-        const startProctoringAndSecurity = () => {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.error("Failed to enter fullscreen:", err);
-                setError("Please enable fullscreen mode to start the test.");
-            });
-
-            detectionIntervalRef.current = setInterval(detectFrame, 2000);
-
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('visibilitychange', handleVisibilityChange);
-            window.addEventListener('contextmenu', preventDefault);
-            window.addEventListener('copy', preventDefault);
-            window.addEventListener('paste', preventDefault);
-            window.addEventListener('keydown', handleKeydown);
-        };
-
-        const detectFrame = async () => {
-            if (!modelRef.current || !videoRef.current || videoRef.current.readyState < 3) {
+        const fetchTest = async () => {
+            if (!token) {
+                setError("Authentication error. Please log in again.");
+                setLoading(false);
                 return;
             }
-
-            const predictions = await modelRef.current.detect(videoRef.current);
-            let personFound = false;
-            let phoneFound = false;
-
-            for (let i = 0; i < predictions.length; i++) {
-                if (predictions[i].class === 'person' && predictions[i].score > 0.6) {
-                    personFound = true;
-                }
-                if (predictions[i].class === 'cell phone' && predictions[i].score > 0.5) {
-                    phoneFound = true;
-                }
-            }
-
-            if (phoneFound) {
-                forceSubmitTest("Mobile phone detected.");
-            }
-
-            if (!personFound) {
-                absenceCounterRef.current += 1;
-                if (absenceCounterRef.current > 5) {
-                    forceSubmitTest("Student not present in front of camera.");
-                }
-            } else {
-                absenceCounterRef.current = 0;
-            }
-        };
-
-        const handleFullscreenChange = () => {
-            if (!document.fullscreenElement) {
-                setFullscreenWarning(true);
-                warningTimeoutRef.current = setTimeout(() => {
-                    forceSubmitTest("Exited fullscreen mode and did not return.");
-                }, 5000);
-            } else {
-                setFullscreenWarning(false);
-                if (warningTimeoutRef.current) {
-                    clearTimeout(warningTimeoutRef.current);
-                }
-            }
-        };
-
-        const handleVisibilityChange = () => {
-            if (document.hidden) {
-                forceSubmitTest("Tab switched or window minimized.");
-            }
-        };
-
-        const preventDefault = (e) => {
-            e.preventDefault();
-            alert("This action is disabled during the test.");
-        };
-
-        const handleKeydown = (e) => {
-            if (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'c' || e.key === 'v'))) {
-                e.preventDefault();
-                alert("This action is disabled during the test.");
-            }
-        };
-
-        setupProctoringAndSecurity();
-
-        return () => {
-            if (detectionIntervalRef.current) clearInterval(detectionIntervalRef.current);
-            if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
-            if (videoRef.current && videoRef.current.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-            }
-            document.removeEventListener('fullscreenchange', handleFullscreenChange);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            window.removeEventListener('contextmenu', preventDefault);
-            window.removeEventListener('copy', preventDefault);
-            window.removeEventListener('paste', preventDefault);
-            window.removeEventListener('keydown', handleKeydown);
-            if (document.fullscreenElement) document.exitFullscreen();
-        };
-    }, []);
-
-    useEffect(() => {
-        if (!token) {
-            setError("Please log in to attempt the test.");
-            setLoading(false);
-            return;
-        }
-        const fetchTest = async () => {
             try {
                 setLoading(true);
                 const data = await testService.getTestById(testId, token);
@@ -198,13 +44,72 @@ const TestAttemptPage = () => {
                 setError('');
             } catch (err) {
                 setError(err.response?.data?.message || 'Failed to load the test.');
-                console.error(err);
             } finally {
                 setLoading(false);
             }
         };
         fetchTest();
     }, [testId, token]);
+
+    // --- STEP 2: Setup Proctoring ONLY AFTER test data is loaded ---
+    useEffect(() => {
+        // Agar test data nahi hai, ya test proctored nahi hai, to kuch na karein.
+        if (!test || !test.isProctored) {
+            setProctoringStatus(test ? 'Not Required' : 'Waiting for test data...');
+            return;
+        }
+
+        const setupProctoring = async () => {
+            try {
+                setProctoringStatus('Initializing AI Engine...');
+                await tf.ready();
+
+                setProctoringStatus('Loading AI Model (this may take a moment)...');
+                modelRef.current = await cocoSsd.load();
+
+                setProctoringStatus('Accessing Webcam...');
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    videoRef.current.onloadedmetadata = () => {
+                        setProctoringStatus('Active');
+                        startSecurityListeners(); // Ab sab kuch taiyar hai
+                    };
+                }
+            } catch (err) {
+                console.error("Proctoring setup failed:", err);
+                let errorMessage = "Could not start proctoring. Please check permissions and refresh.";
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    errorMessage = "Webcam access denied. Please allow camera permission and refresh.";
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorMessage = "No webcam found. Please connect a camera and refresh.";
+                } else if (err.message.includes('Could not fetch')) {
+                    errorMessage = "Failed to load AI model. Please check your network connection.";
+                }
+                setError(errorMessage);
+                setProctoringStatus('Failed');
+            }
+        };
+
+        setupProctoring();
+
+        // Cleanup function
+        return () => {
+            if (detectionIntervalRef.current) clearInterval(detectionIntervalRef.current);
+            if (warningTimeoutRef.current) clearTimeout(warningTimeoutRef.current);
+            if (videoRef.current && videoRef.current.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            }
+            if (document.fullscreenElement) document.exitFullscreen();
+        };
+    }, [test]); // Yeh useEffect tabhi chalega jab 'test' state update hoga.
+
+    const startSecurityListeners = () => {
+        // Implement security listeners (fullscreen, visibility etc.) here
+        // This is just an example
+        document.documentElement.requestFullscreen().catch(err => console.error("Fullscreen request failed:", err));
+    };
 
     const handleOptionChange = (questionIndex, optionIndex) => {
         const newAnswers = [...answers];
@@ -214,71 +119,68 @@ const TestAttemptPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const unansweredQuestions = answers.filter(ans => ans === null).length;
-        if (unansweredQuestions > 0) {
-            if (!window.confirm(`You have ${unansweredQuestions} unanswered questions. Are you sure you want to submit?`)) {
-                return;
-            }
-        }
         setSubmitting(true);
         try {
-            const submissionData = { testId, answers };
-            await testService.submitTest(submissionData, token);
+            await testService.submitTest({ testId, answers }, token);
             navigate('/my-results', { state: { message: 'Test submitted successfully!' } });
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to submit the test.');
-            console.error(err);
-        } finally {
             setSubmitting(false);
         }
     };
 
-    if (loading) return <div className="container">Loading Test...</div>;
+    // --- Render Logic ---
+    if (loading) {
+        return <div className="container status-page"><h2>Loading Test...</h2></div>;
+    }
 
-    if (proctoringStatus !== 'Proctoring Active' && !error) {
+    // Yadi test proctored hai, toh setup complete hone tak wait karein
+    if (test?.isProctored && proctoringStatus !== 'Active') {
         return (
-            <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
+            <div className="container status-page">
                 <h2>Preparing Secure Test Environment</h2>
-                <p>{proctoringStatus}</p>
-                {proctoringStatus === 'Setup Failed' && <p style={{color: 'red'}}>{error}</p>}
+                <p>Status: {proctoringStatus}</p>
+                {proctoringStatus === 'Failed' && (
+                    <div className="error-box">
+                        <p><b>Error:</b> {error}</p>
+                        <p>Please resolve the issue and refresh the page.</p>
+                    </div>
+                )}
             </div>
         );
     }
 
-    if (error) return <div className="container" style={{ color: 'red', textAlign: 'center', padding: '50px' }}><h2>Error</h2><p>{error}</p></div>;
+    // Agar koi aam error hai (test load nahi hua, etc.)
+    if (error && !submitting) {
+        return <div className="container status-page error-box"><h2>An Error Occurred</h2><p>{error}</p></div>;
+    }
 
+    // Jab sab theek ho, test render karein
     return (
-        <div className="test-attempt-container" style={{ padding: '20px', maxWidth: '900px', margin: 'auto', userSelect: 'none' }}>
-            {fullscreenWarning && (
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', zIndex: 2000, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <h2 style={{color: 'red'}}>Warning: Fullscreen Required</h2>
-                    <p>You have exited fullscreen mode. Please re-enter fullscreen immediately.</p>
-                    <p>The test will be submitted automatically in 5 seconds.</p>
-                    <button onClick={() => document.documentElement.requestFullscreen()} className="button button-primary">Re-enter Fullscreen</button>
+        <div className="test-attempt-container">
+            {test?.isProctored && (
+                <div className="proctoring-widget">
+                    <video ref={videoRef} autoPlay playsInline muted width="200" height="150" />
+                    <p>Status: <span className={proctoringStatus === 'Active' ? 'status-active' : 'status-inactive'}>{proctoringStatus}</span></p>
                 </div>
             )}
 
-            <div style={{ position: 'fixed', top: '20px', right: '20px', border: '2px solid #ccc', padding: '10px', backgroundColor: 'white', zIndex: 1000 }}>
-                <video ref={videoRef} autoPlay playsInline muted width="240" height="180" style={{ display: 'block' }} />
-                <p style={{ textAlign: 'center', margin: '5px 0 0', fontWeight: 'bold' }}>
-                    Status: <span style={{ color: proctoringStatus === 'Proctoring Active' ? 'green' : 'orange' }}>{proctoringStatus}</span>
-                </p>
-            </div>
-
-            <h2 style={{ marginBottom: '20px', textAlign: 'center' }}>{test?.title}</h2>
+            <h2 className="test-title">{test?.title}</h2>
             <form onSubmit={handleSubmit}>
                 {test?.questions.map((q, qIndex) => (
-                    <div key={q._id || qIndex} style={{ marginBottom: '25px', border: '1px solid #f0f0f0', padding: '20px', borderRadius: '8px' }}>
-                        <h4 style={{ marginTop: 0 }}>{`Q${qIndex + 1}: ${q.questionText}`}</h4>
-                        {q.options.map((option, oIndex) => (
-                            <label key={oIndex} htmlFor={`q${qIndex}-o${oIndex}`} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '12px', cursor: 'pointer' }}>
-                                <input type="radio" id={`q${qIndex}-o${oIndex}`} name={`question-${qIndex}`} value={oIndex} checked={answers[qIndex] === oIndex} onChange={() => handleOptionChange(qIndex, oIndex)} style={{ marginRight: '12px', marginTop: '4px', flexShrink: 0 }} />
-                                <span>{option}</span>
-                            </label>
-                        ))}
+                    <div key={q._id || qIndex} className="question-card">
+                        <h4>{`Q${qIndex + 1}: ${q.questionText}`}</h4>
+                        <div className="options-list">
+                            {q.options.map((option, oIndex) => (
+                                <label key={oIndex} className="option-label">
+                                    <input type="radio" name={`question-${qIndex}`} value={oIndex} checked={answers[qIndex] === oIndex} onChange={() => handleOptionChange(qIndex, oIndex)} />
+                                    <span>{option}</span>
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 ))}
-                <button type="submit" disabled={submitting} className="button button-primary" style={{ padding: '12px 25px', fontSize: '16px', cursor: 'pointer', width: '100%' }}>
+                <button type="submit" disabled={submitting} className="button button-primary submit-btn">
                     {submitting ? 'Submitting...' : 'Submit Test'}
                 </button>
             </form>
