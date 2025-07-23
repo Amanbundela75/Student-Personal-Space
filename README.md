@@ -190,7 +190,11 @@ Example in MongoDB Compass:
   
 **For Admins:**
 - Log in using admin credentials.
-- Access the **Admin Dashboard** for complete control over users, branches, courses, and enrollments.      
+- Access the **Admin Dashboard** for complete control over users, branches, courses, and enrollments.
+- Create, edit, or delete branches and courses.
+- Assign courses to branches and monitor student enrollments.
+- View detailed activity logs and feedback submitted by students to enhance platform quality.
+- Manage user roles and oversee platform engagement.     
 ```bash
 lms-project/
 ├── backend/
