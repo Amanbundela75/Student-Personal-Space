@@ -11,7 +11,7 @@ const QuestionSchema = new Schema({
         type: String,
         required: true
     }],
-    correctOption: {
+    correctOption: { // Iska naam bilkul theek hai
         type: Number,
         required: [true, 'Please provide the index of the correct option.']
     }
@@ -41,19 +41,17 @@ const TestSchema = new Schema({
         type: Number,
         required: [true, 'Please set a duration for the test.']
     },
+    isProctored: { // <-- YEH NAYA FIELD ADD KIYA GAYA HAI
+        type: Boolean,
+        default: true // Default roop se test proctored honge
+    },
     questions: [QuestionSchema],
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }
-}, { timestamps: true }); // timestamps: true bilkul sahi hai, isko rehne dein.
-
-
-// --- Humne yahan se .pre('find') wala hissa hata diya hai ---
-// Isse server crash hona band ho jaayega.
-// -----------------------------------------------------------
-
+}, { timestamps: true });
 
 const Test = mongoose.model('Test', TestSchema);
 
