@@ -180,9 +180,13 @@ Example in MongoDB Compass:
 
 ## 🔧 Usage
 
-* **Students:** Register, log in, select a branch, browse courses for that branch, and enroll.
-* **Admin:** Log in with admin credentials. Navigate to the "Admin Dashboard" to manage users, branches, and courses.
-    * **Creating Branches/Courses:** It's recommended to create branches first, then courses, assigning them to the appropriate branch.
+**For Students:**
+- Register an account and log in.
+- Select your academic branch/stream.
+- Browse and enroll in courses relevant to your branch.
+- Track your progress in each course from the dashboard.
+- Manage your profile and update branch/password details.
+- Submit feedback to help improve the platform (feedback is only visible to admins).
       
 ```bash
 lms-project/
