@@ -194,7 +194,10 @@ Example in MongoDB Compass:
 - Create, edit, or delete branches and courses.
 - Assign courses to branches and monitor student enrollments.
 - View detailed activity logs and feedback submitted by students to enhance platform quality.
-- Manage user roles and oversee platform engagement.     
+- Manage user roles and oversee platform engagement.
+
+**Best Practice:**  
+Admins should create branches first, then add courses, and assign each course to the appropriate branch for a structured catalog.
 ```bash
 lms-project/
 ├── backend/
