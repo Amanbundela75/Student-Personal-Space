@@ -226,12 +226,7 @@ lms-project/
 
 ## 🤝 Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-We welcome contributions from everyone! Whether you're fixing bugs, adding new features, improving documentation, or sharing ideas, your help makes this project better for all users.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! If you like the project. Thanks again!
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Your involvement in this project—whether you're fixing bugs, adding features, improving documentation, or sharing feedback—is highly valued and helps make the LMS better for everyone.
 
 **How to contribute:**
 
