@@ -233,7 +233,7 @@ We welcome contributions from everyone, regardless of experience level. If you h
 **How to contribute:**
 
 1. **Fork the Repository**  
-   Click the "Fork" button at the top right of this repo to create your own copy.
+   Click the **Fork** button at the top right of this repo to create your own copy.
 2. **Create a Feature Branch**  
    Clone your fork and create a new branch for your changes:
    ```bash
