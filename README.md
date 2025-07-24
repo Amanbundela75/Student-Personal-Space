@@ -236,6 +236,11 @@ We welcome contributions from everyone, regardless of experience level. If you h
    Click the **Fork** button at the top right of this repo to create your own copy.
 **2. Clone Your Fork & Create a Feature Branch**  
 Clone your fork locally and create a new branch for your changes:
+```bash
+git clone https://github.com/YOUR-USERNAME/LMS-Plateform.git
+cd LMS-Plateform
+git checkout -b feature/YourFeatureName
+```
 3. **Make Your Changes**  
    - Write clear, well-documented code.
    - If you’re adding a feature, update the README and relevant docs.
