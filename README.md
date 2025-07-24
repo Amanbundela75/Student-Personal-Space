@@ -228,6 +228,8 @@ lms-project/
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Your involvement in this project—whether you're fixing bugs, adding features, improving documentation, or sharing feedback—is highly valued and helps make the LMS better for everyone.
 
+We welcome contributions from everyone, regardless of experience level. If you have ideas or improvements, please don't hesitate to get involved!
+
 **How to contribute:**
 
 1. **Fork the Repository**  
