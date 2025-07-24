@@ -234,11 +234,8 @@ We welcome contributions from everyone, regardless of experience level. If you h
 
 1. **Fork the Repository**  
    Click the **Fork** button at the top right of this repo to create your own copy.
-2. **Create a Feature Branch**  
-   Clone your fork and create a new branch for your changes:
-   ```bash
-   git checkout -b feature/YourFeatureName
-   ```
+**2. Clone Your Fork & Create a Feature Branch**  
+Clone your fork locally and create a new branch for your changes:
 3. **Make Your Changes**  
    - Write clear, well-documented code.
    - If you’re adding a feature, update the README and relevant docs.
