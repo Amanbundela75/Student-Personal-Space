@@ -241,9 +241,10 @@ git clone https://github.com/YOUR-USERNAME/LMS-Plateform.git
 cd LMS-Plateform
 git checkout -b feature/YourFeatureName
 ```
-3. **Make Your Changes**  
-   - Write clear, well-documented code.
-   - If you’re adding a feature, update the README and relevant docs.
+**3. Make Your Changes**  
+- Write clear, well-documented code.
+- If adding a feature, update the README and relevant docs.
+- Try to keep each pull request focused on a single change or improvement.
 4. **Commit Your Changes**  
    Use descriptive commit messages:
    ```bash
