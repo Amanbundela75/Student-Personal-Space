@@ -248,11 +248,8 @@ git checkout -b feature/YourFeatureName
 **4. Test Your Changes**  
 - Run tests (if available) and make sure your code works as expected.
 - Test the affected frontend or backend portions locally.
-   ```bash
-   git add .
-   git commit -m "feat: Add feature XYZ"
-   ```
-5. **Push to Your Fork**  
+**5. Commit Your Changes**  
+Use clear, descriptive commit messages:
    ```bash
    git push origin feature/YourFeatureName
    ```
