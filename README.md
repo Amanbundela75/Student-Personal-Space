@@ -250,9 +250,6 @@ git checkout -b feature/YourFeatureName
 - Test the affected frontend or backend portions locally.
 **5. Commit Your Changes**  
 Use clear, descriptive commit messages:
-   ```bash
-   git push origin feature/YourFeatureName
-   ```
 6. **Open a Pull Request**  
    Go to your fork on GitHub, select your branch, and click "New Pull Request".  
    - Clearly describe your changes and link any related issues.
