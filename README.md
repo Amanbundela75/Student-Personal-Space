@@ -245,8 +245,9 @@ git checkout -b feature/YourFeatureName
 - Write clear, well-documented code.
 - If adding a feature, update the README and relevant docs.
 - Try to keep each pull request focused on a single change or improvement.
-4. **Commit Your Changes**  
-   Use descriptive commit messages:
+**4. Test Your Changes**  
+- Run tests (if available) and make sure your code works as expected.
+- Test the affected frontend or backend portions locally.
    ```bash
    git add .
    git commit -m "feat: Add feature XYZ"
