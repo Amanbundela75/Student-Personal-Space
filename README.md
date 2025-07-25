@@ -241,19 +241,15 @@ git clone https://github.com/YOUR-USERNAME/LMS-Plateform.git
 cd LMS-Plateform
 git checkout -b feature/YourFeatureName
 ```
-3. **Make Your Changes**  
-   - Write clear, well-documented code.
-   - If you’re adding a feature, update the README and relevant docs.
-4. **Commit Your Changes**  
-   Use descriptive commit messages:
-   ```bash
-   git add .
-   git commit -m "feat: Add feature XYZ"
-   ```
-5. **Push to Your Fork**  
-   ```bash
-   git push origin feature/YourFeatureName
-   ```
+**3. Make Your Changes**  
+- Write clear, well-documented code.
+- If adding a feature, update the README and relevant docs.
+- Try to keep each pull request focused on a single change or improvement.
+**4. Test Your Changes**  
+- Run tests (if available) and make sure your code works as expected.
+- Test the affected frontend or backend portions locally.
+**5. Commit Your Changes**  
+Use clear, descriptive commit messages:
 6. **Open a Pull Request**  
    Go to your fork on GitHub, select your branch, and click "New Pull Request".  
    - Clearly describe your changes and link any related issues.
