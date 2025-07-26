@@ -255,6 +255,9 @@ git add .
 git commit -m "feat: Brief description of your change"
 ```
 **6. Push to Your Fork**  
+```bash
+git push origin feature/YourFeatureName
+```
   
 **Tips for great contributions:**
 - Open an issue first if you want to discuss major changes or ideas.
