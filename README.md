@@ -254,10 +254,7 @@ Use clear, descriptive commit messages:
 git add .
 git commit -m "feat: Brief description of your change"
 ```
-6. **Open a Pull Request**  
-   Go to your fork on GitHub, select your branch, and click "New Pull Request".  
-   - Clearly describe your changes and link any related issues.
-   - Wait for review and feedback from maintainers.
+**6. Push to Your Fork**  
   
 **Tips for great contributions:**
 - Open an issue first if you want to discuss major changes or ideas.
