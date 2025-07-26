@@ -1,0 +1,94 @@
+/* --- Main Footer Container --- */
+.footer-container {
+    background-color: #1c2331; /* GeeksforGeeks jaisa dark color */
+    color: #f1f1f1;
+    padding: 4rem 2rem 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.footer-main {
+    display: grid;
+    /* Responsive grid: 5 columns on large screens, kam on smaller screens */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* --- Har column ke liye styling --- */
+.footer-column {
+    padding: 0 1rem;
+}
+
+.footer-column h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    position: relative;
+}
+
+/* Title ke neeche choti si line */
+.footer-column h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 50px;
+    height: 3px;
+    background-color: #2e8b57; /* Aapka theme green color */
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-column ul li a {
+    color: #d1d1d1;
+    text-decoration: none;
+    transition: color 0.3s, padding-left 0.3s;
+}
+
+.footer-column ul li a:hover {
+    color: #2e8b57; /* Hover par green color */
+    padding-left: 5px;
+}
+
+/* --- Address aur Social Media wala column --- */
+.footer-address p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    color: #d1d1d1;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-icons a {
+    color: #f1f1f1;
+    font-size: 1.5rem;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.social-icons a:hover {
+    transform: translateY(-3px);
+    color: #2e8b57;
+}
+
+/* --- Copyright wala neeche ka hissa --- */
+.footer-bottom {
+    border-top: 1px solid #3a3a3a;
+    padding-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #a1a1a1;
+}
