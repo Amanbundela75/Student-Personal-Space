@@ -1,194 +1,60 @@
-/* Main Dashboard Container */
-.portfolio-dashboard {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+/* Main Layout */
+.portfolio-main { display: flex; flex-wrap: wrap; gap: 2rem; margin: 30px auto; padding: 0 50px; max-width: 1600px; }
+.profile-left { flex: 0 0 320px; display: flex; flex-direction: column; gap: 2rem; }
+.profile-right { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 2rem; }
 
-.portfolio-grid {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 25px;
-}
+/* --- Left Column Cards --- */
+.profile-card, .platform-link-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(233, 236, 239, 0.55); padding: 2rem 1.5rem; }
+.profile-card { text-align: center; }
+.avatar-big { width: 90px; height: 90px; background: #FF7043; color: #fff; font-size: 3.2rem; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.edit-btn { margin-top: 1rem; background: #247cff; color: #fff; border: none; padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 550; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: .6em; transition: background-color 0.2s; }
+.edit-btn:hover { background-color: #0056b3; }
+.bio { margin-top: 1.2rem; color: #7d7d7d; font-size: 1rem; }
+.social-links { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; }
+.social-links a { font-size: 1.6em; color: #6c757d; transition: color 0.2s; }
+.social-links a:hover { color: #007bff; }
 
-.portfolio-card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
-    border: 1px solid #e9ecef;
-}
+/* --- Right Column: Grid Layout --- */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.8rem; }
+.stat-card { background: #fff; border-radius: 15px; box-shadow: 0 2px 16px rgba(233, 236, 239, 0.8); padding: 1.5rem 1.2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.stat-card h4 { margin: 0; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: .5em; }
+.chart-container { width: 160px; height: 160px; }
+.stat-total { text-align: center; margin-top: 1rem; }
+.stat-total span { font-size: 0.9rem; color: #888; }
+.stat-total h2 { font-size: 2.1rem; color: #2f8d46; margin: 0.1em 0; font-weight: 700; }
 
-/* Left Column: User Info Card */
-.user-info-card {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+/* --- Bottom Row: Badges & Streaks --- */
+.bottom-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+.awards-row, .streaks-row { background: #fff; border-radius: 15px; box-shadow: 0 2px 16px rgba(233, 236, 239, 0.8); padding: 1.5rem; }
+.awards-row h4, .streaks-row h4 { margin: 0 0 1rem; font-size: 1.1rem; display: flex; align-items: center; gap: .5em; }
+.badges-list { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.badge-card { background: #f8f9fa; padding: 0.6em 1.2em; border-radius: 20px; display: flex; align-items: center; gap: .6em; font-weight: 500; font-size: 0.9rem; }
+.platform-icon-xs { width: 18px; height: 18px; border-radius: 50%; }
+.platform-icon-sm { width: 22px; height: 22px; border-radius: 5px; }
 
-.user-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: #ff6f61;
-    color: white;
-    font-size: 3em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
-    font-weight: bold;
-}
+/* Heatmap Styles */
+.streaks-row .react-calendar-heatmap { font-size: 10px; }
+.react-calendar-heatmap .color-github-1 { fill: #d6e685; } .react-calendar-heatmap .color-github-2 { fill: #8cc665; } .react-calendar-heatmap .color-github-3 { fill: #44a340; } .react-calendar-heatmap .color-github-4 { fill: #1e6823; } .react-calendar-heatmap .color-empty { fill: #eeeeee; }
 
-.user-info-card h2 {
-    margin: 10px 0 5px;
-    color: #343a40;
-}
+/* --- FIXED MODAL STYLES --- */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
+.modal-content { background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 90%; max-width: 550px; max-height: 90vh; display: flex; flex-direction: column; }
+.modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { margin: 0; font-size: 1.4rem; color: #343a40; }
+.close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6c757d; }
+.modal-body { padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+.modal-body h4 { margin: 1rem 0 0.5rem; font-size: 1.1rem; color: #495057; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+.modal-body label { font-weight: 600; color: #495057; margin-bottom: 0.25rem; display: block; }
+.modal-body input[type="text"], .modal-body input[type="url"], .modal-body textarea { width: 100%; padding: 0.75rem; border: 1px solid #ced4da; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+.modal-body textarea { min-height: 100px; resize: vertical; }
+.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #e9ecef; display: flex; justify-content: flex-end; gap: 1rem; }
+.button-save, .button-cancel { padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+.button-save { background-color: #28a745; color: white; }
+.button-save:hover { background-color: #218838; }
+.button-save:disabled { background-color: #aaa; cursor: not-allowed; }
+.button-cancel { background-color: #f1f3f5; color: #495057; }
+.button-cancel:hover { background-color: #e9ecef; }
 
-.user-email {
-    color: #6c757d;
-    font-size: 0.9em;
-    margin-bottom: 20px;
-}
-
-.edit-profile-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background-color 0.2s;
-}
-
-.edit-profile-btn:hover {
-    background-color: #0056b3;
-}
-
-.user-bio {
-    margin-top: 20px;
-    font-size: 0.95em;
-    color: #495057;
-    text-align: left;
-}
-
-.social-links {
-    margin-top: 20px;
-    display: flex;
-    gap: 20px;
-}
-
-.social-links a {
-    font-size: 1.5em;
-    color: #6c757d;
-    transition: color 0.2s;
-}
-
-.social-links a:hover {
-    color: #007bff;
-}
-
-/* Right Side Cards */
-.problems-solved-card h3, .skills-card h3 {
-    margin-top: 0;
-    color: #343a40;
-    border-bottom: 1px solid #dee2e6;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
-.chart-container {
-    position: relative;
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.chart-total {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-.chart-total span {
-    font-size: 1em;
-    color: #6c757d;
-}
-.chart-total strong {
-    display: block;
-    font-size: 2.5em;
-    color: #343a40;
-}
-
-.skills-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.skill-tag {
-    background-color: #e9ecef;
-    color: #495057;
-    padding: 8px 12px;
-    border-radius: 15px;
-    font-size: 0.9em;
-}
-
-/* --- Edit Mode CSS --- */
-.portfolio-edit-container {
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
-}
-
-.edit-section {
-    margin-bottom: 25px;
-}
-
-.edit-section h3 {
-    border-bottom: 1px solid #dee2e6;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.edit-section label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #495057;
-}
-
-.edit-section input, .edit-section textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.edit-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.button-save {
-    background-color: #28a745;
-    color: white;
-}
-
-.button-cancel {
-    background-color: #6c757d;
-    color: white;
-}
+/* Responsive */
+@media (max-width: 1200px) { .profile-left { flex: 1 1 100%; } }
+@media (max-width: 768px) { .portfolio-main { padding: 0 20px; } }
