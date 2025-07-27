@@ -263,6 +263,7 @@ git push origin feature/YourFeatureName
 - Click **New Pull Request**.
 - Select your feature branch and clearly describe your changes.
 - Link any related issues if applicable.
+- Wait for review and feedback from maintainers.
   
 **Tips for great contributions:**
 - Open an issue first if you want to discuss major changes or ideas.
