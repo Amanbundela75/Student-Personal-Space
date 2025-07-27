@@ -258,6 +258,7 @@ git commit -m "feat: Brief description of your change"
 ```bash
 git push origin feature/YourFeatureName
 ```
+**7. Open a Pull Request**  
   
 **Tips for great contributions:**
 - Open an issue first if you want to discuss major changes or ideas.
