@@ -262,6 +262,7 @@ git push origin feature/YourFeatureName
 - Go to your forked repository on GitHub.
 - Click **New Pull Request**.
 - Select your feature branch and clearly describe your changes.
+- Link any related issues if applicable.
   
 **Tips for great contributions:**
 - Open an issue first if you want to discuss major changes or ideas.
