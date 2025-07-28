@@ -269,6 +269,8 @@ git push origin feature/YourFeatureName
 - **Open an issue** for discussions on major changes or new features before submitting a pull request.
 - **Follow the existing coding style and conventions** in the project.
 - **Document your code** and update documentation as needed.
+- **Be respectful and collaborative** in all interactions.
+- **Respond to feedback** on your pull request and be open to making changes.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
