@@ -266,7 +266,7 @@ git push origin feature/YourFeatureName
 - Wait for review and feedback from maintainers.
   
 ### Contribution Guidelines  
-
+- **Open an issue** for discussions on major changes or new features before submitting a pull request.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
