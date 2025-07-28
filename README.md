@@ -265,11 +265,6 @@ git push origin feature/YourFeatureName
 - Link any related issues if applicable.
 - Wait for review and feedback from maintainers.
   
-**Tips for great contributions:**
-- Open an issue first if you want to discuss major changes or ideas.
-- Follow the coding style and conventions used in the project.
-- Be respectful and collaborative in your interactions.
-- Star the project if you find it useful!
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
