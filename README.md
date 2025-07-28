@@ -267,6 +267,7 @@ git push origin feature/YourFeatureName
   
 ### Contribution Guidelines  
 - **Open an issue** for discussions on major changes or new features before submitting a pull request.
+- **Follow the existing coding style and conventions** in the project.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
