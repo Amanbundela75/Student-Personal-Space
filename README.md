@@ -258,12 +258,19 @@ git commit -m "feat: Brief description of your change"
 ```bash
 git push origin feature/YourFeatureName
 ```
+**7. Open a Pull Request**  
+- Go to your forked repository on GitHub.
+- Click **New Pull Request**.
+- Select your feature branch and clearly describe your changes.
+- Link any related issues if applicable.
+- Wait for review and feedback from maintainers.
   
-**Tips for great contributions:**
-- Open an issue first if you want to discuss major changes or ideas.
-- Follow the coding style and conventions used in the project.
-- Be respectful and collaborative in your interactions.
-- Star the project if you find it useful!
+### Contribution Guidelines  
+- **Open an issue** for discussions on major changes or new features before submitting a pull request.
+- **Follow the existing coding style and conventions** in the project.
+- **Document your code** and update documentation as needed.
+- **Be respectful and collaborative** in all interactions.
+- **Respond to feedback** on your pull request and be open to making changes.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
