@@ -273,7 +273,7 @@ git push origin feature/YourFeatureName
 - **Respond to feedback** on your pull request and be open to making changes.
 
 ### Need Help?
-If you're new to open source or need help getting started, check the open issues, especially those labeled "good first issue" or "help wanted."
+If you're new to open source or need help getting started, check the open issues, especially those labeled "good first issue" or "help wanted." Feel free to ask questions or request guidance by opening an issue.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
