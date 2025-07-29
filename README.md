@@ -275,6 +275,8 @@ git push origin feature/YourFeatureName
 ### Need Help?
 If you're new to open source or need help getting started, check the open issues, especially those labeled "good first issue" or "help wanted." Feel free to ask questions or request guidance by opening an issue.
 
+### Thank You
+
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
 
