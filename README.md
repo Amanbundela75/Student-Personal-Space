@@ -276,6 +276,8 @@ git push origin feature/YourFeatureName
 If you're new to open source or need help getting started, check the open issues, especially those labeled "good first issue" or "help wanted." Feel free to ask questions or request guidance by opening an issue.
 
 ### Thank You
+⭐ If you like the project, please give it a star!  
+Your support and contributions help make LMS-Plateform a better learning tool for everyone.
 
 ## 📝 License
 © 2025 Aman's Platform. All rights reserved.
