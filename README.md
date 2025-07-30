@@ -181,7 +181,7 @@ Example in MongoDB Compass:
 ## 🔧 Usage
 
 **For Students:**
-- Register an account and log in.
+
 - Select your academic branch/stream.
 - Browse and enroll in courses relevant to your branch.
 - Track your progress in each course from the dashboard.
