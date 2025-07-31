@@ -1,0 +1,39 @@
+/* Yeh page ko center mein laane aur background color dene ke liye hai */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh; /* Viewport ki height ke barabar */
+    padding: 2rem;
+    background-color: #f8f9fa; /* Light grey background */
+}
+
+/* Form ke card/box ka style */
+.form-container {
+    background: #ffffff;
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px; /* Form ki max width */
+    text-align: center;
+}
+
+.form-container h2 {
+    font-size: 1.8rem;
+    color: #212529;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+/* Verification message ka style */
+.alert.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1rem;
+}
