@@ -4,13 +4,19 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 import FaceCaptureComponent from './FaceCaptureComponent.jsx';
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    // Form data ke liye ek state object use karna behtar hai
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const [faceImage, setFaceImage] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    // Generic function to handle input changes
+    const onChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleFaceCaptured = (imageDataUrl) => {
         setFaceImage(imageDataUrl);
@@ -20,32 +26,39 @@ const LoginForm = () => {
         e.preventDefault();
         setError('');
 
+        if (!formData.email || !formData.password) {
+            return setError('Please provide both email and password.');
+        }
         if (!faceImage) {
-            setError('Please capture your face to log in.');
-            return;
+            return setError('Please capture your face to log in.');
         }
 
         setLoading(true);
         try {
+            // Destructure email and password from formData
+            const { email, password } = formData;
             const response = await login(email, password, faceImage);
+
             if (response.success) {
+                // Role-based redirection
                 if (response.user.role === 'admin') {
                     navigate('/admin/dashboard');
                 } else {
                     navigate('/student/dashboard');
                 }
             } else {
+                // Backend se aaya specific error message dikhana
                 setError(response.message || 'Login failed.');
             }
         } catch (err) {
-            setError(err.response?.data?.message || err.message || 'An error occurred.');
+            setError(err.response?.data?.message || err.message || 'An unexpected error occurred.');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            {/* Error message ko top par rakhein */}
             {error && <div className="alert alert-danger">{error}</div>}
 
             <div className="form-group">
@@ -53,8 +66,9 @@ const LoginForm = () => {
                 <input
                     type="email"
                     id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    name="email" // name attribute zaroori hai
+                    value={formData.email}
+                    onChange={onChange}
                     required
                 />
             </div>
@@ -64,8 +78,9 @@ const LoginForm = () => {
                 <input
                     type="password"
                     id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    name="password" // name attribute zaroori hai
+                    value={formData.password}
+                    onChange={onChange}
                     required
                 />
             </div>
@@ -73,14 +88,14 @@ const LoginForm = () => {
             <div className="form-group">
                 <label>Face Capture</label>
                 <FaceCaptureComponent onCapture={handleFaceCaptured} />
-                {faceImage && <p style={{ color: 'green', textAlign: 'center', marginTop: '10px' }}>Face captured, ready to login!</p>}
+                {faceImage && <p className="success-message">Face captured, ready to login!</p>}
             </div>
 
-            <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: '1rem' }}>
+            <button type="submit" className="btn-login" disabled={loading}>
                 {loading ? 'Logging in...' : 'Login'}
             </button>
 
-            <p style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+            <p className="form-footer-link">
                 Don't have an account? <Link to="/register">Register here</Link>
             </p>
         </form>
