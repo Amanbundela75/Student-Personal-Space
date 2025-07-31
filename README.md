@@ -184,7 +184,7 @@ Example in MongoDB Compass:
 - Register an account and log in.
 - Select your academic branch/stream.
 - Browse and enroll in courses relevant to your branch.
-
+- Track your progress in each course from the dashboard.
 - Manage your profile and update branch/password details.
 - Submit feedback to help improve the platform (feedback is only visible to admins).
   
