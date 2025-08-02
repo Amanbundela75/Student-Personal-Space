@@ -15,11 +15,11 @@ const Footer = () => {
                     <div className="footer-address">
                         <p>
                             <strong>Corporate Address:</strong><br />
-                            A-143, 7th Floor, Sovereign Corporate Tower, Sector- 136, Noida, Uttar Pradesh (201305)
+                            NH-44, Bypass Turari, Jhansi Road, Gwalior - 475001, Madhya Pradesh, India
                         </p>
                         <p>
                             <strong>Registered Address:</strong><br />
-                            K 061, Tower K, Gulshan Vivante Apartment, Sector 137, Noida, Gautam Buddh Nagar, Uttar Pradesh, 201305
+                            NH-44, Bypass Turari, Jhansi Road, Gwalior - 475001, Madhya Pradesh, India
                         </p>
                     </div>
                     <div className="social-icons">
