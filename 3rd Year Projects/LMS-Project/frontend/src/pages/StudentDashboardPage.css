@@ -28,7 +28,7 @@
 .status.completed { background-color: #28a745; }
 .status.in-progress { background-color: #ffc107; color: #212529; }
 
-/* --- NEW: Activity Feed as Posts --- */
+/* Activity Feed */
 .activity-feed { display: flex; flex-direction: column; gap: 1.5rem; }
 .post-item { border: 1px solid #e9ecef; border-radius: 8px; padding: 1rem; }
 .post-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
@@ -44,14 +44,95 @@
 .button-icon:hover, .button-edit-icon:hover { background-color: #f1f3f5; color: #007bff; }
 .button-add-new { width: 100%; margin-top: 1.5rem; background-color: #f8f9fa; border: 1px dashed #ced4da; color: #495057; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; }
 .button-add-new:hover { background-color: #e9ecef; border-color: #adb5bd; }
-.button-primary { background-color: #007bff; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; cursor: pointer; }
-.button-primary:hover { background-color: #0056b3; }
 
-/* --- NEW: Modal Styles --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
-.modal-content { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 500px; position: relative; }
-.modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #aaa; }
-.modal-content h2 { margin-top: 0; }
+/* --- FINAL UPDATE: Buttons ko pixel-perfect align karne ke liye --- */
+.button-primary, .button-secondary {
+    /* Flexbox for perfect centering */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Consistent Box Model - Yahi hai sabse important badlaav */
+    box-sizing: border-box;
+    padding: 12px 24px; /* Pixel values ka istemal karein */
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+
+    /* Consistent Typography */
+    font-size: 1rem; /* 16px */
+    font-weight: 500;
+
+    /* Other properties */
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.button-primary {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff; /* Border ka rang background jaisa hi */
+}
+.button-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+.button-primary:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.button-secondary {
+    background-color: #e9ecef;
+    color: #343a40;
+    border-color: #ced4da;
+}
+.button-secondary:hover {
+    background-color: #d6d8db;
+    border-color: #adb5bd;
+}
+.button-secondary:disabled {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); padding: 1rem; }
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+.modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #aaa; z-index: 10; }
+
+/* Form Wrapper for Scrolling */
+.form-wrapper {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.edit-form h2 { margin-top: 0; margin-bottom: 1.5rem; text-align: center; }
+.edit-form .form-group { margin-bottom: 1.25rem; }
+.edit-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #495057; }
+.edit-form input, .edit-form textarea, .edit-form select { width: 100%; padding: 0.75rem; border: 1px solid #ced4da; border-radius: 8px; font-size: 1rem; }
+
+.edit-form .form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid #e9ecef;
+    background-color: #fff;
+}
 
 /* Share Update Modal Form */
 .share-box-form textarea { width: 100%; min-height: 100px; border: 1px solid #ced4da; border-radius: 8px; padding: 1rem; font-size: 1rem; margin-bottom: 1rem; }
