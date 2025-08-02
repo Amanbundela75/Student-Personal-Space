@@ -1,6 +1,25 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+// --- Naya Schema: Academics ke liye ---
+const academicsSchema = new mongoose.Schema({
+    currentSemester: { type: Number, default: 1 },
+    cgpa: { type: Number, default: 0.0 },
+    sgpa: { type: Number, default: 0.0 }
+}, { _id: false }); // _id: false, kyonki yah ek sub-document hai
+
+// --- Naya Schema: Projects ke liye ---
+const projectSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    status: {
+        type: String,
+        enum: ['In Progress', 'Completed', 'On Hold'],
+        default: 'In Progress'
+    },
+    githubLink: { type: String, trim: true }
+}); // Yahan default _id banega jo har project ke liye unique hoga
+
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -8,17 +27,21 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ['student', 'admin'], default: 'student' },
     branch: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch' },
-
-    // --- NAYA FIELD YAHAN ADD KIYA HAI ---
     enrolledCourses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
     }],
-    // ------------------------------------
+
+    // --- DASHBOARD KE LIYE NAYE FIELDS YAHAN ADD KIYE GAYE HAIN ---
+    academics: {
+        type: academicsSchema,
+        default: () => ({}) // Default values ke saath ek naya object banata hai
+    },
+    projects: [projectSchema], // Projects ka ek array
+    // -----------------------------------------------------------
 
     idCardImageUrl: { type: String },
     faceDescriptor: { type: [Number] },
-
     isEmailVerified: {
         type: Boolean,
         default: false
@@ -27,7 +50,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         select: false
     },
-
     lastLoginTimestamp: { type: Date },
     idCardVerificationStatus: {
         type: String,
