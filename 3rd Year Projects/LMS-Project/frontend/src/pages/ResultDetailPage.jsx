@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom'; // useNavigate ko import karein
+import { useParams, useNavigate } from 'react-router-dom';
 import testService from '../services/TestServices';
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -7,7 +7,7 @@ const ResultDetailPage = () => {
     const { resultId } = useParams();
     const { currentUser } = useContext(AuthContext);
     const token = currentUser?.token;
-    const navigate = useNavigate(); // useNavigate ko initialize karein
+    const navigate = useNavigate();
 
     const [resultDetails, setResultDetails] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -24,7 +24,6 @@ const ResultDetailPage = () => {
             try {
                 setLoading(true);
                 const data = await testService.getResultDetails(resultId, token);
-                console.log("API se mila data (resultDetails):", data); // Debugging ke liye
                 setResultDetails(data);
                 setError('');
             } catch (err) {
@@ -38,40 +37,24 @@ const ResultDetailPage = () => {
         fetchResultDetails();
     }, [resultId, token]);
 
-    const findUserAnswer = (questionId) => {
-        // Crash se bachne ke liye check karein ki answers array maujood hai ya nahi
-        if (!resultDetails?.answers || resultDetails.answers.length === 0) {
-            return null;
-        }
-        const answer = resultDetails.answers.find(a => a.question && a.question.toString() === questionId.toString());
-        return answer ? answer.selectedOption : null;
-    };
-
     if (loading) return <div className="container" style={{padding: '2rem'}}>Loading Result Details...</div>;
     if (error) return <div className="container" style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
 
     return (
         <div className="result-detail-container" style={{ padding: '20px', maxWidth: '900px', margin: 'auto' }}>
-            {/* --- START: BADLAV --- "Back" button ko behtar banayein */}
             <button onClick={() => navigate(-1)} className="button button-secondary" style={{ marginBottom: '20px', display: 'inline-block' }}>
                 &larr; Go Back
             </button>
-            {/* --- END: BADLAV --- */}
 
             <h2 style={{ textAlign: 'center' }}>Result for: {resultDetails?.test?.title}</h2>
-            <div style={{ textAlign: 'center', fontSize: '1.2rem', marginBottom: '30px' }}>
-                <strong>Your Score: {resultDetails?.score} / {resultDetails?.totalMarks}</strong>
+            {/* --- UPDATE 1: Score ko 'resultDetails.test.totalMarks' se liya gaya hai --- */}
+            <div style={{ textAlign: 'center', fontSize: '1.2rem', marginBottom: '30px', fontWeight: 'bold' }}>
+                Your Score: {resultDetails?.score} / {resultDetails?.test?.totalMarks || ''}
             </div>
 
-            {/* Agar answers nahi hain to ek message dikhao */}
-            {(!resultDetails?.answers || resultDetails.answers.length === 0) && (
-                <div style={{ padding: '20px', backgroundColor: '#fff3cd', color: '#856404', textAlign: 'center', borderRadius: '8px', marginBottom: '20px', border: '1px solid #ffeeba' }}>
-                    <strong>Note:</strong> Detailed answers are not available for this result.
-                </div>
-            )}
-
             {resultDetails?.test?.questions.map((q, qIndex) => {
-                const userAnswerIndex = findUserAnswer(q._id);
+                // --- UPDATE 2: User ka answer ab seedhe array index se milega ---
+                const userAnswerIndex = resultDetails?.answers ? resultDetails.answers[qIndex] : null;
                 const correctAnswerIndex = q.correctOption;
 
                 return (
@@ -79,18 +62,27 @@ const ResultDetailPage = () => {
                         <h4 style={{ marginTop: 0 }}>{`Q${qIndex + 1}: ${q.questionText}`}</h4>
                         {q.options.map((option, oIndex) => {
                             let style = {};
-                            if (resultDetails?.answers?.length > 0) {
-                                if (oIndex === correctAnswerIndex) {
-                                    style = { backgroundColor: '#d4edda', color: '#155724', fontWeight: 'bold' };
-                                }
-                                if (oIndex === userAnswerIndex && userAnswerIndex !== correctAnswerIndex) {
-                                    style = { backgroundColor: '#f8d7da', color: '#721c24' };
-                                }
+                            const isUserAnswer = oIndex === userAnswerIndex;
+                            const isCorrectAnswer = oIndex === correctAnswerIndex;
+
+                            // --- UPDATE 3: Highlighting logic ko saral aur sahi banaya gaya hai ---
+                            // Case 1: Agar user ka jawab sahi hai, to use green karein
+                            if (isUserAnswer && isCorrectAnswer) {
+                                style = { backgroundColor: '#d4edda', color: '#155724', fontWeight: 'bold' };
                             }
+                            // Case 2: Agar user ka jawab galat hai
+                            else if (isUserAnswer && !isCorrectAnswer) {
+                                style = { backgroundColor: '#f8d7da', color: '#721c24' }; // User ke galat jawab ko red karein
+                            }
+                            // Case 3: Sahi jawab (agar user ne galat chuna hai to)
+                            else if (isCorrectAnswer) {
+                                style = { backgroundColor: '#d4edda', color: '#155724' }; // Sahi jawab ko green karein
+                            }
+
                             return (
                                 <div key={oIndex} style={{ padding: '10px', margin: '5px 0', borderRadius: '5px', ...style }}>
                                     {option}
-                                    {resultDetails?.answers && oIndex === userAnswerIndex && <span style={{fontWeight: 'bold'}}> &larr; Your Answer</span>}
+                                    {isUserAnswer && <span style={{fontWeight: 'bold'}}> &larr; Your Answer</span>}
                                 </div>
                             );
                         })}
