@@ -41,9 +41,14 @@ const TestSchema = new Schema({
         type: Number,
         required: [true, 'Please set a duration for the test.']
     },
-    isProctored: { // <-- YEH NAYA FIELD ADD KIYA GAYA HAI
+    // --- UPDATE: Yahan naya field add kiya gaya hai ---
+    totalMarks: {
+        type: Number,
+        default: 0
+    },
+    isProctored: {
         type: Boolean,
-        default: true // Default roop se test proctored honge
+        default: true
     },
     questions: [QuestionSchema],
     createdBy: {
