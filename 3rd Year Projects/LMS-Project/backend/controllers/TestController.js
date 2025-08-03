@@ -1,5 +1,5 @@
 const Test = require('../models/Test.js');
-const TestAttempt = require('../models/TestAttempt.js'); // Humne iska naam Result se TestAttempt kar diya hai
+const TestAttempt = require('../models/TestAttempt.js');
 const asyncHandler = require('../middleware/asyncHandler.js');
 const mongoose = require('mongoose');
 
@@ -47,26 +47,17 @@ const createTest = asyncHandler(async (req, res) => {
         throw new Error('Please provide title, course, branch, and at least one question');
     }
 
-    const transformedQuestions = questions.map(q => {
-        if (q.correctOption === undefined || !q.options || !Array.isArray(q.options)) {
-            throw new Error('Each question must have options and a correct answer index.');
-        }
-        return {
-            questionText: q.questionText,
-            options: q.options,
-            correctOption: q.correctOption
-        };
-    });
-
     const test = new Test({
         title,
         course,
         branch,
         duration,
         isProctored,
-        questions: transformedQuestions,
-        createdBy: req.user._id,
+        questions: questions,
+        createdBy: req.user._id
     });
+
+    test.totalMarks = questions.length;
 
     const createdTest = await test.save();
     res.status(201).json(createdTest);
@@ -86,6 +77,10 @@ const updateTest = asyncHandler(async (req, res) => {
         test.questions = req.body.questions || test.questions;
         test.duration = req.body.duration || test.duration;
         test.isProctored = req.body.isProctored !== undefined ? req.body.isProctored : test.isProctored;
+
+        if (req.body.questions) {
+            test.totalMarks = req.body.questions.length;
+        }
 
         const updatedTest = await test.save();
         res.status(200).json(updatedTest);
@@ -144,7 +139,7 @@ const submitTest = asyncHandler(async (req, res) => {
             success: true,
             message: "Test submitted successfully!",
             score: score,
-            totalMarks: test.questions.length,
+            totalMarks: test.totalMarks,
         });
     } else {
         res.status(400);
@@ -157,10 +152,24 @@ const submitTest = asyncHandler(async (req, res) => {
 // @access  Private (Student)
 const getTestResults = asyncHandler(async (req, res) => {
     const studentId = req.user._id;
+
+    // --- FINAL UPDATE 1: Poora test populate karein, na ki sirf title aur totalMarks ---
     const results = await TestAttempt.find({ student: studentId })
-        .populate('test', 'title')
+        .populate('test')
         .sort({ createdAt: -1 });
-    res.status(200).json(results);
+
+    // --- FINAL UPDATE 2: Purane tests ke liye totalMarks ko fix karein ---
+    const fixedResults = results.map(result => {
+        const resultObject = result.toObject();
+        // Check karein ki test hai aur usmein totalMarks nahi hai
+        if (resultObject.test && (!resultObject.test.totalMarks || resultObject.test.totalMarks === 0)) {
+            // Agar nahi hai, to questions ki length se calculate karein
+            resultObject.test.totalMarks = resultObject.test.questions.length;
+        }
+        return resultObject;
+    });
+
+    res.status(200).json(fixedResults);
 });
 
 // @desc    Get details of a single test result by its ID
@@ -168,7 +177,8 @@ const getTestResults = asyncHandler(async (req, res) => {
 // @access  Private (Student)
 const getSingleTestResult = asyncHandler(async (req, res) => {
     const { id: resultId } = req.params;
-    const result = await TestAttempt.findById(resultId).populate({ path: 'test', model: 'Test' });
+
+    const result = await TestAttempt.findById(resultId).populate('test');
 
     if (!result) {
         res.status(404);
@@ -179,7 +189,12 @@ const getSingleTestResult = asyncHandler(async (req, res) => {
         throw new Error('Forbidden: You are not authorized to view this result.');
     }
 
-    res.status(200).json(result);
+    const resultObject = result.toObject();
+    if (resultObject.test && (!resultObject.test.totalMarks || resultObject.test.totalMarks === 0)) {
+        resultObject.test.totalMarks = resultObject.test.questions.length;
+    }
+
+    res.status(200).json(resultObject);
 });
 
 // @desc    Get all results for ALL students (for Admin)
