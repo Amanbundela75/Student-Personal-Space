@@ -58,18 +58,20 @@ const MyResultsPage = () => {
                         <th style={{ padding: '12px', textAlign: 'left' }}>Test Title</th>
                         <th style={{ padding: '12px', textAlign: 'center' }}>Score</th>
                         <th style={{ padding: '12px', textAlign: 'left' }}>Submitted On</th>
-                        {/* --- START: NAYA COLUMN ADD KIYA GAYA --- */}
                         <th style={{ padding: '12px', textAlign: 'center' }}>Actions</th>
-                        {/* --- END: NAYA COLUMN ADD KIYA GAYA --- */}
                     </tr>
                     </thead>
                     <tbody>
                     {results.map((result) => (
                         <tr key={result._id} style={{ borderBottom: '1px solid #eee' }}>
                             <td style={{ padding: '12px' }}>{result.test?.title || 'Test Title Not Available'}</td>
-                            <td style={{ padding: '12px', textAlign: 'center' }}>{`${result.score} / ${result.totalMarks}`}</td>
-                            <td style={{ padding: '12px' }}>{new Date(result.submittedAt).toLocaleDateString()}</td>
-                            {/* --- START: NAYA BUTTON ADD KIYA GAYA --- */}
+
+                            {/* --- UPDATE 1: Score ko 'result.test.totalMarks' se liya gaya hai --- */}
+                            <td style={{ padding: '12px', textAlign: 'center' }}>{`${result.score} / ${result.test?.totalMarks || 'N/A'}`}</td>
+
+                            {/* --- UPDATE 2: Date ko 'result.createdAt' se liya gaya hai --- */}
+                            <td style={{ padding: '12px' }}>{new Date(result.createdAt).toLocaleDateString()}</td>
+
                             <td style={{ padding: '12px', textAlign: 'center' }}>
                                 <Link to={`/results/${result._id}`}>
                                     <button className="button button-secondary">
@@ -77,7 +79,6 @@ const MyResultsPage = () => {
                                     </button>
                                 </Link>
                             </td>
-                            {/* --- END: NAYA BUTTON ADD KIYA GAYA --- */}
                         </tr>
                     ))}
                     </tbody>
@@ -88,3 +89,10 @@ const MyResultsPage = () => {
 };
 
 export default MyResultsPage;
+
+
+
+
+
+
+
