@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema({
         default: () => ({}) // Default values ke saath ek naya object banata hai
     },
     projects: [projectSchema], // Projects ka ek array
+
+    // --- UPDATE: Background image ko Profile Picture se badal diya gaya hai ---
+    profilePicture: {
+        type: String,
+        default: '' // Default mein koi image nahi hogi
+    },
     // -----------------------------------------------------------
 
     idCardImageUrl: { type: String },
@@ -73,4 +79,5 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+// --- UPDATE: Is line ko badal diya gaya hai taaki error na aaye ---
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
