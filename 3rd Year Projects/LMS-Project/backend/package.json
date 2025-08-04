@@ -30,7 +30,7 @@
     "face-api.js": "^0.22.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.3"
   },
   "devDependencies": {
