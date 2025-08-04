@@ -1,4 +1,3 @@
-// backend/controllers/authController.js
 const User = require('../models/User.js');
 const Branch = require('../models/Branch.js');
 const jwt = require('jsonwebtoken');
@@ -28,7 +27,7 @@ const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// --- REGISTER USER (WITH DUPLICATE FACE DETECTION) ---
+// --- REGISTER USER ---
 exports.registerUser = async (req, res) => {
     const { firstName, lastName, email, password, branchId, faceImageBase64 } = req.body;
 
@@ -49,7 +48,6 @@ exports.registerUser = async (req, res) => {
         }
         const newFaceDescriptor = detection.descriptor;
 
-        // --- START: DUPLICATE FACE CHECK ---
         const allUsersWithFaces = await User.find({ faceDescriptor: { $exists: true, $ne: [] } });
         const faceMatcher = new faceapi.FaceMatcher(allUsersWithFaces.map(user =>
             new faceapi.LabeledFaceDescriptors(user.email, [new Float32Array(user.faceDescriptor)])
@@ -57,14 +55,12 @@ exports.registerUser = async (req, res) => {
 
         const bestMatch = faceMatcher.findBestMatch(newFaceDescriptor);
 
-        // A distance of less than 0.4 is considered a very close match.
         if (bestMatch.label !== 'unknown' && bestMatch.distance < 0.4) {
-            return res.status(409).json({ // 409 Conflict is a good status code for this
+            return res.status(409).json({
                 success: false,
                 message: `This face is already registered with another account (${bestMatch.label}). Please log in or use a different account.`
             });
         }
-        // --- END: DUPLICATE FACE CHECK ---
 
         const verificationToken = crypto.randomBytes(32).toString('hex');
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
@@ -76,7 +72,7 @@ exports.registerUser = async (req, res) => {
             password,
             branch: branchId,
             idCardImageUrl: req.file.path,
-            faceDescriptor: Array.from(newFaceDescriptor), // Save the descriptor
+            faceDescriptor: Array.from(newFaceDescriptor),
             emailVerificationToken: verificationToken,
             isEmailVerified: false,
             idCardVerificationStatus: 'pending',
@@ -107,7 +103,6 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-
 // --- VERIFY EMAIL ---
 exports.verifyEmail = async (req, res) => {
     try {
@@ -134,8 +129,7 @@ exports.verifyEmail = async (req, res) => {
     }
 };
 
-
-// --- LOGIN USER (SECURITY FIX APPLIED) ---
+// --- LOGIN USER (FINAL FIX) ---
 exports.loginUser = async (req, res) => {
     const { email, password, faceImageBase64 } = req.body;
 
@@ -144,7 +138,11 @@ exports.loginUser = async (req, res) => {
     }
 
     try {
-        const user = await User.findOne({ email }).select('+password');
+        // --- UPDATE 1: Poora user data fetch karein, password sahit ---
+        const user = await User.findOne({ email })
+            .select('+password')
+            .populate('branch', 'name')
+            .populate('enrolledCourses', 'title imageUrl');
 
         if (!user || !(await user.matchPassword(password))) {
             return res.status(401).json({ success: false, message: 'Invalid email or password.' });
@@ -175,6 +173,8 @@ exports.loginUser = async (req, res) => {
         }
 
         const token = generateToken(user._id, user.role);
+
+        // --- UPDATE 2: Poora user object bhejein ---
         res.status(200).json({
             success: true,
             token,
@@ -183,7 +183,12 @@ exports.loginUser = async (req, res) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                branch: user.branch,
+                enrolledCourses: user.enrolledCourses,
+                academics: user.academics || { currentSemester: 1, cgpa: 0, sgpa: 0 },
+                projects: user.projects || [],
+                backgroundImage: user.backgroundImage || '',
             }
         });
 
@@ -193,6 +198,7 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+// ... (baaki sabhi functions waise hi rahenge) ...
 
 // --- GET USER PROFILE ---
 exports.getUserProfile = async (req, res) => {
