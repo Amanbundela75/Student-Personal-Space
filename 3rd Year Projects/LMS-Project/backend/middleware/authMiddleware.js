@@ -2,42 +2,53 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('./asyncHandler.js');
 const User = require('../models/User.js');
 
-// Middleware 1: Protect (Check karta hai ki user logged in hai ya nahi)
+// Middleware 1: Protect (User ko authenticate karta hai)
 const protect = asyncHandler(async (req, res, next) => {
     let token;
 
-    // Tareeka 1: HTTP-Only cookie se JWT token padhna
-    token = req.cookies.jwt;
-
-    // Tareeka 2: Agar cookie mein token nahi hai, to Authorization header se padhna
-    if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    // Step 1: Request se token nikalne ki koshish karein.
+    // Hum pehle 'Authorization' header check karenge, jo standard tareeka hai.
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Header se token nikalna (format: "Bearer <token>")
+            // Token ko "Bearer <token>" string se alag karein
             token = req.headers.authorization.split(' ')[1];
         } catch (error) {
-            console.error("Bearer token ko parse karne mein error:", error);
+            console.error("Token parsing error:", error);
             res.status(401);
-            throw new Error('Not authorized, token ka format galat hai');
+            throw new Error('Not authorized, token format is incorrect.');
         }
     }
+    // Agar header mein token nahi hai, to cookie check karein (alternative method)
+    else if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+    }
 
+    // Step 2: Agar token mil gaya hai, to use verify karein.
     if (token) {
         try {
+            // Token ko secret key ke saath verify karein
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // --- YAHAN PAR FIX KIYA GAYA HAI ---
-            // 'decoded.userId' ki jagah 'decoded.id' ka istemal karein
+            // Decoded token se user ID nikal kar database se user ka data fetch karein
+            // Aur use `req.user` mein save kar dein taaki aage ke routes use istemal kar sakein
             req.user = await User.findById(decoded.id).select('-password');
 
-            next(); // Agle middleware par jaana
+            if (!req.user) {
+                res.status(401);
+                throw new Error('Not authorized, user for this token not found.');
+            }
+
+            next(); // Sab theek hai, agle function par jaayein
         } catch (error) {
-            console.error(error); // Asli error ko console mein dekhne ke liye
+            console.error("Token verification failed:", error.message);
             res.status(401);
-            throw new Error('Not authorized, token fail ho gaya');
+            // Error message ko saaf rakhein
+            throw new Error('Not authorized, token verification failed. Please log in again.');
         }
     } else {
+        // Step 3: Agar koi bhi token nahi mila.
         res.status(401);
-        throw new Error('Not authorized, koi token nahi mila'); // Error message ko aasan banaya
+        throw new Error('Not authorized, no token provided.');
     }
 });
 
@@ -47,7 +58,7 @@ const authorize = (...roles) => {
     return (req, res, next) => {
         if (!req.user) {
             res.status(401);
-            throw new Error('Not authorized, user nahi mila');
+            throw new Error('Not authorized, user not found');
         }
         if (!roles.includes(req.user.role)) {
             res.status(403); // Forbidden
