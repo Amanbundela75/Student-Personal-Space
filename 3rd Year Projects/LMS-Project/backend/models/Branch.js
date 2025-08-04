@@ -14,4 +14,5 @@ const BranchSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Branch', BranchSchema);
+// --- UPDATE: Is line ko badal diya gaya hai taaki error na aaye ---
+module.exports = mongoose.models.Branch || mongoose.model('Branch', BranchSchema);
