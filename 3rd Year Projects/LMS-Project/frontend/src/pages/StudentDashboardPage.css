@@ -1,144 +1,147 @@
-/* Main Dashboard Container */
-.dashboard-container { padding: 2rem 3rem; background-color: #f8f9fa; min-height: 100vh; }
-.dashboard-header { margin-bottom: 2.5rem; text-align: center; }
-.dashboard-header h1 { font-size: 2.5rem; font-weight: 700; color: #212529; }
-.dashboard-header p { font-size: 1.1rem; color: #6c757d; }
+/* --- Main Dashboard Container --- */
+.dashboard-container {
+    padding: 2rem 3rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
 
-/* Grid Layout */
-.dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-.left-column, .right-column { display: flex; flex-direction: column; gap: 2rem; }
+/* --- NEW HEADER for Profile Picture --- */
+.dashboard-header-new {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background-color: #ffffff;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 
-/* Generic Card Styling */
-.dashboard-card { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); padding: 1.75rem; }
-.card-header { font-size: 1.3rem; font-weight: 600; color: #343a40; margin: 0 0 1.5rem 0; padding-bottom: 0.75rem; border-bottom: 1px solid #e9ecef; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-.card-header svg { margin-right: 0.5rem; }
+.profile-picture-container {
+    position: relative;
+    flex-shrink: 0; /* Prevents the container from shrinking */
+}
 
-/* Academic & Project Cards */
-.academic-stats { display: flex; justify-content: space-around; text-align: center; }
-.stat-item span { display: block; font-size: 0.9rem; color: #6c757d; margin-bottom: 0.25rem; }
-.stat-item strong { font-size: 2rem; font-weight: 700; color: #007bff; }
+.profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%; /* This makes the image circular */
+    object-fit: cover;   /* Ensures the image covers the circle without distortion */
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #e9ecef; /* Fallback color for when there is no image */
+}
 
-.project-list { display: flex; flex-direction: column; gap: 1.25rem; }
-.project-item { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #f1f3f5; }
-.project-item:last-child { border-bottom: none; padding-bottom: 0; }
-.project-info h4 { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.5rem; }
-.project-info p { font-size: 0.95rem; color: #6c757d; margin: 0; }
-.project-actions { display: flex; gap: 0.5rem; }
-.status { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px; color: #fff; }
-.status.completed { background-color: #28a745; }
-.status.in-progress { background-color: #ffc107; color: #212529; }
-
-/* Activity Feed */
-.activity-feed { display: flex; flex-direction: column; gap: 1.5rem; }
-.post-item { border: 1px solid #e9ecef; border-radius: 8px; padding: 1rem; }
-.post-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-.post-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #007bff; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
-.post-user-info strong { display: block; font-weight: 600; }
-.post-user-info small { color: #6c757d; }
-.post-content p { margin: 0 0 1rem 0; font-size: 0.95rem; line-height: 1.5; }
-.post-media { width: 100%; border-radius: 8px; margin-bottom: 1rem; }
-.post-link { display: flex; align-items: center; gap: 0.5rem; background-color: #f8f9fa; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; color: #343a40; }
-
-/* Buttons */
-.button-icon, .button-edit-icon { background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem; padding: 0.5rem; border-radius: 50%; }
-.button-icon:hover, .button-edit-icon:hover { background-color: #f1f3f5; color: #007bff; }
-.button-add-new { width: 100%; margin-top: 1.5rem; background-color: #f8f9fa; border: 1px dashed #ced4da; color: #495057; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s; }
-.button-add-new:hover { background-color: #e9ecef; border-color: #adb5bd; }
-
-/* --- FINAL UPDATE: Buttons ko pixel-perfect align karne ke liye --- */
-.button-primary, .button-secondary {
-    /* Flexbox for perfect centering */
-    display: inline-flex;
+.button-change-pic {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #007bff;
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Consistent Box Model - Yahi hai sabse important badlaav */
-    box-sizing: border-box;
-    padding: 12px 24px; /* Pixel values ka istemal karein */
-    border-radius: 8px;
-    border-width: 1px;
-    border-style: solid;
-
-    /* Consistent Typography */
-    font-size: 1rem; /* 16px */
-    font-weight: 500;
-
-    /* Other properties */
     cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
 }
-
-.button-primary {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff; /* Border ka rang background jaisa hi */
-}
-.button-primary:hover {
+.button-change-pic:hover {
+    transform: scale(1.1);
     background-color: #0056b3;
-    border-color: #0056b3;
-}
-.button-primary:disabled {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    cursor: not-allowed;
 }
 
-.button-secondary {
-    background-color: #e9ecef;
+.header-content-new h1 {
+    margin: 0 0 0.25rem 0;
+    font-size: 2rem;
+    font-weight: 600;
     color: #343a40;
-    border-color: #ced4da;
 }
-.button-secondary:hover {
-    background-color: #d6d8db;
-    border-color: #adb5bd;
-}
-.button-secondary:disabled {
-    background-color: #f8f9fa;
-    border-color: #ced4da;
-    cursor: not-allowed;
+.header-content-new p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #6c757d;
 }
 
-/* Modal Styles */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); padding: 1rem; }
-.modal-content {
-    background: white;
+/* --- Grid and Card styles (These are mostly the same) --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+.card {
+    background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 500px;
-    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    max-height: 90vh;
 }
+.card-header {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #343a40;
+    margin: 0;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.card-content {
+    padding: 1.75rem;
+    flex-grow: 1;
+}
+
+/* --- Other styles like stats, lists, buttons, etc., remain the same --- */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center; }
+.stat-box h4 { font-size: 0.9rem; color: #6c757d; margin-bottom: 0.25rem; font-weight: 500; }
+.stat-box p { font-size: 2rem; font-weight: 700; color: #007bff; margin: 0; }
+.project-list, .achievement-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1.25rem; max-height: 450px; overflow-y: auto; }
+.project-item, .achievement-item { padding-bottom: 1rem; border-bottom: 1px solid #f1f3f5; }
+.project-item:last-child, .achievement-item:last-child { border-bottom: none; }
+.project-info h4 { font-size: 1.1rem; }
+.project-info p { color: #6c757d; }
+.project-actions, .achievement-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
+.achievement-item img, .achievement-item video { width: 100%; border-radius: 8px; margin-top: 1rem; }
+.status-badge { font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 12px; color: #fff; }
+.status-completed { background-color: #28a745; }
+.status-in-progress { background-color: #ffc107; color: #212529; }
+.status-on-hold { background-color: #6c757d; }
+.empty-state { text-align: center; color: #6c757d; padding: 2rem 1rem; }
+.button-icon { background: none; border: none; cursor: pointer; color: #6c757d; font-size: 1.1rem; padding: 0.5rem; border-radius: 50%; transition: all 0.2s ease; }
+.button-icon:hover { background-color: #f1f3f5; }
+.button-icon.danger:hover { color: #dc3545; }
+
+
+/* --- Modal & Form Styles (No changes) --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); padding: 1rem; }
+.modal-content { background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 500px; position: relative; display: flex; flex-direction: column; max-height: 90vh; }
 .modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #aaa; z-index: 10; }
-
-/* Form Wrapper for Scrolling */
-.form-wrapper {
-    padding: 2rem;
-    overflow-y: auto;
-}
-
+.form-wrapper { padding: 2rem; overflow-y: auto; }
 .edit-form h2 { margin-top: 0; margin-bottom: 1.5rem; text-align: center; }
 .edit-form .form-group { margin-bottom: 1.25rem; }
 .edit-form label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #495057; }
 .edit-form input, .edit-form textarea, .edit-form select { width: 100%; padding: 0.75rem; border: 1px solid #ced4da; border-radius: 8px; font-size: 1rem; }
+.edit-form .form-actions { padding: 1.5rem 2rem; border-top: 1px solid #e9ecef; background-color: #f8f9fa; }
+.button-primary, .button-secondary { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 8px; border-width: 1px; border-style: solid; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.button-primary { background-color: #007bff; color: white; border-color: #007bff; }
+.button-primary:hover { background-color: #0056b3; border-color: #0056b3; }
+.button-primary:disabled { background-color: #6c757d; border-color: #6c757d; cursor: not-allowed; }
+.button-secondary { background-color: #e9ecef; color: #343a40; border-color: #ced4da; }
+.button-secondary:hover { background-color: #d6d8db; border-color: #adb5bd; }
 
-.edit-form .form-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    padding: 1.5rem 2rem;
-    border-top: 1px solid #e9ecef;
-    background-color: #fff;
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .dashboard-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
 }
-
-/* Share Update Modal Form */
-.share-box-form textarea { width: 100%; min-height: 100px; border: 1px solid #ced4da; border-radius: 8px; padding: 1rem; font-size: 1rem; margin-bottom: 1rem; }
-.share-box-actions { display: flex; gap: 1rem; margin-bottom: 1rem; }
-.share-box-actions button { background: #f1f3f5; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-
-/* Responsive */
-@media (max-width: 1200px) { .dashboard-grid { grid-template-columns: 1fr; } }
-@media (max-width: 768px) { .dashboard-container { padding: 1.5rem; } .dashboard-header h1 { font-size: 2rem; } }
+@media (max-width: 768px) {
+    .dashboard-container { padding: 1.5rem; }
+    .header-content-new h1 { font-size: 1.8rem; } /* Adjusted for smaller screens */
+    .dashboard-header-new { flex-direction: column; text-align: center; } /* Stack header on mobile */
+    .stats-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .project-item, .achievement-item { flex-direction: column; align-items: flex-start; }
+    .project-actions, .achievement-actions { width: 100%; }
+}
