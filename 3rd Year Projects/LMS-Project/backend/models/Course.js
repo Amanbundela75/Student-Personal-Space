@@ -1,4 +1,3 @@
-// backend/models/Course.js
 const mongoose = require('mongoose');
 
 const NoteSchema = new mongoose.Schema({
@@ -39,4 +38,5 @@ const CourseSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Course', CourseSchema);
+// --- UPDATE: Is line ko badal diya gaya hai taaki error na aaye ---
+module.exports = mongoose.models.Course || mongoose.model('Course', CourseSchema);
