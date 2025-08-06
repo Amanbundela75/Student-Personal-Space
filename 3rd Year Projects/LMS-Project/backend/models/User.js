@@ -20,7 +20,7 @@ const projectSchema = new mongoose.Schema({
     githubLink: { type: String, trim: true }
 });
 
-// --- NEW: Schema for Certifications ---
+// --- Schema for Certifications ---
 const certificationSchema = new mongoose.Schema({
     title: { type: String, required: true },
     issuer: { type: String, required: true }, // e.g., "Coursera", "Udemy"
@@ -47,12 +47,18 @@ const userSchema = new mongoose.Schema({
     },
     projects: [projectSchema],
 
-    // --- NEW: Add certifications array to the user schema ---
     certifications: [certificationSchema],
 
     profilePicture: {
         type: String,
         default: ''
+    },
+
+    // --- NEW: Add bio field ---
+    bio: {
+        type: String,
+        default: '',
+        maxlength: 250 // Set a reasonable character limit for the bio
     },
     // -----------------------------------------------------------
 
