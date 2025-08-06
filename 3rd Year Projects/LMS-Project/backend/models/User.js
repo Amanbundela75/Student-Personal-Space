@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-// --- Naya Schema: Academics ke liye ---
+// --- Schema for Academics ---
 const academicsSchema = new mongoose.Schema({
     currentSemester: { type: Number, default: 1 },
     cgpa: { type: Number, default: 0.0 },
     sgpa: { type: Number, default: 0.0 }
-}, { _id: false }); // _id: false, kyonki yah ek sub-document hai
+}, { _id: false });
 
-// --- Naya Schema: Projects ke liye ---
+// --- Schema for Projects ---
 const projectSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -18,7 +18,15 @@ const projectSchema = new mongoose.Schema({
         default: 'In Progress'
     },
     githubLink: { type: String, trim: true }
-}); // Yahan default _id banega jo har project ke liye unique hoga
+});
+
+// --- NEW: Schema for Certifications ---
+const certificationSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    issuer: { type: String, required: true }, // e.g., "Coursera", "Udemy"
+    fileUrl: { type: String, required: true } // Path to the uploaded PDF/image file
+});
+
 
 const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
@@ -32,17 +40,19 @@ const userSchema = new mongoose.Schema({
         ref: 'Course'
     }],
 
-    // --- DASHBOARD KE LIYE NAYE FIELDS YAHAN ADD KIYE GAYE HAIN ---
+    // --- Dashboard fields ---
     academics: {
         type: academicsSchema,
-        default: () => ({}) // Default values ke saath ek naya object banata hai
+        default: () => ({})
     },
-    projects: [projectSchema], // Projects ka ek array
+    projects: [projectSchema],
 
-    // --- UPDATE: Background image ko Profile Picture se badal diya gaya hai ---
+    // --- NEW: Add certifications array to the user schema ---
+    certifications: [certificationSchema],
+
     profilePicture: {
         type: String,
-        default: '' // Default mein koi image nahi hogi
+        default: ''
     },
     // -----------------------------------------------------------
 
@@ -79,5 +89,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// --- UPDATE: Is line ko badal diya gaya hai taaki error na aaye ---
 module.exports = mongoose.models.User || mongoose.model('User', userSchema);
