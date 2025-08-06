@@ -30,11 +30,11 @@ const Navbar = () => {
                                 <>
                                     {/* Student ke liye links */}
                                     <Link to="/student/dashboard" className="nav-item">My Dashboard</Link>
-                                    <Link to="/portfolio" className="nav-item">My Portfolio</Link> {/* <-- YEH NAYI LINE ADD KI GAYI HAI */}
+                                    <Link to="/portfolio" className="nav-item">My Portfolio</Link>
                                     <Link to="/my-results" className="nav-item">My Results</Link>
                                 </>
                             )}
-                            <Link to="/profile" className="nav-item">Profile</Link>
+                            {/* REMOVED: Profile link has been removed from here */}
                             <span className="nav-user-greeting">Hi, {currentUser.user.firstName}</span>
                             <button onClick={handleLogout} className="nav-button nav-button-logout">Logout</button>
                         </>
