@@ -25,9 +25,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
             createdAt: user.createdAt,
             academics: user.academics || { currentSemester: 1, cgpa: 0, sgpa: 0 },
             projects: user.projects || [],
-            // NEW: Add certifications to the profile response
             certifications: user.certifications || [],
             profilePicture: user.profilePicture || '',
+            // NEW: Add bio to the profile response
+            bio: user.bio || '',
         });
     } else {
         res.status(404);
@@ -39,8 +40,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile/background
 // @access  Private
 const updateUserProfilePicture = asyncHandler(async (req, res) => {
-    // This function can remain as it is, but we'll use the protect middleware instead of manual token handling for consistency.
-    // The route file was already updated to use protect.
     const user = await User.findById(req.user._id);
 
     if (user) {
@@ -56,6 +55,24 @@ const updateUserProfilePicture = asyncHandler(async (req, res) => {
             res.status(400);
             throw new Error('Please upload an image file.');
         }
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
+// --- NEW: Controller for updating user bio ---
+// @desc    Update user bio
+// @route   PUT /api/users/profile/bio
+// @access  Private
+const updateUserBio = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        // Set bio from request body. If body is empty or null, set it to an empty string.
+        user.bio = req.body.bio || '';
+        const updatedUser = await user.save();
+        res.status(200).json({ bio: updatedUser.bio });
     } else {
         res.status(404);
         throw new Error('User not found');
@@ -138,7 +155,7 @@ const deleteUserProject = asyncHandler(async (req, res) => {
     if (user) {
         const project = user.projects.id(projectId);
         if (project) {
-            project.deleteOne(); // Mongoose v8+ uses deleteOne() for subdocuments
+            project.deleteOne();
             await user.save();
             res.status(200).json({ message: 'Project removed successfully' });
         } else {
@@ -151,7 +168,7 @@ const deleteUserProject = asyncHandler(async (req, res) => {
     }
 });
 
-// --- NEW: Certification Controller Functions ---
+// --- Certification Controller Functions ---
 
 // @desc    Get all certifications for a user
 // @route   GET /api/users/profile/certifications
@@ -203,16 +220,12 @@ const deleteCertification = asyncHandler(async (req, res) => {
     if (user) {
         const certification = user.certifications.id(certId);
         if (certification) {
-            // Delete the file from the server
             const filePath = path.join(__dirname, '..', 'uploads', path.basename(certification.fileUrl));
             fs.unlink(filePath, (err) => {
                 if (err) {
-                    // Log the error but don't block the response
                     console.error(`Failed to delete certificate file: ${filePath}`, err);
                 }
             });
-
-            // Remove from the database
             certification.deleteOne();
             await user.save();
             res.status(200).json({ message: 'Certification removed successfully' });
@@ -267,8 +280,9 @@ module.exports = {
     updateUserProject,
     deleteUserProject,
     updateUserProfilePicture,
-    // NEW: Export certification functions
     getCertifications,
     addCertification,
     deleteCertification,
+    // NEW: Export the new bio update function
+    updateUserBio,
 };
