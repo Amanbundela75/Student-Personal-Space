@@ -13,10 +13,12 @@ const {
     updateUserProject,
     deleteUserProject,
     updateUserProfilePicture,
-    // NEW: Import certification controllers
+    // Import certification controllers
     getCertifications,
     addCertification,
     deleteCertification,
+    // NEW: Import the bio controller function
+    updateUserBio,
 } = require('../controllers/userController.js');
 const { protect, admin } = require('../middleware/authMiddleware.js');
 
@@ -32,23 +34,15 @@ const storage = multer.diskStorage({
     }
 });
 
-// --- UPDATED: This function is now more robust for checking file types ---
 function checkFileType(file, cb) {
-    // Define allowed file extensions
     const allowedExtensions = /jpeg|jpg|png|gif|webp|pdf/;
-    // Check if the file's extension is in our allowed list
     const isExtensionAllowed = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
-
-    // Define allowed MIME types (the "true" type of the file)
     const allowedMimeTypes = /image|application\/pdf/;
-    // Check if the file's MIME type is in our allowed list
     const isMimeTypeAllowed = allowedMimeTypes.test(file.mimetype);
 
-    // If both checks pass, allow the file
     if (isExtensionAllowed && isMimeTypeAllowed) {
         return cb(null, true);
     } else {
-        // If either check fails, reject the file
         cb(new Error('Invalid file type! Only images (JPG, PNG, etc.) and PDF files are allowed.'), false);
     }
 }
@@ -64,6 +58,9 @@ const upload = multer({
 // --- Student Routes ---
 
 router.route('/profile').get(protect, getUserProfile);
+
+// NEW: Route to update the user's bio
+router.route('/profile/bio').put(protect, updateUserBio);
 
 router.route('/profile/background')
     .put(protect, upload.single('profilePicture'), updateUserProfilePicture);
