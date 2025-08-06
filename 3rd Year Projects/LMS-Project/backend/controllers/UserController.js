@@ -1,8 +1,7 @@
-// UPDATE: User, Course, aur Branch models ke sahi file path yahan diye gaye hain
+const fs = require('fs'); // File System module for deleting files
+const path = require('path'); // Path module for handling file paths
 const User = require('../models/user.js');
 const asyncHandler = require('../middleware/asyncHandler.js');
-const Course = require('../models/course.js'); // Path ko theek kiya gaya
-const Branch = require('../models/branch.js'); // Path ko theek kiya gaya
 const jwt = require('jsonwebtoken');
 
 // @desc    Get user profile
@@ -26,6 +25,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
             createdAt: user.createdAt,
             academics: user.academics || { currentSemester: 1, cgpa: 0, sgpa: 0 },
             projects: user.projects || [],
+            // NEW: Add certifications to the profile response
+            certifications: user.certifications || [],
             profilePicture: user.profilePicture || '',
         });
     } else {
@@ -36,19 +37,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 // @desc    Update user profile picture
 // @route   PUT /api/users/profile/background
-// @access  Manual Private
+// @access  Private
 const updateUserProfilePicture = asyncHandler(async (req, res) => {
-    let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-    if (!token) {
-        res.status(401);
-        throw new Error('Not authorized, no token provided.');
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    // This function can remain as it is, but we'll use the protect middleware instead of manual token handling for consistency.
+    // The route file was already updated to use protect.
+    const user = await User.findById(req.user._id);
 
     if (user) {
         if (req.file) {
@@ -65,7 +58,7 @@ const updateUserProfilePicture = asyncHandler(async (req, res) => {
         }
     } else {
         res.status(404);
-        throw new Error('User not found for the provided token.');
+        throw new Error('User not found');
     }
 });
 
@@ -145,7 +138,7 @@ const deleteUserProject = asyncHandler(async (req, res) => {
     if (user) {
         const project = user.projects.id(projectId);
         if (project) {
-            project.deleteOne();
+            project.deleteOne(); // Mongoose v8+ uses deleteOne() for subdocuments
             await user.save();
             res.status(200).json({ message: 'Project removed successfully' });
         } else {
@@ -158,8 +151,83 @@ const deleteUserProject = asyncHandler(async (req, res) => {
     }
 });
 
+// --- NEW: Certification Controller Functions ---
 
-// --- ADMIN ROUTES ---
+// @desc    Get all certifications for a user
+// @route   GET /api/users/profile/certifications
+// @access  Private
+const getCertifications = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+        res.status(200).json(user.certifications || []);
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
+// @desc    Add a new certification for a user
+// @route   POST /api/users/profile/certifications
+// @access  Private
+const addCertification = asyncHandler(async (req, res) => {
+    const { title, issuer } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!req.file) {
+        res.status(400);
+        throw new Error('Certificate file is required.');
+    }
+
+    if (user) {
+        const newCertification = {
+            title,
+            issuer,
+            fileUrl: `/uploads/${req.file.filename}`
+        };
+        user.certifications.push(newCertification);
+        await user.save();
+        res.status(201).json(user.certifications[user.certifications.length - 1]);
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
+// @desc    Delete a user's certification
+// @route   DELETE /api/users/profile/certifications/:certId
+// @access  Private
+const deleteCertification = asyncHandler(async (req, res) => {
+    const { certId } = req.params;
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        const certification = user.certifications.id(certId);
+        if (certification) {
+            // Delete the file from the server
+            const filePath = path.join(__dirname, '..', 'uploads', path.basename(certification.fileUrl));
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    // Log the error but don't block the response
+                    console.error(`Failed to delete certificate file: ${filePath}`, err);
+                }
+            });
+
+            // Remove from the database
+            certification.deleteOne();
+            await user.save();
+            res.status(200).json({ message: 'Certification removed successfully' });
+        } else {
+            res.status(404);
+            throw new Error('Certification not found');
+        }
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
+
+// --- ADMIN ROUTES (Unchanged) ---
 const getUsers = asyncHandler(async (req, res) => {
     const users = await User.find({});
     res.status(200).json(users);
@@ -199,4 +267,8 @@ module.exports = {
     updateUserProject,
     deleteUserProject,
     updateUserProfilePicture,
+    // NEW: Export certification functions
+    getCertifications,
+    addCertification,
+    deleteCertification,
 };
