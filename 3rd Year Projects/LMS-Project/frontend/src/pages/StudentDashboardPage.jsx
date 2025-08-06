@@ -19,7 +19,7 @@ const Modal = ({ children, onClose }) => (
     </div>
 );
 
-// --- Form Components (Can be abstracted to their own files) ---
+// --- Form Components ---
 const AcademicEditForm = ({ initialData, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState(initialData || {});
     const handleChange = (e) => { const { name, value } = e.target; setFormData(prev => ({ ...prev, [name]: value })); };
@@ -32,14 +32,32 @@ const ProjectEditForm = ({ initialData, onSave, onCancel, isSubmitting }) => {
     const handleSubmit = (e) => { e.preventDefault(); onSave(formData); };
     return (<div className="form-wrapper"><form onSubmit={handleSubmit} className="edit-form"><h2>{initialData?._id ? 'Edit Project' : 'Add New Project'}</h2><div className="form-group"><label htmlFor="title">Project Title</label><input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required /></div><div className="form-group"><label htmlFor="description">Description</label><textarea id="description" name="description" value={formData.description} onChange={handleChange} required /></div><div className="form-group"><label htmlFor="status">Status</label><select id="status" name="status" value={formData.status} onChange={handleChange}><option value="In Progress">In Progress</option><option value="Completed">Completed</option><option value="On Hold">On Hold</option></select></div><div className="form-group"><label htmlFor="githubLink">GitHub Link (Optional)</label><input type="url" id="githubLink" name="githubLink" value={formData.githubLink} onChange={handleChange} /></div><div className="form-actions" style={{ display: 'flex', gap: '10px' }}><button type="submit" className="button-primary" disabled={isSubmitting} style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : 'Save Project'}</button><button type="button" className="button-secondary" onClick={onCancel} disabled={isSubmitting} style={{ flex: 1 }}>Cancel</button></div></form></div>);
 };
-
-// --- NEW HELPER FUNCTION ---
-const isImage = (fileName) => {
-    if (!fileName) return false;
-    const imageExtensions = /\.(jpeg|jpg|png|gif|webp)$/i;
-    return imageExtensions.test(fileName);
+// --- NEW: Bio Edit Form ---
+const BioEditForm = ({ initialBio, onSave, onCancel, isSubmitting }) => {
+    const [bio, setBio] = useState(initialBio || '');
+    const handleSubmit = (e) => { e.preventDefault(); onSave(bio); };
+    return (
+        <form onSubmit={handleSubmit} className="bio-edit-form">
+            <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Tell us a bit about yourself..."
+                maxLength="250"
+                rows="3"
+                autoFocus
+            />
+            <div className="bio-form-actions">
+                <button type="submit" className="button-primary" disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save'}</button>
+                <button type="button" className="button-secondary" onClick={onCancel} disabled={isSubmitting}>Cancel</button>
+            </div>
+        </form>
+    );
 };
 
+const isImage = (fileName) => {
+    if (!fileName) return false;
+    return /\.(jpeg|jpg|png|gif|webp)$/i.test(fileName);
+};
 
 const StudentDashboardPage = () => {
     const [userData, setUserData] = useState(null);
@@ -50,21 +68,20 @@ const StudentDashboardPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [modal, setModal] = useState({ type: null, data: null });
     const profilePicInputRef = useRef(null);
+    // NEW: State for bio editing mode
+    const [isEditingBio, setIsEditingBio] = useState(false);
 
     const refreshData = useCallback(async () => {
         try {
             const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
             const token = lmsUser?.token;
             if (!token) throw new Error('Authentication token not found.');
-
             const config = { headers: { Authorization: `Bearer ${token}` } };
-
             const [profileResponse, achievementsResponse, certificationsResponse] = await Promise.all([
                 api.get('/api/users/profile', config),
                 api.get('/api/achievements', config),
                 api.get('/api/users/profile/certifications', config)
             ]);
-
             const profileData = profileResponse.data;
             if (profileData.profilePicture) {
                 profileData.profilePicture = `${API_URL}${profileData.profilePicture}`;
@@ -75,12 +92,7 @@ const StudentDashboardPage = () => {
             setError('');
         } catch (err) {
             console.error("Failed to refresh data", err);
-            if(err.config && err.config.url.includes('/api/users/profile/certifications')) {
-                console.warn("Could not fetch certifications. Displaying page without them.");
-                setCertifications([]);
-            } else {
-                setError(err.response?.data?.message || err.message || 'Failed to fetch dashboard data.');
-            }
+            setError(err.response?.data?.message || err.message || 'Failed to fetch dashboard data.');
         }
     }, []);
 
@@ -108,16 +120,28 @@ const StudentDashboardPage = () => {
         }
     };
 
+    // --- NEW: Handler to save the user's bio ---
+    const handleSaveBio = async (newBio) => {
+        setIsSubmitting(true);
+        try {
+            const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
+            const config = { headers: { Authorization: `Bearer ${lmsUser?.token}` } };
+            await api.put('/api/users/profile/bio', { bio: newBio }, config);
+            setUserData(prev => ({ ...prev, bio: newBio }));
+            setIsEditingBio(false); // Exit editing mode
+        } catch (err) {
+            alert(`Error saving bio: ${err.response?.data?.message || err.message}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const handleSave = async (type, data) => {
         setIsSubmitting(true);
         try {
             const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
-            const token = lmsUser?.token;
-            if (!token) throw new Error('Authentication token not found.');
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-
+            const config = { headers: { Authorization: `Bearer ${lmsUser?.token}` } };
             let updatedUserData = { ...userData };
-
             if (type === 'academics') {
                 const response = await api.put('/api/users/profile/academics', data, config);
                 updatedUserData.academics = response.data.academics;
@@ -130,11 +154,9 @@ const StudentDashboardPage = () => {
                     updatedUserData.projects.push(response.data);
                 }
             }
-
             setUserData(updatedUserData);
             alert('Changes saved successfully!');
             closeModal();
-
         } catch (err) {
             alert(`Error saving changes: ${err.response?.data?.message || err.message}`);
         } finally {
@@ -146,19 +168,15 @@ const StudentDashboardPage = () => {
         setIsSubmitting(true);
         try {
             const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
-            const token = lmsUser?.token;
-            const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } };
-
+            const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${lmsUser?.token}` } };
             if (achievementId) {
                 await api.put(`/api/achievements/${achievementId}`, formData, config);
             } else {
                 await api.post('/api/achievements', formData, config);
             }
-
             alert('Achievement saved successfully!');
             closeModal();
             refreshData();
-
         } catch (err) {
             alert(`Error saving achievement: ${err.response?.data?.message || err.message}`);
         } finally {
@@ -170,15 +188,11 @@ const StudentDashboardPage = () => {
         setIsSubmitting(true);
         try {
             const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
-            const token = lmsUser?.token;
-            const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` } };
-
+            const config = { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${lmsUser?.token}` } };
             await api.post('/api/users/profile/certifications', formData, config);
-
             alert('Certification saved successfully!');
             closeModal();
             refreshData();
-
         } catch (err) {
             alert(`Error saving certification: ${err.response?.data?.message || err.message}`);
         } finally {
@@ -191,13 +205,9 @@ const StudentDashboardPage = () => {
             setIsSubmitting(true);
             try {
                 const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
-                const token = lmsUser?.token;
-                const config = { headers: { Authorization: `Bearer ${token}` } };
+                const config = { headers: { Authorization: `Bearer ${lmsUser?.token}` } };
                 await api.delete(`/api/users/profile/projects/${projectId}`, config);
-                setUserData(prev => ({
-                    ...prev,
-                    projects: prev.projects.filter(p => p._id !== projectId)
-                }));
+                setUserData(prev => ({ ...prev, projects: prev.projects.filter(p => p._id !== projectId) }));
                 alert('Project deleted successfully.');
             } catch (err) {
                 alert(`Error deleting project: ${err.response?.data?.message || err.message}`);
@@ -212,8 +222,7 @@ const StudentDashboardPage = () => {
             setIsSubmitting(true);
             try {
                 const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
-                const token = lmsUser?.token;
-                const config = { headers: { Authorization: `Bearer ${token}` } };
+                const config = { headers: { Authorization: `Bearer ${lmsUser?.token}` } };
                 await api.delete(`/api/achievements/${achievementId}`, config);
                 setAchievements(prev => prev.filter(a => a._id !== achievementId));
                 alert('Achievement deleted successfully.');
@@ -230,10 +239,8 @@ const StudentDashboardPage = () => {
             setIsSubmitting(true);
             try {
                 const lmsUser = JSON.parse(localStorage.getItem('lms_user'));
-                const token = lmsUser?.token;
-                const config = { headers: { Authorization: `Bearer ${token}` } };
+                const config = { headers: { Authorization: `Bearer ${lmsUser?.token}` } };
                 await api.delete(`/api/users/profile/certifications/${certId}`, config);
-
                 setCertifications(prev => prev.filter(c => c._id !== certId));
                 alert('Certification deleted successfully.');
             } catch (err) {
@@ -255,36 +262,35 @@ const StudentDashboardPage = () => {
             {/* --- Dashboard Header --- */}
             <header className="dashboard-header-new">
                 <div className="profile-picture-container">
-                    <img
-                        src={userData.profilePicture || 'https://i.ibb.co/6yT4R0N/default-avatar.png'}
-                        alt="Profile"
-                        className="profile-picture"
-                    />
-                    <button
-                        className="button-change-pic"
-                        onClick={() => profilePicInputRef.current.click()}
-                        disabled={isSubmitting}
-                        title="Change profile picture"
-                    >
-                        <FaPencilAlt />
-                    </button>
-                    <input
-                        type="file"
-                        ref={profilePicInputRef}
-                        onChange={handleProfilePicUpload}
-                        style={{ display: 'none' }}
-                        accept="image/*"
-                    />
+                    <img src={userData.profilePicture || 'https://i.ibb.co/6yT4R0N/default-avatar.png'} alt="Profile" className="profile-picture" />
+                    <button className="button-change-pic" onClick={() => profilePicInputRef.current.click()} disabled={isSubmitting} title="Change profile picture"><FaPencilAlt /></button>
+                    <input type="file" ref={profilePicInputRef} onChange={handleProfilePicUpload} style={{ display: 'none' }} accept="image/*" />
                 </div>
                 <div className="header-content-new">
                     <h1>Welcome back, {userData.firstName}!</h1>
-                    <p>Here's your professional and academic snapshot.</p>
+                    {/* --- NEW: Bio Section Logic --- */}
+                    <div className="bio-section">
+                        {isEditingBio ? (
+                            <BioEditForm
+                                initialBio={userData.bio}
+                                onSave={handleSaveBio}
+                                onCancel={() => setIsEditingBio(false)}
+                                isSubmitting={isSubmitting}
+                            />
+                        ) : (
+                            <>
+                                <p className="bio-text">{userData.bio || "Here's your professional and academic snapshot."}</p>
+                                <button className="button-icon bio-edit-btn" onClick={() => setIsEditingBio(true)} disabled={isSubmitting}>
+                                    <FaPencilAlt />
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </div>
             </header>
 
             {/* --- Main content area --- */}
             <main className="dashboard-main-content">
-
                 {/* --- Top Row: Academics and Projects --- */}
                 <div className="dashboard-row">
                     <div className="dashboard-col">
@@ -359,15 +365,11 @@ const StudentDashboardPage = () => {
                         <h3><FaCertificate /> Certifications</h3>
                         <button className="button-icon" onClick={() => setModal({ type: 'certification', data: null })} disabled={isSubmitting}><FaPlus /></button>
                     </div>
-                    {/* UPDATED: Changed card-content to horizontal-scroll-container */}
                     <div className="card-content horizontal-scroll-container">
                         {certifications && certifications.length > 0 ? (
-                            // UPDATED: Changed ul class to match achievements for consistent styling
                             <ul className="achievement-list-horizontal">
                                 {certifications.map(cert => (
-                                    // UPDATED: Changed li class to match achievements
                                     <li key={cert._id} className="achievement-item-horizontal">
-                                        {/* --- NEW: Conditional Rendering Logic --- */}
                                         {isImage(cert.fileUrl) ? (
                                             <a href={`${API_URL}${cert.fileUrl}`} target="_blank" rel="noopener noreferrer" title="View full image">
                                                 <img src={`${API_URL}${cert.fileUrl}`} alt={cert.title} className="achievement-media" />
