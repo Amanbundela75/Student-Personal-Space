@@ -13,7 +13,7 @@ import BranchListPage from './pages/BranchListPage.jsx';
 import CourseListPage from './pages/CourseListPage.jsx';
 import CourseDetailPage from './pages/CourseDetailPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
-import ProfilePage from './pages/ProfilePage.jsx';
+// REMOVED: ProfilePage import has been removed
 import StudentDashboardPage from './pages/StudentDashboardPage.jsx';
 import MyCoursesPage from './pages/MyCoursesPage.jsx';
 import StudyCoursePage from './pages/StudyCoursePage.jsx';
@@ -50,9 +50,7 @@ function App() {
                     <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
 
                     {/* Common Private Routes */}
-                    <Route element={<PrivateRoute />}>
-                        <Route path="/profile" element={<ProfilePage />} />
-                    </Route>
+                    {/* REMOVED: The /profile route has been deleted from here */}
                     <Route element={<PrivateRoute roles={['student', 'admin']} />}>
                         <Route path="/results/:resultId" element={<ResultDetailPage />} />
                     </Route>
@@ -60,7 +58,7 @@ function App() {
                     {/* Student-Only Routes */}
                     <Route element={<PrivateRoute roles={['student']} />}>
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-                        <Route path="/portfolio" element={<StudentPortfolioPage />} /> {/* <-- YEH NAYA ROUTE ADD KIYA GAYA HAI */}
+                        <Route path="/portfolio" element={<StudentPortfolioPage />} />
                         <Route path="/my-courses" element={<MyCoursesPage />} />
                         <Route path="/courses/:courseId/study" element={<StudyCoursePage />} />
                         <Route path="/course/:courseId/tests" element={<AvailableTests />} />
