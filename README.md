@@ -1,4 +1,4 @@
-# Learning Management System (LMS) with Face Recognition
+# Learning Management System (LMS) with Face 
 
 A secure, full-stack platform for students to manage their academic and professional journey. This LMS features biometric face verification for login, a dynamic professional dashboard, and comprehensive admin controls.
 
