@@ -2,7 +2,7 @@
 
 A secure, full-stack platform for students to manage their academic and professional journey. This LMS features biometric face verification for login, a dynamic professional dashboard, and comprehensive admin controls.
 
-## 🌟 
+## 🌟 Overview
 
 This Learning Management System (LMS) is designed to be a central hub for a student's entire college lifecycle. It goes beyond simple course enrollment by integrating **biometric face verification** for secure, fraud-proof logins.
 
