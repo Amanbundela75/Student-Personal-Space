@@ -8,7 +8,7 @@ This Learning Management System (LMS) is designed to be a central hub for a stud
 
 Once registered, students are welcomed to a **professional, LinkedIn-style dashboard** where they can manage their academic progress (semester, CGPA, SGPA), showcase their projects with GitHub links, and share updates and achievements in a dynamic activity feed. The platform ensures student privacy while providing powerful tools for administrators to manage users, courses, and platform content.
 
-## 📸 Screenshots
+## 📸 
 
 Upload it Soon....
 
