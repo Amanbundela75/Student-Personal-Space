@@ -1,0 +1,43 @@
+.compare-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit,minmax(170px,1fr));
+    margin-top: 1.2rem;
+}
+.compare-card {
+    background: var(--pf-surface-alt);
+    border: 1px solid var(--pf-border);
+    border-radius: 16px;
+    padding: .9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    font-size: .75rem;
+    transition: .3s;
+}
+.compare-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--pf-shadow);
+}
+.compare-card h4 {
+    margin: 0;
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--pf-text-soft);
+}
+.compare-card .values {
+    display: flex; align-items: center; gap: .55rem;
+    font-size: 1.4rem; font-weight: 700;
+}
+.badge-diff {
+    font-size: .55rem;
+    padding: .35rem .5rem;
+    border-radius: 10px;
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+.badge-diff.up { color: #1d8f5a; background: #e4f8ef; }
+.badge-diff.down { color: #c0392b; background: #fdecea; }
