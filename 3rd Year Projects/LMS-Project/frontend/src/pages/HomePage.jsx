@@ -1,68 +1,16 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { motion, AnimatePresence } from 'framer-motion'; // AnimatePresence ko import karein
+import { motion } from 'framer-motion';
 
 // CSS Imports
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './HomePage.css';
 
-// Component Imports
-import FeedbackForm from '../components/student/FeedbackForm';
-
-// === LAZY LOADED COMPONENTS ===
-const FeaturedCourses = lazy(() => import('../components/HomePage/FeaturedCourses.jsx'));
-const Testimonials = lazy(() => import('../components/HomePage/Testimonials.jsx'));
-
-// === HELPER COMPONENTS & DATA (YAHAN ADD KIYE GAYE HAIN) ===
-
-const LoadingSpinner = () => <div className="loading-spinner">Loading...</div>;
-
-const FeatureIcon = ({ children }) => <span className="feature-icon">{children}</span>;
-
-const FAQItem = ({ faq }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    return (
-        <div className="faq-item">
-            <motion.div className="faq-question" onClick={() => setIsOpen(!isOpen)}>
-                {faq.question}
-                <motion.span animate={{ rotate: isOpen ? 180 : 0 }}>▼</motion.span>
-            </motion.div>
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        className="faq-answer"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <p>{faq.answer}</p>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
-};
-
-const faqs = [
-    { id: 1, question: "Do I get a certificate after completing a course?", answer: "Yes, upon successful completion of any course, you will receive a verifiable certificate from Aman's LMS." },
-    { id: 2, question: "Can I access courses on my mobile device?", answer: "Absolutely! Our platform is fully responsive, allowing you to learn on the go." },
-    { id: 3, question: "What are the payment options available?", answer: "We accept all major credit cards, debit cards, and UPI payments." },
-];
-
 // --- Main HomePage Component ---
 const HomePage = () => {
-    const { currentUser, isAdmin } = useAuth();
-    const [searchQuery, setSearchQuery] = useState(''); // YEH LINE ADD KI GAYI HAI
-
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (searchQuery.trim()) {
-            alert(`Searching for: ${searchQuery}`);
-        }
-    };
+    const { currentUser } = useAuth();
 
     // Animation variants
     const sectionVariants = {
@@ -81,57 +29,103 @@ const HomePage = () => {
             </div>
             <section className="hero-section">
                 <motion.div className="hero-content" initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.2 } } }}>
-                    <motion.h1 className="hero-title" variants={sectionVariants}>Unlock Your Potential with Aman's LMS</motion.h1>
-                    <motion.p className="hero-subtitle" variants={sectionVariants}>Your premier destination for quality online education.</motion.p>
-                    <motion.form className="hero-search-form" onSubmit={handleSearch} variants={sectionVariants}>
-                        <input type="text" className="hero-search-input" placeholder="What do you want to learn today?" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                        <button type="submit" className="hero-search-button">Search</button>
-                    </motion.form>
+                    <motion.h1 className="hero-title" variants={sectionVariants}>Hello ITMians</motion.h1>
+                    <motion.p className="hero-subtitle" variants={sectionVariants}>Step into the future of learning, designed just for you. 🚀</motion.p>
                     <motion.div className="hero-cta-buttons" variants={sectionVariants}>
-                        <Link to="/courses" className="button button-hero-primary">Explore Courses</Link>
                         {!currentUser && <Link to="/register" className="button button-hero-secondary">Get Started</Link>}
                     </motion.div>
                 </motion.div>
             </section>
 
-            {/* Features & Stats Sections */}
-            <motion.section className="features-section" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-                <div className="container">
-                    <h2 className="section-title">Why Choose Us?</h2>
-                    <div className="features-grid">
-                        <motion.div className="feature-card" whileHover={{ y: -10 }}><FeatureIcon>🎓</FeatureIcon><h3>Expert-Led Courses</h3><p>Learn from industry professionals.</p></motion.div>
-                        <motion.div className="feature-card" whileHover={{ y: -10 }}><FeatureIcon>📚</FeatureIcon><h3>Flexible Learning</h3><p>Access courses anytime, anywhere.</p></motion.div>
-                        <motion.div className="feature-card" whileHover={{ y: -10 }}><FeatureIcon>💡</FeatureIcon><h3>Career Advancement</h3><p>Gain skills to boost your career.</p></motion.div>
+            {/* === SUCCESS HUB SECTION === */}
+            <motion.section
+                className="success-hub-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <h2 className="hub-title">Your Personal Success Hub 🚀</h2>
+                <p className="hub-subtitle">Your Mentors and TAP Cell are now always with you.</p>
+                <div className="features-grid">
+                    <div className="feature-card">
+                        <h3>✅ Personal Dashboard</h3>
+                        <p>Your own personal space where you can manage everything.</p>
+                    </div>
+                    <div className="feature-card">
+                        <h3>🤝 Direct Connectivity</h3>
+                        <p>Connect directly with your <strong>Mentor</strong> and <strong>TAP Cell</strong>. They'll track your activities to guide you in the right direction.</p>
+                    </div>
+                    <div className="feature-card">
+                        <h3>🎯 Effective Guidance</h3>
+                        <p>Receive personalized support and guidance to achieve your goals.</p>
                     </div>
                 </div>
             </motion.section>
 
-            {/* Lazy Loaded Sections */}
-            <Suspense fallback={<LoadingSpinner />}>
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-                    <FeaturedCourses />
-                </motion.div>
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-                    <Testimonials />
-                </motion.div>
-            </Suspense>
-
-            {/* FAQ Section */}
-            <motion.section className="faq-section" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-                <div className="container">
-                    <h2 className="section-title">Frequently Asked Questions</h2>
-                    <div className="faq-list">
-                        {faqs.map(faq => <FAQItem key={faq.id} faq={faq} />)}
+            {/* === PORTFOLIO SECTION === */}
+            <motion.section
+                className="portfolio-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <div className="portfolio-content">
+                    <div className="portfolio-text">
+                        <h2 className="portfolio-title">Showcase Your Skills. Build Your Coder Identity.</h2>
+                        <p className="portfolio-subtitle">Introducing the all-in-one Personal Portfolio, designed to bring all your coding achievements into a single, powerful profile.</p>
+                        <ul className="portfolio-features">
+                            <li>🔗 Link profiles from GitHub, LeetCode, HackerRank, and more.</li>
+                            <li>📊 Track your overall progress in Coding and Development at a glance.</li>
+                            <li>📄 Share one simple, impressive link with recruiters.</li>
+                        </ul>
+                    </div>
+                    <div className="portfolio-image">
+                        <img src="/images/portfolio-showcase.svg" alt="Personal Portfolio Showcase" />
                     </div>
                 </div>
             </motion.section>
 
-            {/* Feedback & CTA Sections */}
-            {!isAdmin && (
-                <motion.section className="feedback-section" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-                    <div className="container"><h2 className="section-title">Share Your Feedback</h2><FeedbackForm /></div>
-                </motion.section>
-            )}
+            {/* === NEW MENTORSHIP SECTION ADDED HERE === */}
+            <motion.section
+                className="mentorship-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <div className="mentorship-content">
+                    <h2 className="mentorship-title">Learn from Those Who've Paved the Way</h2>
+                    <p className="mentorship-subtitle">Connect with successful seniors who are ready to mentor you. They’ve shared their exact career roadmaps to guide you to success.</p>
+                    <div className="mentors-grid">
+                        {/* Mentor Card 1 - Replace with real data */}
+                        <div className="mentor-card">
+                            <img src="/images/seniors/mentor1.jpg" alt="Senior Mentor 1" className="mentor-photo" />
+                            <h3 className="mentor-name">Priya Sharma</h3>
+                            <p className="mentor-role">Software Engineer @ Google</p>
+                            <Link to="/seniors/priya-sharma" className="mentor-roadmap-link">View Roadmap</Link>
+                        </div>
+                        {/* Mentor Card 2 - Replace with real data */}
+                        <div className="mentor-card">
+                            <img src="/images/seniors/mentor2.jpg" alt="Senior Mentor 2" className="mentor-photo" />
+                            <h3 className="mentor-name">Rohan Verma</h3>
+                            <p className="mentor-role">Data Scientist @ Microsoft</p>
+                            <Link to="/seniors/rohan-verma" className="mentor-roadmap-link">View Roadmap</Link>
+                        </div>
+                        {/* Mentor Card 3 - Replace with real data */}
+                        <div className="mentor-card">
+                            <img src="/images/seniors/mentor3.jpg" alt="Senior Mentor 3" className="mentor-photo" />
+                            <h3 className="mentor-name">Anjali Singh</h3>
+                            <p className="mentor-role">Product Manager @ Amazon</p>
+                            <Link to="/seniors/anjali-singh" className="mentor-roadmap-link">View Roadmap</Link>
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
+            {/* ======================================= */}
+
+            {/* CTA Section */}
             <motion.section className="cta-section" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
                 <div className="cta-content">
                     <h2>Ready to Start Learning?</h2>
