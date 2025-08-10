@@ -74,11 +74,11 @@ const HomePage = () => {
                 <div className="portfolio-content">
                     <div className="portfolio-text">
                         <h2 className="portfolio-title">Showcase Your Skills. Build Your Coder Identity.</h2>
-                        <p className="portfolio-subtitle">Introducing the all-in-one Personal Portfolio, designed to bring all your coding achievements into a single, powerful profile.</p>
+                        <p className="portfolio-subtitle">Introducing the all-in-one Personal Portfolio for your campus placement, designed to bring all your coding achievements into a single, powerful profile which helps TAP Cell to track each one of students skill journey.</p>
                         <ul className="portfolio-features">
                             <li>🔗 Link profiles from GitHub, LeetCode, HackerRank, and more.</li>
                             <li>📊 Track your overall progress in Coding and Development at a glance.</li>
-                            <li>📄 Share one simple, impressive link with recruiters.</li>
+                            <li>📄 It can help TAP Cell to Share one simple, impressive link with recruiters.</li>
                         </ul>
                     </div>
                     <div className="portfolio-image">
