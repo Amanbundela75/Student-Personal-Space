@@ -1,16 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // AnimatePresence yahan se hata diya hai
+
+// Sahi path, jaisa aapne bataya tha
+import FeatureCard from '../components/HomePage/FeatureCard';
 
 // CSS Imports
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './HomePage.css';
 
+
+// Data for the feature cards
+const featuresData = [
+    {
+        id: 1,
+        icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>,
+        title: "Personal Dashboard",
+        short_description: "Your own personal space where you can manage everything.",
+        detailed_description: "Track your course progress, view upcoming deadlines, manage your assignments, and see your results all in one centralized hub. Your dashboard is designed to keep you organized and focused on your goals."
+    },
+    {
+        id: 2,
+        icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path><path d="M2 8c0-2.2.7-4.3 2-6"></path><path d="M22 8c0-2.2-.7-4.3-2-6"></path></svg>,
+        title: "Direct Connectivity",
+        short_description: "Connect directly with your Mentor and the TAP Cell.",
+        detailed_description: "Schedule one-on-one sessions with your assigned mentor, get your doubts cleared, and receive career guidance directly from the TAP cell through a seamless communication channel built right into the platform."
+    },
+    {
+        id: 3,
+        icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>,
+        title: "Effective Guidance",
+        short_description: "Receive personalized support and guidance to achieve your goals.",
+        detailed_description: "Based on your progress and test results, your mentors provide targeted feedback and create a personalized roadmap for you. This data-driven approach ensures your efforts are always in the right direction for maximum impact."
+    }
+];
+
+
 // --- Main HomePage Component ---
 const HomePage = () => {
     const { currentUser } = useAuth();
+    const [expandedIndex, setExpandedIndex] = useState(null);
 
     // Animation variants
     const sectionVariants = {
@@ -48,18 +79,15 @@ const HomePage = () => {
                 <h2 className="hub-title">Your Personal Success Hub 🚀</h2>
                 <p className="hub-subtitle">Your Mentors and TAP Cell are now always with you.</p>
                 <div className="features-grid">
-                    <div className="feature-card">
-                        <h3>✅ Personal Dashboard</h3>
-                        <p>Your own personal space where you can manage everything.</p>
-                    </div>
-                    <div className="feature-card">
-                        <h3>🤝 Direct Connectivity</h3>
-                        <p>Connect directly with your <strong>Mentor</strong> and <strong>TAP Cell</strong>. They'll track your activities to guide you in the right direction.</p>
-                    </div>
-                    <div className="feature-card">
-                        <h3>🎯 Effective Guidance</h3>
-                        <p>Receive personalized support and guidance to achieve your goals.</p>
-                    </div>
+                    {featuresData.map((feature, index) => (
+                        <FeatureCard
+                            key={feature.id}
+                            feature={feature}
+                            index={index}
+                            expandedIndex={expandedIndex}
+                            setExpandedIndex={setExpandedIndex}
+                        />
+                    ))}
                 </div>
             </motion.section>
 
@@ -87,7 +115,7 @@ const HomePage = () => {
                 </div>
             </motion.section>
 
-            {/* === NEW MENTORSHIP SECTION ADDED HERE === */}
+            {/* === MENTORSHIP SECTION === */}
             <motion.section
                 className="mentorship-section"
                 variants={sectionVariants}
@@ -99,21 +127,18 @@ const HomePage = () => {
                     <h2 className="mentorship-title">Learn from Those Who've Paved the Way</h2>
                     <p className="mentorship-subtitle">Connect with successful seniors who are ready to mentor you. They’ve shared their exact career roadmaps to guide you to success.</p>
                     <div className="mentors-grid">
-                        {/* Mentor Card 1 - Replace with real data */}
                         <div className="mentor-card">
                             <img src="/images/seniors/mentor1.jpg" alt="Senior Mentor 1" className="mentor-photo" />
                             <h3 className="mentor-name">Priya Sharma</h3>
                             <p className="mentor-role">Software Engineer @ Google</p>
                             <Link to="/seniors/priya-sharma" className="mentor-roadmap-link">View Roadmap</Link>
                         </div>
-                        {/* Mentor Card 2 - Replace with real data */}
                         <div className="mentor-card">
                             <img src="/images/seniors/mentor2.jpg" alt="Senior Mentor 2" className="mentor-photo" />
                             <h3 className="mentor-name">Rohan Verma</h3>
                             <p className="mentor-role">Data Scientist @ Microsoft</p>
                             <Link to="/seniors/rohan-verma" className="mentor-roadmap-link">View Roadmap</Link>
                         </div>
-                        {/* Mentor Card 3 - Replace with real data */}
                         <div className="mentor-card">
                             <img src="/images/seniors/mentor3.jpg" alt="Senior Mentor 3" className="mentor-photo" />
                             <h3 className="mentor-name">Anjali Singh</h3>
@@ -123,7 +148,101 @@ const HomePage = () => {
                     </div>
                 </div>
             </motion.section>
-            {/* ======================================= */}
+
+            {/* === RESEARCH ACCESS SECTION === */}
+            <motion.section
+                className="research-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <div className="research-content">
+                    <div className="research-image">
+                        <img src="/images/research-library.svg" alt="Research Paper Library" />
+                    </div>
+                    <div className="research-text">
+                        <h2 className="research-title">Stay Ahead of the Curve</h2>
+                        <p className="research-subtitle">Unlock your potential with free access to a curated library of contemporary research papers, updated yearly to keep you at the forefront of innovation.</p>
+                        <ul className="research-features">
+                            <li>🔬 Explore the latest breakthroughs in your field.</li>
+                            <li>📚 Empower your projects with credible, high-quality resources.</li>
+                            <li>🔄 Gain fresh insights every year with our updated collection.</li>
+                        </ul>
+                    </div>
+                </div>
+            </motion.section> {/* <-- YEH TAG GALAT THA, AB THEEK HAI --> */}
+
+            {/* === PROCTORED TESTS SECTION === */}
+            <motion.section
+                className="proctored-tests-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <div className="proctored-tests-content">
+                    <h2 className="proctored-tests-title">Forge Your Skills Under Real-World Conditions</h2>
+                    <p className="proctored-tests-subtitle">Prepare for your interviews with fully proctored tests designed by successful seniors, ensuring you build genuine skills without shortcuts.</p>
+                    <div className="proctored-features-grid">
+                        <div className="proctored-feature-card">
+                            <div className="proctored-feature-icon">🎓</div>
+                            <h3>Tests by Achievers</h3>
+                            <p>Tackle interview tests designed by seniors who know what it takes to succeed in top companies.</p>
+                        </div>
+                        <div className="proctored-feature-card">
+                            <div className="proctored-feature-icon">🛡️</div>
+                            <h3>Proctored for Integrity</h3>
+                            <p>Our anti-cheating measures ensure you prepare honestly, building real skills for real interviews.</p>
+                        </div>
+                        <div className="proctored-feature-card">
+                            <div className="proctored-feature-icon">📈</div>
+                            <h3>Trackable Progress</h3>
+                            <p>Every test score contributes to your profile for you, your mentor, and the TAP Cell to review.</p>
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
+
+            {/* === SUBJECT MASTERY SECTION === */}
+            <motion.section
+                className="subject-tests-section"
+                variants={sectionVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+            >
+                <div className="subject-tests-content">
+                    <h2 className="subject-tests-title">Master the Fundamentals</h2>
+                    <p className="subject-tests-subtitle">Strengthen your core knowledge with dedicated tests for every crucial subject. A strong foundation is the key to your future career success.</p>
+                    <div className="subject-grid">
+                        <div className="subject-card">
+                            <div className="subject-icon">💻</div>
+                            <h3>Data Structures</h3>
+                        </div>
+                        <div className="subject-card">
+                            <div className="subject-icon">🧠</div>
+                            <h3>Algorithms</h3>
+                        </div>
+                        <div className="subject-card">
+                            <div className="subject-icon">⚙️</div>
+                            <h3>Operating Systems</h3>
+                        </div>
+                        <div className="subject-card">
+                            <div className="subject-icon">🌐</div>
+                            <h3>Computer Networks</h3>
+                        </div>
+                        <div className="subject-card">
+                            <div className="subject-icon">🗃️</div>
+                            <h3>DBMS</h3>
+                        </div>
+                        <div className="subject-card">
+                            <div className="subject-icon">👨‍💻</div>
+                            <h3>Object-Oriented Programming</h3>
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
 
             {/* CTA Section */}
             <motion.section className="cta-section" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
