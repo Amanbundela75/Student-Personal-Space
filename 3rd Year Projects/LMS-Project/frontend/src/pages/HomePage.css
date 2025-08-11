@@ -47,10 +47,24 @@
 }
 
 .hero-title {
-    font-size: 3.2em;
-    font-weight: 700;
-    text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.7);
-    margin-bottom: 20px;
+    /* === FINAL & ATTRACTIVE FONT STYLES === */
+
+    font-family: 'Poppins', sans-serif; /* Step 1 se import kiya gaya naya font */
+    font-size: 6em; /* Size bada kar diya hai, aap adjust kar sakte hain */
+    font-weight: 800; /* Font ko extra bold banata hai */
+    color: #ffffff; /* Fallback color */
+    line-height: 1.2;
+    letter-spacing: 1px;
+
+    /* Optional: Subtle gradient text for a premium feel */
+    background: linear-gradient(to bottom, #ffffff 80%, #d1d1d1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+
+    /* Clean drop-shadow for better readability against the video */
+    text-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .hero-subtitle {
@@ -286,32 +300,86 @@
     margin: 0 auto;
 }
 
+/* Replace existing .feature-card styles with these new ones */
+
 .feature-card {
     background: white;
-    padding: 30px;
+    padding: 25px; /* Adjust padding for new layout */
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    text-align: left;
-    flex-basis: 320px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    transition: all 0.4s ease;
+    flex-basis: 350px; /* Base width */
     flex-grow: 1;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Important for animation */
+    cursor: pointer; /* To show it's clickable */
+    border: 1px solid #e9ecef;
 }
 
 .feature-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border-color: #3498db;
 }
 
-.feature-card h3 {
-    font-size: 1.3em;
-    color: #343a40;
-    margin-top: 0;
-    margin-bottom: 15px;
+.feature-card.expanded {
+    /* Optional: Style for when the card is open */
+    border-color: #3498db;
+    box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2);
 }
 
-.feature-card p {
+.card-content {
+    display: grid;
+    grid-template-columns: 40px 1fr 20px; /* Icon | Text | Arrow */
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+}
+
+.card-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eaf5ff;
+    color: #3498db;
+    border-radius: 8px;
+}
+
+.card-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.card-content h3 {
+    font-size: 1.25em;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.card-content p {
+    grid-column: 2 / 4; /* Span across text and arrow columns */
+    margin: 5px 0 0 0;
     color: #6c757d;
+}
+
+.expand-icon {
+    color: #bdc3c7;
+    font-size: 1.2em;
+    justify-self: end; /* Align to the right */
+}
+
+.card-details {
+    overflow: hidden; /* This is crucial for the animation */
+}
+
+.card-details p {
+    margin: 0;
+    padding: 20px 5px 10px 5px;
+    color: #34495e;
     line-height: 1.6;
+    border-top: 1px solid #e9ecef;
+    margin-top: 20px;
 }
 
 /* =============================== */
@@ -492,6 +560,233 @@
 
 .mentor-roadmap-link:hover {
     background-color: #2980b9;
+}
+
+/* ================================= */
+/* === RESEARCH SECTION STYLES === */
+/* ================================= */
+
+.research-section {
+    padding: 80px 20px;
+    background-color: #f8f9fa; /* Light grey, consistent with success hub */
+    overflow: hidden;
+}
+
+.research-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.research-text {
+    flex: 1;
+    max-width: 550px;
+}
+
+.research-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.research-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+
+.research-title {
+    font-size: 2.5em;
+    color: #2c3e50;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.research-subtitle {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.research-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.research-features li {
+    font-size: 1.05em;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+/* Reusing the checkmark style from portfolio for consistency */
+.research-features li::before {
+    content: '✓';
+    color: #3498db;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 12px;
+    margin-top: -2px;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 992px) {
+    .research-content {
+        flex-direction: column-reverse; /* Stack text below image */
+        text-align: center;
+    }
+
+    .research-features li {
+        justify-content: center;
+        text-align: left;
+    }
+
+    .research-image {
+        margin-bottom: 40px;
+    }
+}
+
+/* ===================================== */
+/* === PROCTORED TESTS SECTION STYLES === */
+/* ===================================== */
+
+.proctored-tests-section {
+    padding: 80px 20px;
+    background-color: #2c3e50; /* Dark background for focus */
+    color: #ffffff;
+}
+
+.proctored-tests-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.proctored-tests-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.proctored-tests-subtitle {
+    font-size: 1.2em;
+    color: #bdc3c7;
+    max-width: 800px;
+    margin: 0 auto 60px auto;
+    line-height: 1.6;
+}
+
+.proctored-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.proctored-feature-card {
+    background: #34495e;
+    border-radius: 12px;
+    padding: 40px 30px;
+    text-align: center;
+    border: 1px solid #4a627a;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.proctored-feature-card:hover {
+    transform: translateY(-10px);
+    background-color: #4c6680;
+}
+
+.proctored-feature-icon {
+    font-size: 3.5em; /* Large icon */
+    margin-bottom: 25px;
+    line-height: 1;
+}
+
+.proctored-feature-card h3 {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.proctored-feature-card p {
+    font-size: 1em;
+    color: #ecf0f1;
+    line-height: 1.7;
+}
+
+/* =================================== */
+/* === SUBJECT MASTERY SECTION STYLES === */
+/* =================================== */
+
+.subject-tests-section {
+    padding: 80px 20px;
+    background-color: #f8f9fa; /* Light background */
+}
+
+.subject-tests-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.subject-tests-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.subject-tests-subtitle {
+    font-size: 1.2em;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 60px auto;
+    line-height: 1.6;
+}
+
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.subject-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.subject-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.subject-icon {
+    font-size: 3em;
+    margin-bottom: 20px;
+    line-height: 1;
+}
+
+.subject-card h3 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #343a40;
+    margin: 0;
 }
 
 /* --- 10. Testimonial Carousel (ELIMINADO) --- */
