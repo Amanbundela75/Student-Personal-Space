@@ -1,87 +1,62 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Footer.css'; // Nayi CSS file import karein
+import './Footer.css'; // Existing CSS file
 
-// React Icons se icons import karein
-import { FaFacebookF, FaTwitter, FaGoogle, FaInstagram, FaLinkedinIn, FaGithub } from 'react-icons/fa';
+// GitHub aur LinkedIn icons import karein
+import { FaGithub, FaLinkedinIn } from 'react-icons/fa';
 
 const Footer = () => {
     return (
         <footer className="footer-container">
             <div className="footer-main">
-                {/* Column 1: Address & Social */}
+                {/* Column 1: Logo, Description & Social Icons */}
                 <div className="footer-column">
-                    <h4>Aman's LMS</h4>
-                    <div className="footer-address">
-                        <p>
-                            <strong>Corporate Address:</strong><br />
-                            NH-44, Bypass Turari, Jhansi Road, Gwalior - 475001, Madhya Pradesh, India
-                        </p>
-                        <p>
-                            <strong>Registered Address:</strong><br />
-                            NH-44, Bypass Turari, Jhansi Road, Gwalior - 475001, Madhya Pradesh, India
-                        </p>
-                    </div>
+                    <h4 className="footer-logo">
+                        <span className="logo-box">ITM</span> Learning Hub
+                    </h4>
+                    <p className="footer-description">
+                        Empowering learners with intelligent tooling, authentic evaluation & purposeful mentorship.
+                    </p>
                     <div className="social-icons">
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebookF /></a>
-                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
-                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"><FaLinkedinIn /></a>
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
-                        <a href="https://github.com" target="_blank" rel="noopener noreferrer"><FaGithub /></a>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><FaGithub /></a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><FaLinkedinIn /></a>
                     </div>
                 </div>
 
-                {/* Column 2: Company */}
+                {/* Column 2: Platform */}
                 <div className="footer-column">
-                    <h4>Company</h4>
+                    <h4>Platform</h4>
                     <ul>
-                        <li><Link to="/about">About Us</Link></li>
-                        <li><Link to="/contact">Contact Us</Link></li>
-                        <li><Link to="/careers">Careers</Link></li>
-                        <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-                        <li><Link to="/terms-of-service">Terms of Service</Link></li>
+                        <li><Link to="/student/dashboard">Dashboard</Link></li>
+                        <li><Link to="/student/portfolio">Portfolio</Link></li>
+                        <li><Link to="/proctored-tests">Proctored Tests</Link></li>
+                        <li><Link to="/mentorship">Mentorship</Link></li>
                     </ul>
                 </div>
 
-                {/* Column 3: Explore */}
+                {/* Column 3: Resources */}
                 <div className="footer-column">
-                    <h4>Explore</h4>
+                    <h4>Resources</h4>
                     <ul>
-                        <li><Link to="/courses">All Courses</Link></li>
-                        <li><Link to="/quizzes">Quizzes</Link></li>
-                        <li><Link to="/practice">Practice Problems</Link></li>
-                        <li><Link to="/student/dashboard">My Dashboard</Link></li>
-                        <li><Link to="/leaderboard">Leaderboard</Link></li>
+                        <li><Link to="/docs">Documentation</Link></li>
+                        <li><Link to="/faq">FAQ</Link></li>
+                        <li><Link to="/features">Feature Overview</Link></li>
                     </ul>
                 </div>
 
-                {/* Column 4: Technologies */}
+                {/* Column 4: Legal */}
                 <div className="footer-column">
-                    <h4>Technologies</h4>
+                    <h4>Legal</h4>
                     <ul>
-                        <li><Link to="/courses/html">HTML</Link></li>
-                        <li><Link to="/courses/css">CSS</Link></li>
-                        <li><Link to="/courses/javascript">JavaScript</Link></li>
-                        <li><Link to="/courses/react">ReactJS</Link></li>
-                        <li><Link to="/courses/nodejs">Node.js</Link></li>
-                    </ul>
-                </div>
-
-                {/* Column 5: Subjects */}
-                <div className="footer-column">
-                    <h4>Subjects</h4>
-                    <ul>
-                        <li><Link to="/courses/dsa">Data Structures</Link></li>
-                        <li><Link to="/courses/algo">Algorithms</Link></li>
-                        <li><Link to="/courses/dbms">DBMS</Link></li>
-                        <li><Link to="/courses/os">Operating Systems</Link></li>
-                        <li><Link to="/courses/cn">Computer Networks</Link></li>
+                        <li><Link to="/terms">Terms</Link></li>
+                        <li><Link to="/privacy">Privacy</Link></li>
+                        <li><Link to="/cookies">Cookies</Link></li>
                     </ul>
                 </div>
             </div>
 
             <div className="footer-bottom">
-                &copy; {new Date().getFullYear()} Aman's Learning Platform. All rights reserved.
+                &copy; {new Date().getFullYear()} ITM Learning Hub. All rights reserved.
             </div>
         </footer>
     );
