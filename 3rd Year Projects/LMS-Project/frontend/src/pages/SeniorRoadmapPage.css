@@ -1,0 +1,158 @@
+.roadmap-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.roadmap-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+}
+
+.senior-profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #3498db;
+}
+
+.senior-info h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.senior-info h2 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #3498db;
+    margin: 0.25rem 0 1rem 0;
+}
+
+.senior-intro {
+    font-style: italic;
+    color: #555;
+    line-height: 1.6;
+}
+
+.timeline {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 24px;
+    height: 100%;
+    width: 4px;
+    background-color: #e9ecef;
+    border-radius: 2px;
+}
+
+.timeline-item {
+    position: relative;
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 52px;
+    height: 52px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 1;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 4px #3498db;
+}
+
+.timeline-content {
+    padding-left: 80px;
+    width: 100%;
+}
+
+.timeline-year {
+    display: inline-block;
+    background-color: #eaf5ff;
+    color: #3498db;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.timeline-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.timeline-content p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tag {
+    background-color: #f1f3f5;
+    color: #495057;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.roadmap-footer {
+    border-top: 1px solid #e9ecef;
+    padding-top: 2rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.roadmap-footer h3 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.roadmap-footer p {
+    font-style: italic;
+    color: #555;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.back-to-home-link {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    color: #3498db;
+    font-weight: 500;
+    text-decoration: none;
+}
