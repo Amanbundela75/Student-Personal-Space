@@ -56,7 +56,7 @@ const Footer = () => {
             </div>
 
             <div className="footer-bottom">
-                &copy; {new Date().getFullYear()} ITM Learning Hub. All rights reserved.
+                &copy; {new Date().getFullYear()} Aman's Learning Hub. All rights reserved.
             </div>
         </footer>
     );
