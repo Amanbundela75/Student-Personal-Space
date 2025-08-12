@@ -161,8 +161,10 @@ const HomePage = () => {
 
     const heroReveal = useReveal(0.35);
 
-    /* ---------------- CTA Targets ---------------- */
-    const primaryCTA = currentUser ? '/dashboard' : '/register';
+    /* === CHANGE #2: BUTTON LINK FIX START === */
+    // Correct path for the student dashboard
+    const primaryCTA = currentUser ? '/student/dashboard' : '/register';
+    /* === BUTTON LINK FIX END === */
 
     return (
         <div className="home-root">
@@ -239,16 +241,18 @@ const HomePage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        Crack Interviews with Confidence — Powered by AI.
+                        ITMians
                     </MotionDiv>
+                    {/* === CHANGE #1: DESCRIPTION UPDATE START === */}
                     <MotionDiv
                         className="hero-sub"
                         initial={{ opacity: 0, y: 14 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
                     >
-                        Prepare smarter with personalized mock tests, mentor-backed roadmaps & a real‑time performance engine.
+                        From classroom to career, your complete academic and professional toolkit.
                     </MotionDiv>
+                    {/* === DESCRIPTION UPDATE END === */}
                     <MotionDiv
                         className="hero-ctas"
                         initial={{ opacity: 0, y: 10 }}
@@ -384,9 +388,14 @@ const HomePage = () => {
                             </div>
                             <h3>{m.name}</h3>
                             <p className="role">{m.role}</p>
-                            <Link to={m.link} className="mentor-link">
+                            <a
+                                href={m.link}
+                                className="mentor-link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 View Roadmap <FaArrowRight />
-                            </Link>
+                            </a>
                         </div>
                     ))}
                 </div>
@@ -465,7 +474,12 @@ const HomePage = () => {
             </section>
 
             {/* CTA */}
-            <section className="final-cta">
+            <section
+                className="final-cta"
+                style={{
+                    backgroundImage: `url("/images/cta-background.jpg")`
+                }}
+            >
                 <div className="cta-inner">
                     <h2>Ready To Build Your Advantage?</h2>
                     <p>Join peers leveraging structured mentorship, adaptive testing & real-time performance intelligence.</p>
@@ -479,51 +493,6 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Footer */}
-            <footer className="site-footer">
-                <div className="footer-grid">
-                    <div className="f-col">
-                        <div className="brand-footer">
-                            <span className="brand-mark">ITM</span>
-                            <span className="brand-text">Learning Hub</span>
-                        </div>
-                        <p className="f-desc">
-                            Empowering learners with intelligent tooling, authentic evaluation & purposeful mentorship.
-                        </p>
-                        <div className="social-footer">
-                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                                <FaGithub />
-                            </a>
-                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                                <FaLinkedin />
-                            </a>
-                        </div>
-                    </div>
-                    <div className="f-col">
-                        <h4>Platform</h4>
-                        <Link to="/dashboard">Dashboard</Link>
-                        <Link to="/portfolio">Portfolio</Link>
-                        <a href="#tests">Proctored Tests</a>
-                        <a href="#mentorship">Mentorship</a>
-                    </div>
-                    <div className="f-col">
-                        <h4>Resources</h4>
-                        <a href="#portfolio">Documentation</a>
-                        <a href="#faq">FAQ</a>
-                        <a href="#features">Feature Overview</a>
-                    </div>
-                    <div className="f-col">
-                        <h4>Legal</h4>
-                        <a href="/terms">Terms</a>
-                        <a href="/privacy">Privacy</a>
-                        <a href="/cookies">Cookies</a>
-                    </div>
-                </div>
-                <div className="footer-bottom">
-                    <span>© {new Date().getFullYear()} ITM Learning Hub. All rights reserved.</span>
-                </div>
-            </footer>
 
             {showScrollTop && (
                 <button
