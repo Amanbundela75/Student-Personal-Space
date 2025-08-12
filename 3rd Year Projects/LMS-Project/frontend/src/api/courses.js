@@ -100,4 +100,26 @@ export const addNoteToCourse = async (courseId, noteData) => {
     }
 };
 
+
+/**
+ * Fetches only the courses the currently logged-in student is enrolled in.
+ * Requires authentication token.
+ * @param {string} token - The JWT token for authorization.
+ * @returns {Promise<Array>} - A promise that resolves to an array of enrolled courses.
+ */
+export const fetchMyCourses = async (token) => {
+    const response = await fetch('/api/courses/my-courses', {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch enrolled courses');
+    }
+    const data = await response.json();
+    // API se data { success: true, count: 2, data: [...] } format mein aa raha hai
+    return data.data;
+};
+
 // --- END: NAYE FUNCTIONS ---
