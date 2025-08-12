@@ -1,6 +1,9 @@
 const Course = require('../models/Course.js');
-const Branch = require('../models/Branch.js'); // To validate branch existence
-const Enrollment = require('../models/Enrollment.js'); // For when deleting a course
+const Branch = require('../models/Branch.js');
+const Enrollment = require('../models/Enrollment.js');
+
+// ... (saara purana code waisa hi rahega, main sirf naye function ko aakhir mein badal raha hoon) ...
+// ... (getAllCourses, getCourseById, createCourse, etc. sab same hain) ...
 
 // @desc    Get all courses, optionally filtered by branch
 // @route   GET /api/courses
@@ -65,10 +68,9 @@ exports.createCourse = async (req, res) => {
             description,
             branch: branchId,
             instructor,
-            youtubeVideos: youtubeVideos || [], // Default to empty array if not provided
+            youtubeVideos: youtubeVideos || [],
             notes: notes || [],
         });
-        // Populate branch info in the response
         const populatedCourse = await Course.findById(course._id).populate('branch', 'name');
         res.status(201).json({ success: true, data: populatedCourse });
     } catch (error) {
@@ -130,7 +132,6 @@ exports.deleteCourse = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Course not found' });
         }
 
-        // Before deleting the course, remove associated enrollments
         await Enrollment.deleteMany({ course: req.params.id });
 
         await course.deleteOne();
@@ -143,11 +144,7 @@ exports.deleteCourse = async (req, res) => {
     }
 };
 
-// --- START: NEW FUNCTIONS FOR ADDING CONTENT ---
-
-// @desc    Add a YouTube video to a course
-// @route   POST /api/courses/:id/videos
-// @access  Private/Admin
+// --- Content Functions ---
 exports.addVideoToCourse = async (req, res) => {
     const { title, videoId } = req.body;
     if (!title || !videoId) {
@@ -158,20 +155,14 @@ exports.addVideoToCourse = async (req, res) => {
         if (!course) {
             return res.status(404).json({ success: false, message: 'Course not found.' });
         }
-
         course.youtubeVideos.push({ title, videoId });
         await course.save();
-
         res.status(201).json({ success: true, data: course });
-
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error while adding video.' });
     }
 };
 
-// @desc    Add a note to a course
-// @route   POST /api/courses/:id/notes
-// @access  Private/Admin
 exports.addNoteToCourse = async (req, res) => {
     const { title, content, url } = req.body;
     if (!title) {
@@ -182,15 +173,45 @@ exports.addNoteToCourse = async (req, res) => {
         if (!course) {
             return res.status(404).json({ success: false, message: 'Course not found.' });
         }
-
         course.notes.push({ title, content, url });
         await course.save();
-
         res.status(201).json({ success: true, data: course });
-
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error while adding note.' });
     }
 };
 
-// --- END: NEW FUNCTIONS FOR ADDING CONTENT ---
+
+// =================================================================
+// === START: CORRECTED FUNCTION FOR ENROLLED COURSES            ===
+// =================================================================
+// @desc    Get all courses a specific student is enrolled in
+// @route   GET /api/courses/my-courses
+// @access  Private (Student)
+exports.getEnrolledCourses = async (req, res) => {
+    try {
+        const studentId = req.user.id;
+
+        // Step 1: Find all enrollments for the logged-in student using the correct field name 'user'
+        const enrollments = await Enrollment.find({ user: studentId });
+
+        if (!enrollments || enrollments.length === 0) {
+            return res.status(200).json({ success: true, count: 0, data: [] });
+        }
+
+        const courseIds = enrollments.map(enrollment => enrollment.course);
+
+        const courses = await Course.find({ '_id': { $in: courseIds } })
+            .populate('branch', 'name')
+            .sort({ title: 1 });
+
+        res.status(200).json({ success: true, count: courses.length, data: courses });
+
+    } catch (error) {
+        console.error('Error fetching enrolled courses:', error);
+        res.status(500).json({ success: false, message: 'Server Error while fetching enrolled courses.' });
+    }
+};
+// =================================================================
+// === END: CORRECTED FUNCTION                                   ===
+// =================================================================
