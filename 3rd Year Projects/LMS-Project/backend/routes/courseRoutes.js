@@ -5,10 +5,11 @@ const {
     createCourse,
     updateCourse,
     deleteCourse,
-    // --- START: Naye functions ko import karein ---
     addVideoToCourse,
-    addNoteToCourse
-    // --- END: Naye functions ko import karein ---
+    addNoteToCourse,
+    // === START: Naya function import karein ===
+    getEnrolledCourses
+    // === END: Naya function import karein ===
 } = require('../controllers/courseController.js');
 const { protect, authorize } = require('../middleware/authMiddleware.js');
 
@@ -19,13 +20,21 @@ router.route('/')
     .get(getAllCourses) // Public (can be filtered by query param ?branchId=...)
     .post(protect, authorize('admin'), createCourse); // Admin only
 
+// =================================================================
+// === START: Naya route student ke enrolled courses ke liye     ===
+// =================================================================
+// IMPORTANT: Yeh route '/:id' se pehle aana chahiye
+router.route('/my-courses')
+    .get(protect, authorize('student'), getEnrolledCourses); // Students only
+// =================================================================
+// === END: Naya route                                           ===
+// =================================================================
+
 // Route for a single course by its ID
 router.route('/:id')
     .get(getCourseById) // Public
     .put(protect, authorize('admin'), updateCourse) // Admin only
     .delete(protect, authorize('admin'), deleteCourse); // Admin only
-
-// --- START: Naye routes content add karne ke liye ---
 
 // Route to add a video to a specific course
 router.route('/:id/videos')
@@ -34,7 +43,5 @@ router.route('/:id/videos')
 // Route to add a note to a specific course
 router.route('/:id/notes')
     .post(protect, authorize('admin'), addNoteToCourse); // Admin only
-
-// --- END: Naye routes content add karne ke liye ---
 
 module.exports = router;
