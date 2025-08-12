@@ -280,6 +280,26 @@ html, body {
     font-size: 2.05rem; margin: 0; font-weight: 600; color: var(--primary);
 }
 
+/* === SEMESTER BOX UPDATE START === */
+/* This specifically targets the 3rd stat box (the Semester one) to make it larger */
+.stat-block:nth-child(3) .stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* Adjusted padding for better centering */
+}
+.stat-block:nth-child(3) .stat-box p {
+    font-size: 8rem; /* Made the number '5' even bigger */
+    line-height: 5;
+}
+.stat-block:nth-child(3) .stat-box h4 {
+    font-size: .9rem; /* Slightly larger label */
+    margin-top: 1rem; /* Space between number and label */
+}
+/* === SEMESTER BOX UPDATE END === */
+
+
 /* Circular stat */
 .circular-stat { display: flex; flex-direction: column; align-items: center; gap: .6rem; }
 .circular-stat svg { width: 108px; height: 108px; }
@@ -293,22 +313,45 @@ html, body {
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
 }
 
-/* Project list */
-.project-content-scroll { max-height: 430px; overflow: auto; padding-right: .85rem; }
-.project-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+/* === CHANGE #1 Start: Correcting Project list layout === */
+.project-content-scroll {
+    max-height: 430px;
+    overflow-y: auto;  /* Changed to auto to only show scrollbar when needed */
+    padding: 0 .5rem .5rem .2rem; /* Adjusted padding */
+}
+.project-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid; /* CHANGED from flex to grid */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Creates a responsive grid */
+    gap: 1.25rem; /* Space between grid items */
+}
+/* === CHANGE #1 End === */
+
 .project-item {
-    padding: 1rem 1rem .9rem;
+    padding: 1rem 1.2rem;
     border: 1px solid rgba(0,0,0,0.06);
     border-radius: 14px;
     background: linear-gradient(135deg, rgba(78,155,255,0.06), rgba(159,109,255,0.06));
     position: relative;
     transition: var(--transition-fast);
+    display: flex; /* Added to better structure content */
+    flex-direction: column; /* Added */
 }
 .dark-mode .project-item { border-color: rgba(255,255,255,0.08); }
 .project-item:hover { transform: translateY(-4px); box-shadow: 0 8px 22px -6px rgba(0,0,0,0.2); }
+.project-info {
+    flex-grow: 1; /* Ensures text area takes available space */
+}
 .project-info h4 { margin: 0 0 .45rem; font-size: 1.02rem; display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
 .project-info p { margin: 0; color: var(--text-soft); font-size: .9rem; }
-.project-actions { display: flex; gap: .3rem; margin-top: .65rem; justify-content: flex-end; }
+.project-actions {
+    display: flex;
+    gap: .3rem;
+    margin-top: 1rem; /* Increased margin-top */
+    justify-content: flex-end;
+}
 
 /* Status badge */
 .status-badge {
