@@ -30,6 +30,7 @@ import TestManagementPage from './pages/TestManagementPage.jsx';
 import CreateTestPage from './pages/CreateTestPage.jsx';
 import AdminAllResultsPage from './pages/AdminAllResultsPage.jsx';
 import CourseContentManagementPage from './pages/CourseContentManagementPage.jsx';
+import SeniorRoadmapPage from './pages/SeniorRoadmapPage.jsx';
 
 // --- Naya Portfolio Page Import Karein ---
 import StudentPortfolioPage from './pages/StudentPortfolioPage.jsx';
@@ -55,10 +56,14 @@ function App() {
                         <Route path="/results/:resultId" element={<ResultDetailPage />} />
                     </Route>
 
+
                     {/* Student-Only Routes */}
                     <Route element={<PrivateRoute roles={['student']} />}>
                         <Route path="/student/dashboard" element={<StudentDashboardPage />} />
                         <Route path="/portfolio" element={<StudentPortfolioPage />} />
+                        {/* === NAYA ROUTE YAHAN ADD KAREIN === */}
+                        <Route path="/seniors/:roadmapId" element={<SeniorRoadmapPage />} />
+                        {/* ==================================== */}
                         <Route path="/my-courses" element={<MyCoursesPage />} />
                         <Route path="/courses/:courseId/study" element={<StudyCoursePage />} />
                         <Route path="/course/:courseId/tests" element={<AvailableTests />} />
