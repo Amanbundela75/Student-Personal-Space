@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 import './Navbar.css';
 
 const Navbar = () => {
-    const { currentUser, logout, isAdmin } = useAuth();
+    const { currentUser, logout, isAdmin, isStudent } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -20,21 +20,23 @@ const Navbar = () => {
                 </Link>
                 <div className="nav-menu">
                     <Link to="/" className="nav-item">Home</Link>
-                    <Link to="/branches" className="nav-item">Branches</Link>
+
+                    {!isStudent && <Link to="/branches" className="nav-item">Branches</Link>}
+
                     <Link to="/courses" className="nav-item">Courses</Link>
+
                     {currentUser ? (
                         <>
                             {isAdmin ? (
                                 <Link to="/admin/dashboard" className="nav-item">Admin Dashboard</Link>
                             ) : (
                                 <>
-                                    {/* Student ke liye links */}
                                     <Link to="/student/dashboard" className="nav-item">My Dashboard</Link>
                                     <Link to="/portfolio" className="nav-item">My Portfolio</Link>
-                                    <Link to="/my-results" className="nav-item">My Results</Link>
+                                    <Link to="/roadmaps" className="nav-item">Roadmaps</Link>
+                                    {/* === "MY RESULTS" LINK YAHAN SE HATA DIYA GAYA HAI === */}
                                 </>
                             )}
-                            {/* REMOVED: Profile link has been removed from here */}
                             <span className="nav-user-greeting">Hi, {currentUser.user.firstName}</span>
                             <button onClick={handleLogout} className="nav-button nav-button-logout">Logout</button>
                         </>
