@@ -18,7 +18,8 @@ const testRoutes = require('./routes/testRoutes');
 const userRoutes = require('./routes/userRoutes.js');
 const feedbackRoutes = require('./routes/feedbackRoutes.js');
 const portfolioRoutes = require('./routes/portfolioRoutes.js');
-const achievementRoutes = require('./routes/achievementRoutes.js'); // <-- 1. Naya route import karein
+const achievementRoutes = require('./routes/achievementRoutes.js');
+const roadmapRoutes = require('./routes/roadmapRoutes.js'); // <-- 1. Naya route import karein
 
 // --- Face-API Setup ---
 const { Canvas, Image, ImageData } = canvas;
@@ -70,7 +71,8 @@ app.use('/api/tests', testRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/portfolio', portfolioRoutes);
-app.use('/api/achievements', achievementRoutes); // <-- 2. Naye route ko register karein
+app.use('/api/achievements', achievementRoutes);
+app.use('/api/roadmaps', roadmapRoutes); // <-- 2. Naye route ko register karein
 
 app.get('/', (req, res) => res.send('LMS API is alive and running...'));
 
