@@ -1,49 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { FaBook, FaLaptopCode, FaUserTie, FaTrophy } from 'react-icons/fa';
-import './SeniorRoadmapPage.css'; // Nayi CSS file import karein
+import axios from 'axios';
+import './SeniorRoadmapPage.css';
 
-// Example Data (aap isey API se fetch karenge)
-const mockRoadmapData = {
-    'priya-sharma': {
-        seniorName: 'Priya Sharma',
-        seniorRole: 'Software Engineer @ Google',
-        profileImage: '/images/seniors/mentor1.jpg',
-        introduction: "Success is a marathon, not a sprint. Consistency in learning and building projects was my key. Here's the path that led me to Google.",
-        timeline: [
-            {
-                year: "First Year",
-                icon: <FaBook />,
-                title: "Mastering C++ & DSA Fundamentals",
-                description: "Focused completely on building a strong foundation in Data Structures and Algorithms using C++. Solved over 200 problems on various platforms.",
-                skills: ["C++", "DSA", "Problem Solving"]
-            },
-            {
-                year: "Second Year",
-                icon: <FaLaptopCode />,
-                title: "Exploring Development & Projects",
-                description: "Started learning web development (MERN stack) and built 2-3 significant projects. This helped me apply the DSA concepts I learned.",
-                skills: ["JavaScript", "React", "Node.js", "MongoDB", "Git"]
-            },
-            {
-                year: "Third Year",
-                icon: <FaUserTie />,
-                title: "Internship & Core Subjects",
-                description: "Focused on cracking internships. Deep-dived into core CS subjects like OS, DBMS, and Computer Networks as they are frequently asked in interviews.",
-                skills: ["Operating Systems", "DBMS", "CN", "System Design Basics"]
-            },
-            {
-                year: "Fourth Year",
-                icon: <FaTrophy />,
-                title: "Placement Preparation & Specialization",
-                description: "Dedicatedly prepared for placements by giving mock interviews and participating in coding contests. Also explored cloud technologies.",
-                skills: ["Advanced Algo", "System Design", "Cloud (AWS)"]
-            }
-        ],
-        keyAdvice: "Don't just learn, build! Your projects are proof of your skills. And never underestimate the importance of core computer science subjects."
-    }
+const API_URL = 'http://localhost:5001/api';
+
+const iconMap = {
+    "First Year": <FaBook />,
+    "Second Year": <FaLaptopCode />,
+    "Third Year": <FaUserTie />,
+    "Fourth Year": <FaTrophy />,
+    default: <FaBook />
 };
-
 
 const SeniorRoadmapPage = () => {
     const { roadmapId } = useParams();
@@ -52,20 +21,39 @@ const SeniorRoadmapPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Abhi ke liye, hum mock data se fetch kar rahe hain
-        // TODO: Is logic ko API call se replace karein (e.g., fetchRoadmapById(roadmapId))
-        const data = mockRoadmapData[roadmapId];
-        if (data) {
-            setRoadmap(data);
-        } else {
-            setError('Roadmap for this senior could not be found.');
+        const fetchRoadmap = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/roadmaps/${roadmapId}`);
+                setRoadmap(response.data);
+            } catch (err) {
+                setError('Roadmap for this senior could not be found.');
+                console.error("Fetch single roadmap error:", err);
+            }
+            setLoading(false);
+        };
+
+        if (roadmapId) {
+            fetchRoadmap();
         }
-        setLoading(false);
     }, [roadmapId]);
 
     if (loading) return <div className="roadmap-container"><p>Loading Roadmap...</p></div>;
-    if (error) return <div className="roadmap-container"><p className="error-message">{error}</p></div>;
-    if (!roadmap) return null;
+
+    // === UPDATED ERROR/NOT FOUND VIEW START ===
+    if (error || !roadmap) {
+        return (
+            <div className="roadmap-container">
+                <div className="roadmap-not-found">
+                    <h2>Oops! Roadmap Not Found</h2>
+                    <p>We couldn't find the career path you're looking for. It might have been moved or deleted by the admin.</p>
+                    <Link to="/roadmaps" className="button button-primary">
+                        Back to All Roadmaps
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+    // === UPDATED ERROR/NOT FOUND VIEW END ===
 
     return (
         <div className="roadmap-container">
@@ -80,8 +68,8 @@ const SeniorRoadmapPage = () => {
 
             <div className="timeline">
                 {roadmap.timeline.map((item, index) => (
-                    <div className="timeline-item" key={index}>
-                        <div className="timeline-icon">{item.icon}</div>
+                    <div className="timeline-item" key={item._id || index}>
+                        <div className="timeline-icon">{iconMap[item.year] || iconMap.default}</div>
                         <div className="timeline-content">
                             <span className="timeline-year">{item.year}</span>
                             <h3>{item.title}</h3>
@@ -101,7 +89,7 @@ const SeniorRoadmapPage = () => {
                 <p>"{roadmap.keyAdvice}"</p>
             </footer>
 
-            <Link to="/" className="back-to-home-link">Back to Home</Link>
+            <Link to="/roadmaps" className="back-to-home-link">Back to All Roadmaps</Link>
         </div>
     );
 };
