@@ -233,7 +233,7 @@ const HomePage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                     >
-                        <FaBolt /> AI‑Augmented Student Platform
+                        <FaBolt /> Your Own Career Platform
                     </MotionDiv>
                     <MotionDiv
                         className="hero-title"
@@ -241,7 +241,7 @@ const HomePage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        ITMians
+                        Hello ITMians
                     </MotionDiv>
                     {/* === CHANGE #1: DESCRIPTION UPDATE START === */}
                     <MotionDiv
