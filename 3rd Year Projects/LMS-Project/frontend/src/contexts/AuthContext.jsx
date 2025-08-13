@@ -1,36 +1,26 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import * as authApi from '../api/auth.js';
-import { setupInterceptors } from '../api/apiClient.js'; // Axios interceptors ke liye
+import { setupInterceptors } from '../api/apiClient.js';
 
-// Context create karna
 export const AuthContext = createContext(null);
 
-// Custom hook to use the auth context
 export const useAuth = () => {
     return useContext(AuthContext);
 };
 
-// Auth Provider component
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Logout function
     const logout = () => {
         localStorage.removeItem('lms_user');
         setCurrentUser(null);
-        // Redirect logic can be handled in the component calling logout
     };
 
-    // Axios interceptors ko setup karne ke liye
-    // Yeh component mount hone par ek baar chalega
     useEffect(() => {
-        // Interceptor ko logout function pass kiya ja raha hai
-        // taaki token expire hone par automatically logout ho sake
         setupInterceptors(logout);
     }, []);
 
-    // Check for user session on initial load
     useEffect(() => {
         const userDetails = localStorage.getItem('lms_user');
         if (userDetails) {
@@ -39,7 +29,6 @@ export const AuthProvider = ({ children }) => {
                 if (parsedDetails.token) {
                     setCurrentUser(parsedDetails);
                 } else {
-                    // Agar data ajeeb hai ya token nahi hai
                     logout();
                 }
             } catch (e) {
@@ -50,7 +39,6 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    // Login function
     const login = async (email, password, faceImage) => {
         try {
             const response = await authApi.login(email, password, faceImage);
@@ -66,12 +54,9 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // --- YAHAN REGISTER FUNCTION ADD KIYA GAYA HAI ---
     const register = async (registrationData) => {
         try {
-            // authApi se register function call karna
             const response = await authApi.register(registrationData);
-            // API response ke hisab se handle karna
             if (response.success) {
                 return { success: true, message: response.message };
             } else {
@@ -82,16 +67,22 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Value object jo context provider ke through pass hoga
+    // === NEW VALUES ADDED FOR EASIER ACCESS ===
+    const isStudent = currentUser?.user?.role === 'student';
+    // Handles both populated (object) and unpopulated (string ID) branch data
+    const studentBranchId = currentUser?.user?.branch?._id || currentUser?.user?.branch || null;
+
     const value = {
         currentUser,
         loading,
-        register, // <<--- REGISTER FUNCTION AB AVAILABLE HAI
+        register,
         login,
         logout,
-        isAuthenticated: !!currentUser, // Yeh check karega ki user logged in hai ya nahi
-        isAdmin: currentUser?.user?.role === 'admin', // Admin role check
-        token: currentUser?.token, // Token ko alag se pass karna
+        isAuthenticated: !!currentUser,
+        isAdmin: currentUser?.user?.role === 'admin',
+        token: currentUser?.token,
+        isStudent, // <-- Student status direct available
+        studentBranchId, // <-- Student ki branch ID direct available
     };
 
     return (
