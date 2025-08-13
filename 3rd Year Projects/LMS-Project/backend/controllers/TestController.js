@@ -129,6 +129,7 @@ const submitTest = asyncHandler(async (req, res) => {
     const attempt = await TestAttempt.create({
         student: studentId,
         test: testId,
+        course: test.course, // <-- Course ID ko yahan save karein
         score: score,
         answers: answers,
         submitted: true,
@@ -153,17 +154,13 @@ const submitTest = asyncHandler(async (req, res) => {
 const getTestResults = asyncHandler(async (req, res) => {
     const studentId = req.user._id;
 
-    // --- FINAL UPDATE 1: Poora test populate karein, na ki sirf title aur totalMarks ---
     const results = await TestAttempt.find({ student: studentId })
         .populate('test')
         .sort({ createdAt: -1 });
 
-    // --- FINAL UPDATE 2: Purane tests ke liye totalMarks ko fix karein ---
     const fixedResults = results.map(result => {
         const resultObject = result.toObject();
-        // Check karein ki test hai aur usmein totalMarks nahi hai
         if (resultObject.test && (!resultObject.test.totalMarks || resultObject.test.totalMarks === 0)) {
-            // Agar nahi hai, to questions ki length se calculate karein
             resultObject.test.totalMarks = resultObject.test.questions.length;
         }
         return resultObject;
@@ -208,6 +205,30 @@ const getAllStudentResults = asyncHandler(async (req, res) => {
     res.status(200).json(results);
 });
 
+// === NAYA FUNCTION YAHAN ADD KIYA GAYA HAI ===
+// @desc    Get all results for the logged-in student FOR A SPECIFIC COURSE
+// @route   GET /api/tests/my-results/:courseId
+// @access  Private (Student)
+const getMyResultsForCourse = asyncHandler(async (req, res) => {
+    const { courseId } = req.params;
+    const studentId = req.user._id;
+
+    const results = await TestAttempt.find({ student: studentId, course: courseId })
+        .populate('test', 'title totalMarks questions') // Test ka title aur total marks le aayein
+        .sort({ createdAt: -1 });
+
+    const fixedResults = results.map(result => {
+        const resultObject = result.toObject();
+        if (resultObject.test && (!resultObject.test.totalMarks || resultObject.test.totalMarks === 0)) {
+            resultObject.test.totalMarks = resultObject.test.questions.length;
+        }
+        return resultObject;
+    });
+
+    res.status(200).json(fixedResults);
+});
+// ===========================================
+
 // --- Final and Correct Exports ---
 module.exports = {
     createTest,
@@ -220,4 +241,5 @@ module.exports = {
     getTestResults,
     getSingleTestResult,
     getAllStudentResults,
+    getMyResultsForCourse, // Naya function export karein
 };
