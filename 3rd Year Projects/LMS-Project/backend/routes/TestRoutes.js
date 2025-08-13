@@ -12,7 +12,8 @@ const {
     submitTest,
     getTestResults,
     getSingleTestResult,
-    getAllStudentResults, // <-- NAYA ADMIN FUNCTION IMPORT KIYA GAYA
+    getAllStudentResults,
+    getMyResultsForCourse, // <-- Naya function import karein
 } = require('../controllers/TestController');
 
 // Step 2: Security ke liye middleware import karein
@@ -26,25 +27,18 @@ router.route('/')
     .get(protect, admin, getAllTests) // Sabhi tests laayein (Admin ke liye)
     .post(protect, admin, createTest); // Naya test banayein (Admin ke liye)
 
-// --- START: NAYA ADMIN ROUTE ADD KIYA GAYA ---
-// GET -> Admin sabhi students ke results dekhega
 router.route('/all-results')
     .get(protect, admin, getAllStudentResults);
-// --- END: NAYA ADMIN ROUTE ADD KIYA GAYA ---
 
 
 // --- STUDENT ROUTES ---
-// Specific routes hamesha dynamic routes (jaise /:id) se pehle aane chahiye.
-
-// GET -> Ek course ke saare available tests laayein
 router.route('/course/:courseId')
     .get(protect, getTestsForCourse);
 
-// POST -> Student test submit karega
 router.route('/submit')
     .post(protect, submitTest);
 
-// GET -> Student apne saare purane results dekhega
+// GET -> Student apne saare purane results dekhega (yeh /my-results se alag hai)
 router.route('/results')
     .get(protect, getTestResults);
 
@@ -52,9 +46,13 @@ router.route('/results')
 router.route('/results/:id')
     .get(protect, getSingleTestResult);
 
+// === NAYA ROUTE YAHAN ADD KIYA GAYA HAI ===
+// GET -> Ek particular course ke saare results laayein
+router.route('/my-results/:courseId')
+    .get(protect, getMyResultsForCourse);
+// ===========================================
 
 // --- DYNAMIC ROUTE (YEH HAMESHA AAKHIR MEIN HONA CHAHIYE) ---
-// Kyunki yeh route bahut general hai, isko sabse neeche rakha jaata hai.
 router.route('/:id')
     .get(protect, getTestById)      // Ek specific test laayein ID se
     .put(protect, admin, updateTest)    // Test update karein (Admin ke liye)
