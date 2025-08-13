@@ -1211,3 +1211,10 @@ html, body, .home-root {
     outline-offset: 3px;
     border-radius: 6px;
 }
+
+/* --- Adjusting Image Size in Split Section --- */
+
+#tests .media-frame {
+    max-width: 380px; /* Aap is value ko kam ya zyada kar sakte hain */
+    margin: 0 auto; /* Yeh image ko uske column mein center mein rakhega */
+}
