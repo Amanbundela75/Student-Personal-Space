@@ -259,7 +259,11 @@ html, body {
 
 /* Stats */
 .stats-flex {
-    display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: stretch;
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;  /* Changed from stretch to center */
+    justify-content: space-around; /* Better distribution */
 }
 .stat-block {
     flex: 1; min-width: 160px; display: flex; align-items: center; justify-content: center;
