@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Footer.css'; // Existing CSS file
-
-// GitHub aur LinkedIn icons import karein
+import './Footer.css';
 import { FaGithub, FaLinkedinIn } from 'react-icons/fa';
 
 const Footer = () => {
@@ -28,9 +26,9 @@ const Footer = () => {
                     <h4>Platform</h4>
                     <ul>
                         <li><Link to="/student/dashboard">Dashboard</Link></li>
-                        <li><Link to="/student/portfolio">Portfolio</Link></li>
-                        <li><Link to="/proctored-tests">Proctored Tests</Link></li>
-                        <li><Link to="/mentorship">Mentorship</Link></li>
+                        <li><Link to="/portfolio">Portfolio</Link></li>
+                        <li><a href="/#tests">Proctored Tests</a></li>
+                        <li><a href="/#mentorship">Mentorship</a></li>
                     </ul>
                 </div>
 
@@ -38,9 +36,11 @@ const Footer = () => {
                 <div className="footer-column">
                     <h4>Resources</h4>
                     <ul>
-                        <li><Link to="/docs">Documentation</Link></li>
-                        <li><Link to="/faq">FAQ</Link></li>
-                        <li><Link to="/features">Feature Overview</Link></li>
+                        <li><Link to="/roadmaps">Documentation</Link></li>
+                        {/* === FAQ LINK CORRECTED HERE === */}
+                        {/* Using <a> tag to ensure it scrolls to the section on the homepage */}
+                        <li><a href="/#faq">FAQ</a></li>
+                        <li><a href="/#features">Feature Overview</a></li>
                     </ul>
                 </div>
 
@@ -48,9 +48,11 @@ const Footer = () => {
                 <div className="footer-column">
                     <h4>Legal</h4>
                     <ul>
-                        <li><Link to="/terms">Terms</Link></li>
-                        <li><Link to="/privacy">Privacy</Link></li>
-                        <li><Link to="/cookies">Cookies</Link></li>
+                        {/* === LEGAL LINKS CORRECTED TO PREVENT 404 ERROR === */}
+                        {/* These now point to the homepage. Update them later when you create the pages. */}
+                        <li><Link to="/">Terms</Link></li>
+                        <li><Link to="/">Privacy</Link></li>
+                        <li><Link to="/">Cookies</Link></li>
                     </ul>
                 </div>
             </div>
