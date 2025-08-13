@@ -22,6 +22,13 @@ const AdminDashboardPage = () => {
                     <p>Add new courses, update existing ones.</p>
                     <Link to="/admin/courses" className="button button-primary">Manage Courses</Link>
                 </div>
+                {/* === NAYA CARD YAHAN ADD KIYA GAYA HAI === */}
+                <div className="card">
+                    <h3>Roadmap Management</h3>
+                    <p>Create and manage senior career roadmaps.</p>
+                    <Link to="/admin/roadmaps" className="button button-primary">Manage Roadmaps</Link>
+                </div>
+                {/* ======================================= */}
                 <div className="card">
                     <h3>Enrollment Overview</h3>
                     <p>View all student enrollments.</p>
@@ -32,13 +39,11 @@ const AdminDashboardPage = () => {
                     <p>Create, view, and manage all tests for courses.</p>
                     <Link to="/admin/tests" className="button button-primary">Manage Tests</Link>
                 </div>
-                {/* --- START: NAYA CARD JODA GAYA HAI --- */}
                 <div className="card">
                     <h3>Student Results</h3>
                     <p>View all test results submitted by students.</p>
                     <Link to="/admin/results" className="button button-primary">View Results</Link>
                 </div>
-                {/* --- END: NAYA CARD JODA GAYA HAI --- */}
             </div>
         </div>
     );
