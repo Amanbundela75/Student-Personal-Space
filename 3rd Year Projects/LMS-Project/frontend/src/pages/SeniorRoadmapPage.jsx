@@ -4,7 +4,7 @@ import { FaBook, FaLaptopCode, FaUserTie, FaTrophy } from 'react-icons/fa';
 import axios from 'axios';
 import './SeniorRoadmapPage.css';
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = 'http://localhost:5001'; // Backend URL
 
 const iconMap = {
     "First Year": <FaBook />,
@@ -23,11 +23,10 @@ const SeniorRoadmapPage = () => {
     useEffect(() => {
         const fetchRoadmap = async () => {
             try {
-                const response = await axios.get(`${API_URL}/roadmaps/${roadmapId}`);
+                const response = await axios.get(`${API_URL}/api/roadmaps/${roadmapId}`);
                 setRoadmap(response.data);
             } catch (err) {
                 setError('Roadmap for this senior could not be found.');
-                console.error("Fetch single roadmap error:", err);
             }
             setLoading(false);
         };
@@ -38,27 +37,18 @@ const SeniorRoadmapPage = () => {
     }, [roadmapId]);
 
     if (loading) return <div className="roadmap-container"><p>Loading Roadmap...</p></div>;
-
-    // === UPDATED ERROR/NOT FOUND VIEW START ===
-    if (error || !roadmap) {
-        return (
-            <div className="roadmap-container">
-                <div className="roadmap-not-found">
-                    <h2>Oops! Roadmap Not Found</h2>
-                    <p>We couldn't find the career path you're looking for. It might have been moved or deleted by the admin.</p>
-                    <Link to="/roadmaps" className="button button-primary">
-                        Back to All Roadmaps
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-    // === UPDATED ERROR/NOT FOUND VIEW END ===
+    if (error) return <div className="roadmap-container"><p className="error-message">{error}</p></div>;
+    if (!roadmap) return null;
 
     return (
         <div className="roadmap-container">
             <header className="roadmap-header">
-                <img src={roadmap.profileImage} alt={roadmap.seniorName} className="senior-profile-pic" />
+                {/* === IMAGE PATH CORRECTED HERE === */}
+                <img
+                    src={`${API_URL}${roadmap.profileImage}`}
+                    alt={roadmap.seniorName}
+                    className="senior-profile-pic"
+                />
                 <div className="senior-info">
                     <h1>{roadmap.seniorName}'s Career Path</h1>
                     <h2>{roadmap.seniorRole}</h2>
