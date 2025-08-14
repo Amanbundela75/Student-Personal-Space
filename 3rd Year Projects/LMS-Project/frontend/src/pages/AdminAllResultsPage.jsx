@@ -7,14 +7,10 @@ const AdminAllResultsPage = () => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    // --- START: BADLAV YAHAN KIYA GAYA HAI ---
-    // authState ki jagah seedhe token ko nikalein
     const { token } = useAuth();
-    // --- END: BADLAV YAHAN KIYA GAYA HAI ---
 
     useEffect(() => {
         const fetchResults = async () => {
-            // Check karein ki token maujood hai ya nahi
             if (token) {
                 try {
                     const data = await getAllResultsAdmin(token);
@@ -25,18 +21,12 @@ const AdminAllResultsPage = () => {
                     setLoading(false);
                 }
             } else {
-                // Agar token nahi hai, to loading band kar dein.
-                // Auth context abhi bhi token laa raha ho sakta hai,
-                // lekin hum yahan ek chhota sa delay de sakte hain ya loading false kar sakte hain.
-                // Abhi ke liye, hum maan rahe hain ki agar token nahi hai to user logged in nahi hai.
                 setLoading(false);
-                // Aap yahan ek error bhi set kar sakti hain, jaise:
-                // setError("You must be logged in to view results.");
             }
         };
 
         fetchResults();
-    }, [token]); // Dependency array mein token rakhein
+    }, [token]);
 
     if (loading) {
         return <div className="container"><h2>Loading All Student Results...</h2></div>;
@@ -66,21 +56,34 @@ const AdminAllResultsPage = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {results.map(result => (
-                        <tr key={result._id}>
-                            <td>{result.student ? `${result.student.firstName} ${result.student.lastName}` : 'N/A'}</td>
-                            <td>{result.student ? result.student.email : 'N/A'}</td>
-                            <td>{result.test ? result.test.title : 'Test Deleted'}</td>
-                            <td>{result.score} / {result.totalMarks}</td>
-                            <td>{((result.score / result.totalMarks) * 100).toFixed(2)}%</td>
-                            <td>{new Date(result.submittedAt).toLocaleDateString()}</td>
-                            <td>
-                                <Link to={`/results/${result._id}`} className="btn btn-sm">
-                                    View
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
+                    {results.map(result => {
+                        // Safe check for total marks to prevent division by zero
+                        const totalMarks = result.test?.totalMarks || 0;
+                        const percentage = totalMarks > 0 ? ((result.score / totalMarks) * 100).toFixed(2) : 0;
+
+                        return (
+                            <tr key={result._id}>
+                                <td>{result.student ? `${result.student.firstName} ${result.student.lastName}` : 'N/A'}</td>
+                                <td>{result.student ? result.student.email : 'N/A'}</td>
+                                <td>{result.test ? result.test.title : 'Test Deleted'}</td>
+
+                                {/* === SCORE FIX: totalMarks ab test object se aayega === */}
+                                <td>{result.score} / {totalMarks}</td>
+
+                                {/* === PERCENTAGE FIX: NaN% ki jagah sahi value aayegi === */}
+                                <td>{percentage}%</td>
+
+                                {/* === DATE FIX: Invalid Date ki jagah sahi date aayegi === */}
+                                <td>{result.createdAt ? new Date(result.createdAt).toLocaleDateString() : 'N/A'}</td>
+
+                                <td>
+                                    <Link to={`/results/${result._id}`} className="btn btn-sm">
+                                        View
+                                    </Link>
+                                </td>
+                            </tr>
+                        );
+                    })}
                     </tbody>
                 </table>
             )}
