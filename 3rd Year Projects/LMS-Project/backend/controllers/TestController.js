@@ -194,15 +194,27 @@ const getSingleTestResult = asyncHandler(async (req, res) => {
     res.status(200).json(resultObject);
 });
 
+// backend/controllers/testController.js
+
 // @desc    Get all results for ALL students (for Admin)
 // @route   GET /api/tests/all-results
 // @access  Private/Admin
 const getAllStudentResults = asyncHandler(async (req, res) => {
     const results = await TestAttempt.find({})
-        .populate('test', 'title')
+        .populate('test', 'title totalMarks questions')
+        // === CHANGE HERE: '.populate('user', ...)' ko '.populate('student', ...)' kiya gaya ===
         .populate('student', 'firstName lastName email')
         .sort({ createdAt: -1 });
-    res.status(200).json(results);
+
+    const fixedResults = results.map(result => {
+        const resultObject = result.toObject();
+        if (resultObject.test && (!resultObject.test.totalMarks || resultObject.test.totalMarks === 0)) {
+            resultObject.test.totalMarks = resultObject.test.questions.length;
+        }
+        return resultObject;
+    });
+
+    res.status(200).json(fixedResults);
 });
 
 // === NAYA FUNCTION YAHAN ADD KIYA GAYA HAI ===
