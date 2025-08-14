@@ -1,5 +1,3 @@
-// src/components/admin/RoadmapForm.jsx
-
 import React, { useState, useEffect } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 
@@ -7,14 +5,12 @@ const RoadmapForm = ({ initialData, onSave, onCancel, isSubmitting }) => {
     const [formData, setFormData] = useState({
         seniorName: '',
         seniorRole: '',
-        profileImage: '/images/seniors/default.png', // Default image path
         introduction: '',
-        slug: '',
         keyAdvice: '',
-        timeline: [
-            { year: 'First Year', title: '', description: '', skills: '' }
-        ]
+        timeline: [{ year: 'First Year', title: '', description: '', skills: '' }]
     });
+    // State to hold the selected image file
+    const [profileImageFile, setProfileImageFile] = useState(null);
 
     useEffect(() => {
         if (initialData) {
@@ -29,6 +25,10 @@ const RoadmapForm = ({ initialData, onSave, onCancel, isSubmitting }) => {
             setFormData(editableData);
         }
     }, [initialData]);
+
+    const handleFileChange = (e) => {
+        setProfileImageFile(e.target.files[0]);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -56,19 +56,31 @@ const RoadmapForm = ({ initialData, onSave, onCancel, isSubmitting }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Convert skills string back to array before saving
-        const dataToSave = {
-            ...formData,
-            timeline: formData.timeline.map(step => ({
-                ...step,
-                skills: step.skills.split(',').map(s => s.trim()).filter(Boolean)
-            }))
-        };
-        onSave(dataToSave);
+
+        // Use FormData to send both text and file data
+        const submissionData = new FormData();
+        submissionData.append('seniorName', formData.seniorName);
+        submissionData.append('seniorRole', formData.seniorRole);
+        submissionData.append('introduction', formData.introduction);
+        submissionData.append('keyAdvice', formData.keyAdvice);
+
+        if (profileImageFile) {
+            submissionData.append('profileImage', profileImageFile);
+        }
+
+        // Convert timeline skills back to array and stringify the whole timeline
+        const timelineWithSkillsArray = formData.timeline.map(step => ({
+            ...step,
+            skills: step.skills.split(',').map(s => s.trim()).filter(Boolean)
+        }));
+        submissionData.append('timeline', JSON.stringify(timelineWithSkillsArray));
+
+        // Pass the FormData object to the parent component's onSave function
+        onSave(submissionData, initialData?._id);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="roadmap-form">
+        <form onSubmit={handleSubmit} className="roadmap-form" encType="multipart/form-data">
             <h2>{initialData ? 'Edit Roadmap' : 'Add New Roadmap'}</h2>
 
             <div className="form-group">
@@ -79,13 +91,15 @@ const RoadmapForm = ({ initialData, onSave, onCancel, isSubmitting }) => {
                 <label>Senior Role (e.g., Software Engineer @ Google)</label>
                 <input name="seniorRole" value={formData.seniorRole} onChange={handleChange} required />
             </div>
+            {/* === IMAGE PATH AND SLUG REMOVED, FILE UPLOAD ADDED === */}
             <div className="form-group">
-                <label>Profile Image Path (e.g., /images/seniors/rohan.jpg)</label>
-                <input name="profileImage" value={formData.profileImage} onChange={handleChange} required />
-            </div>
-            <div className="form-group">
-                <label>URL Slug (e.g., rohan-verma)</label>
-                <input name="slug" value={formData.slug} onChange={handleChange} required />
+                <label>Profile Photo</label>
+                <input type="file" name="profileImage" onChange={handleFileChange} accept="image/*" />
+                {initialData && !profileImageFile && (
+                    <p style={{fontSize: '0.8rem', marginTop: '5px', color: '#555'}}>
+                        Current image will be kept if you don't upload a new one.
+                    </p>
+                )}
             </div>
             <div className="form-group">
                 <label>Introduction</label>
