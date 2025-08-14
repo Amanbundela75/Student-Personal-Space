@@ -1,24 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { fetchAllEnrollmentsAdmin } from '../api/enrollments.js';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
+import { FaTrash } from 'react-icons/fa';
 
-// Ek chota helper component progress calculate karne ke liye
-const EnrollmentProgress = ({ enrollment }) => {
-    if (!enrollment.course) {
-        return <span>N/A</span>;
-    }
-
-    const totalContent = (enrollment.course.youtubeVideos?.length || 0) + (enrollment.course.notes?.length || 0);
-    if (totalContent === 0) {
-        return <span>0%</span>;
-    }
-
-    const completedCount = enrollment.completedContent?.length || 0;
-    const percentage = Math.round((completedCount / totalContent) * 100);
-
-    return <span>{percentage}%</span>;
-};
-
+const API_URL = 'http://localhost:5001/api';
 
 const AdminEnrollmentManagementPage = () => {
     const [enrollments, setEnrollments] = useState([]);
@@ -26,50 +11,83 @@ const AdminEnrollmentManagementPage = () => {
     const [error, setError] = useState('');
     const { token } = useAuth();
 
+    const fetchEnrollments = async () => {
+        // Reset state before fetching
+        setLoading(true);
+        setError('');
+        try {
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const { data } = await axios.get(`${API_URL}/enrollments/all`, config);
+            setEnrollments(data);
+        } catch (err) {
+            setError('Failed to fetch enrollments.');
+            console.error(err);
+        }
+        setLoading(false);
+    };
+
     useEffect(() => {
-        const loadEnrollments = async () => {
-            if (token) {
-                setLoading(true);
-                try {
-                    const data = await fetchAllEnrollmentsAdmin(token);
-                    setEnrollments(data || []);
-                    setError('');
-                } catch (err) {
-                    setError('Failed to load enrollments.');
-                    console.error(err);
-                }
-                setLoading(false);
-            }
-        };
-        loadEnrollments();
+        if (token) {
+            fetchEnrollments();
+        }
     }, [token]);
 
-    if (loading) return <p>Loading enrollments...</p>;
-    if (error) return <p className="error-message">{error}</p>;
+    const handleDelete = async (enrollmentId) => {
+        if (window.confirm('Are you sure you want to delete this enrollment permanently?')) {
+            try {
+                const config = { headers: { Authorization: `Bearer ${token}` } };
+                await axios.delete(`${API_URL}/enrollments/${enrollmentId}`, config);
+                // Refresh the list after successful deletion
+                fetchEnrollments();
+            } catch (err) {
+                setError('Failed to delete enrollment.');
+                console.error(err);
+            }
+        }
+    };
+
+    if (loading) return <div className="container"><p>Loading enrollments...</p></div>;
+    if (error) return <div className="container"><p className="error-message" style={{color: 'red'}}>{error}</p></div>;
 
     return (
         <div className="container">
-            <h2>All Student Enrollments</h2>
-            {enrollments.length === 0 ? <p>No enrollments found.</p> : (
-                <table>
+            <h1 style={{ textAlign: 'center', marginBottom: '2rem' }}>All Student Enrollments</h1>
+
+            {enrollments.length === 0 ? (
+                <p>No enrollments found.</p>
+            ) : (
+                <table className="table">
                     <thead>
                     <tr>
                         <th>Student</th>
                         <th>Email</th>
                         <th>Course Title</th>
                         <th>Enrolled On</th>
-                        <th>Progress</th> {/* Ye ab naye system se calculate hoga */}
+                        <th>Progress</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     {enrollments.map(enrollment => (
                         <tr key={enrollment._id}>
+                            {/* === FIX START: 'enrollment.student' ko 'enrollment.user' kiya gaya === */}
                             <td>{enrollment.user ? `${enrollment.user.firstName} ${enrollment.user.lastName}` : 'N/A'}</td>
                             <td>{enrollment.user ? enrollment.user.email : 'N/A'}</td>
-                            <td>{enrollment.course ? enrollment.course.title : 'N/A'}</td>
-                            <td>{new Date(enrollment.enrolledAt).toLocaleDateString()}</td>
-                            {/* Purane 'enrollment.progress' ki jagah naya component use karenge */}
-                            <td><EnrollmentProgress enrollment={enrollment} /></td>
+                            {/* ======================================================================= */}
+                            <td>{enrollment.course ? enrollment.course.title : 'Course Deleted'}</td>
+                            {/* === DATE FIX: Invalid Date se bachne ke liye check add kiya gaya === */}
+                            <td>{enrollment.enrolledAt ? new Date(enrollment.enrolledAt).toLocaleDateString() : 'N/A'}</td>
+                            {/* ===================================================================== */}
+                            <td>0%</td>
+                            <td>
+                                <button
+                                    className="btn btn-sm btn-danger"
+                                    onClick={() => handleDelete(enrollment._id)}
+                                    title="Delete Enrollment"
+                                >
+                                    <FaTrash />
+                                </button>
+                            </td>
                         </tr>
                     ))}
                     </tbody>
