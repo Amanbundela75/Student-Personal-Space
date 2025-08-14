@@ -18,8 +18,7 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const query = useQuery();
-    // AuthContext se naye values ka istemal karein
-    const { isAuthenticated, token, isStudent, studentBranchId } = useAuth();
+    const { isAuthenticated, token, currentUser, isStudent, studentBranchId } = useAuth();
 
     const initialBranchIdFromUrl = query.get('branchId');
 
@@ -30,16 +29,12 @@ const CourseListPage = () => {
             try {
                 let branchToFilter = '';
 
-                // === LOGIC UPDATE START ===
                 if (isStudent) {
-                    // Agar user student hai, toh uski branch ID use karein
                     branchToFilter = studentBranchId;
                     setSelectedBranch(studentBranchId);
                 } else {
-                    // Guest ya Admin ke liye, URL se ya default se filter karein
                     branchToFilter = initialBranchIdFromUrl || '';
                     setSelectedBranch(branchToFilter);
-                    // Guest/Admin ke liye branches bhi fetch karein
                     const branchesData = await fetchBranches();
                     setBranches(branchesData || []);
                 }
@@ -47,8 +42,9 @@ const CourseListPage = () => {
                 const coursesResponse = await fetchCourses(branchToFilter);
                 setCourses(coursesResponse?.data || coursesResponse || []);
 
-                // Enrollments hamesha logged-in users ke liye fetch karein (student aur admin dono)
-                if (isAuthenticated && token) {
+                // === LOGIC UPDATE START ===
+                // Enrollments sirf tabhi fetch karein jab user student ho
+                if (isStudent && token) {
                     const enrollmentsData = await fetchMyEnrollments(token);
                     const ids = new Set(enrollmentsData.map(e => e.course._id));
                     setEnrolledCourseIds(ids);
@@ -63,7 +59,7 @@ const CourseListPage = () => {
         };
 
         loadInitialData();
-    }, [initialBranchIdFromUrl, isAuthenticated, token, isStudent, studentBranchId]);
+    }, [initialBranchIdFromUrl, isAuthenticated, token, isStudent, studentBranchId, currentUser]);
 
     const handleBranchChange = (e) => {
         const newBranchId = e.target.value;
@@ -86,13 +82,12 @@ const CourseListPage = () => {
         setEnrolledCourseIds(prevIds => new Set([...prevIds, enrolledCourseId]));
     };
 
-    if (error) return <p style={{color: 'red', textAlign: 'center', marginTop: '20px'}}>{error}</p>;
+    if (error) return <div className="container error-container"><p>{error}</p></div>;
 
     return (
         <div className="container">
             <h1>Available Courses</h1>
 
-            {/* Branch filter ab sirf tab dikhega jab user student nahi hai */}
             {!isStudent && (
                 <div>
                     <label htmlFor="branchFilter" style={{ marginRight: '10px' }}>Filter by Branch:</label>
