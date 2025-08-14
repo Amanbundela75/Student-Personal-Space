@@ -11,20 +11,15 @@ const EnrollmentSchema = new mongoose.Schema({
         ref: 'Course',
         required: true,
     },
-    enrolledAt: {
-        type: Date,
-        default: Date.now,
-    },
-    /**
-     * Replaced the old 'progress' and 'completedAt' fields.
-     * This array will store the _id of each completed video or note.
-     * This is a much more robust way to track progress.
-     */
+    // The 'enrolledAt' field is no longer needed because timestamps will handle it.
+
     completedContent: [{
         type: mongoose.Schema.Types.ObjectId,
-        // We don't need a 'ref' here because these IDs belong to sub-documents
-        // inside the Course model, not a separate collection.
     }],
+}, {
+    // === TIMESTAMPS OPTION ADDED HERE ===
+    // This automatically adds 'createdAt' and 'updatedAt' fields to your schema.
+    timestamps: true
 });
 
 // Ensure a user can enroll in a specific course only once
