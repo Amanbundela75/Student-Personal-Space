@@ -122,4 +122,32 @@ export const fetchMyCourses = async (token) => {
     return data.data;
 };
 
+// Add these two new functions to your frontend/src/api/courses.js file
+
+// ... (your existing functions like fetchCourseById, addVideoToCourse, etc.)
+
+// Function to delete a video from a course
+export const deleteVideoFromCourse = async (courseId, videoId, token) => {
+    try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const response = await apiClient.delete(`/api/courses/${courseId}/videos/${videoId}`, config);
+        return response.data;
+    } catch (error) {
+        console.error('API Delete Video Error:', error.response?.data || error.message);
+        throw error.response?.data || { success: false, message: 'Server error during video deletion.' };
+    }
+};
+
+// Function to delete a note from a course
+export const deleteNoteFromCourse = async (courseId, noteId, token) => {
+    try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const response = await apiClient.delete(`/api/courses/${courseId}/notes/${noteId}`, config);
+        return response.data;
+    } catch (error) {
+        console.error('API Delete Note Error:', error.response?.data || error.message);
+        throw error.response?.data || { success: false, message: 'Server error during note deletion.' };
+    }
+};
+
 // --- END: NAYE FUNCTIONS ---
