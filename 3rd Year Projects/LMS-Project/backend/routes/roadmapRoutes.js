@@ -8,17 +8,18 @@ const {
     deleteRoadmap,
 } = require('../controllers/roadmapController.js');
 const { protect, admin } = require('../middleware/authMiddleware.js');
-const upload = require('../middleware/uploadMiddleware.js'); // Multer middleware import karein
+// === CHANGE HERE: Import the specific uploader for roadmap images ===
+const { uploadRoadmapImage } = require('../middleware/uploadMiddleware.js');
 
 // Public routes
 router.route('/').get(getAllRoadmaps);
 router.route('/:slug').get(getRoadmapBySlug);
 
 // Admin-only routes
-// === MIDDLEWARE ADDED for file upload ===
-router.route('/').post(protect, admin, upload.single('profileImage'), createRoadmap);
+// === CHANGE HERE: Use the specific uploader in the routes ===
+router.route('/').post(protect, admin, uploadRoadmapImage.single('profileImage'), createRoadmap);
 router.route('/:id')
-    .put(protect, admin, upload.single('profileImage'), updateRoadmap)
+    .put(protect, admin, uploadRoadmapImage.single('profileImage'), updateRoadmap)
     .delete(protect, admin, deleteRoadmap);
 
 module.exports = router;
