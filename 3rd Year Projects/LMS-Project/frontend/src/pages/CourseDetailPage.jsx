@@ -1,71 +1,76 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchCourseById } from '../api/courses';
-import { enrollInCourseApi, fetchMyEnrollments, markContentCompleteApi } from '../api/enrollments';
+import { enrollInCourseApi, fetchMyEnrollments } from '../api/enrollments';
 import { useAuth } from '../contexts/AuthContext.jsx';
-import { FaYoutube, FaStickyNote, FaBookOpen, FaPencilAlt } from 'react-icons/fa'; // FaPencilAlt import karein
+import { FaPencilAlt } from 'react-icons/fa';
 import './CourseDetail.css';
 
-// ... (Your other sub-components like ContentPlayer, ContentSidebar can remain here if they are in the same file)
-
-// Main Page Component
 const CourseDetailPage = () => {
     const { courseId } = useParams();
     const [course, setCourse] = useState(null);
     const [currentEnrollment, setCurrentEnrollment] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const { isAuthenticated, token, currentUser } = useAuth(); // currentUser yahan zaroori hai
-    const [activeContent, setActiveContent] = useState(null);
+    const { isAuthenticated, token, currentUser } = useAuth();
 
-    // === ADMIN CHECK START ===
-    // Check if the logged-in user is an admin
     const isAdmin = currentUser?.user?.role === 'admin';
-    // === ADMIN CHECK END ===
-
-    const loadCourseDetails = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            const courseData = await fetchCourseById(courseId);
-            setCourse(courseData);
-
-            if (isAuthenticated && currentUser?.user?.role === 'student' && courseData) {
-                const enrollmentsData = await fetchMyEnrollments(token);
-                const enrollment = enrollmentsData.find(e => e.course._id === courseData._id);
-                setCurrentEnrollment(enrollment || null);
-
-                if (enrollment && courseData.youtubeVideos && courseData.youtubeVideos.length > 0) {
-                    setActiveContent({ ...courseData.youtubeVideos[0], type: 'video' });
-                }
-            }
-        } catch (err) {
-            setError('Failed to load course details.');
-            console.error(err);
-        }
-        setLoading(false);
-    };
 
     useEffect(() => {
+        const loadCourseDetails = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const response = await fetchCourseById(courseId);
+
+                // === ERROR FIX START ===
+                // Now we can safely access response.data because our API is consistent
+                if (response && response.success) {
+                    setCourse(response.data);
+
+                    if (isAuthenticated && currentUser?.user?.role === 'student' && response.data) {
+                        const enrollmentsResponse = await fetchMyEnrollments(token);
+                        // The enrollments API also returns a 'data' property
+                        const enrollment = enrollmentsResponse.data.find(e => e.course._id === response.data._id);
+                        setCurrentEnrollment(enrollment || null);
+                    }
+                } else {
+                    throw new Error(response?.message || 'Course could not be loaded.');
+                }
+                // === ERROR FIX END ===
+
+            } catch (err) {
+                setError(err.message || 'Failed to load course details.');
+                console.error(err);
+            }
+            setLoading(false);
+        };
+
         loadCourseDetails();
-    }, [courseId, isAuthenticated, token, currentUser]); // currentUser ko dependency mein add karein
+    }, [courseId, isAuthenticated, token, currentUser]);
 
     const handleEnroll = async () => {
         try {
             await enrollInCourseApi(courseId, token);
-            await loadCourseDetails();
+            // Re-fetch details to update UI after enrollment
+            const response = await fetchCourseById(courseId);
+            if(response.success) setCourse(response.data);
         } catch (err) {
             setError('Failed to enroll in the course.');
         }
     };
 
-    const handleToggleComplete = async (contentId, isCompleted) => {
-        // ... (function code remains same)
-    };
-
     if (loading) return <div className="container loading-container"><p>Loading Course...</p></div>;
-    if (error) return <div className="container error-container"><p className="error-message">{error}</p></div>;
-    if (!course) return <div className="container"><p>Course not found.</p></div>;
+
+    if (error || !course) {
+        return (
+            <div className="container" style={{ textAlign: 'center', marginTop: '3rem' }}>
+                <h2>Course Not Found</h2>
+                <p>{error || "The course you are looking for does not exist or may have been moved."}</p>
+                <Link to="/courses" className="button button-primary">Back to All Courses</Link>
+            </div>
+        );
+    }
 
     const isEnrolled = !!currentEnrollment;
 
@@ -77,28 +82,27 @@ const CourseDetailPage = () => {
                     <p><strong>Branch:</strong> {course.branch?.name || 'N/A'} | <strong>Instructor:</strong> {course.instructor || 'N/A'}</p>
                 </div>
 
-                {/* === ADMIN BUTTON START === */}
-                {/* Yeh button sirf admin ko dikhega */}
                 {isAdmin && (
                     <Link to={`/admin/course/${courseId}/content`} className="btn-manage-content">
                         <FaPencilAlt /> Manage Course Content
                     </Link>
                 )}
-                {/* === ADMIN BUTTON END === */}
             </div>
 
             {isEnrolled ? (
-                // ... (Your enrolled view JSX here)
-                <p>You are enrolled in this course. <Link to={`/courses/${courseId}/study`}>Start Studying</Link></p>
+                <div className="public-view-container">
+                    <p style={{fontSize: '1.2rem', fontWeight: '500'}}>You are already enrolled in this course.</p>
+                    <Link to={`/courses/${courseId}/study`} className="btn-enroll" style={{marginTop: '1rem'}}>
+                        Start Studying
+                    </Link>
+                </div>
             ) : (
                 <div className="public-view-container">
                     <h3>Course Description</h3>
                     <p>{course.description}</p>
-                    {/* Enroll button logic for students */}
                     {isAuthenticated && currentUser?.user?.role === 'student' && (
                         <button onClick={handleEnroll} className="btn-enroll">Enroll Now</button>
                     )}
-                    {/* Login button for guests */}
                     {!isAuthenticated && (
                         <Link to="/login" className="btn-enroll">Login to Enroll</Link>
                     )}
