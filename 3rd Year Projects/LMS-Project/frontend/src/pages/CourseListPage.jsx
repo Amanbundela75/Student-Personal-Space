@@ -18,8 +18,7 @@ const CourseListPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const query = useQuery();
-    const { isAuthenticated, token, currentUser, isStudent, studentBranchId } = useAuth();
-
+    const { isAuthenticated, token, isStudent, studentBranchId } = useAuth();
     const initialBranchIdFromUrl = query.get('branchId');
 
     useEffect(() => {
@@ -28,29 +27,26 @@ const CourseListPage = () => {
             setError('');
             try {
                 let branchToFilter = '';
-
                 if (isStudent) {
                     branchToFilter = studentBranchId;
                     setSelectedBranch(studentBranchId);
                 } else {
                     branchToFilter = initialBranchIdFromUrl || '';
                     setSelectedBranch(branchToFilter);
-                    const branchesData = await fetchBranches();
-                    setBranches(branchesData || []);
+                    const branchesResponse = await fetchBranches();
+                    setBranches(branchesResponse.data || []);
                 }
 
+                // UPDATE: The API now always returns an object with a 'data' property
                 const coursesResponse = await fetchCourses(branchToFilter);
-                setCourses(coursesResponse?.data || coursesResponse || []);
+                setCourses(coursesResponse.data || []);
 
-                // === LOGIC UPDATE START ===
-                // Enrollments sirf tabhi fetch karein jab user student ho
                 if (isStudent && token) {
-                    const enrollmentsData = await fetchMyEnrollments(token);
-                    const ids = new Set(enrollmentsData.map(e => e.course._id));
+                    const enrollmentsResponse = await fetchMyEnrollments(token);
+                    // UPDATE: The enrollments API also returns an object with a 'data' property
+                    const ids = new Set(enrollmentsResponse.data.map(e => e.course._id));
                     setEnrolledCourseIds(ids);
                 }
-                // === LOGIC UPDATE END ===
-
             } catch (err) {
                 setError('Failed to load course data. Please try again later.');
                 console.error("Error loading course list data:", err);
@@ -59,35 +55,30 @@ const CourseListPage = () => {
         };
 
         loadInitialData();
-    }, [initialBranchIdFromUrl, isAuthenticated, token, isStudent, studentBranchId, currentUser]);
+    }, [initialBranchIdFromUrl, isAuthenticated, token, isStudent, studentBranchId]);
 
-    const handleBranchChange = (e) => {
+    const handleBranchChange = async (e) => {
         const newBranchId = e.target.value;
         setSelectedBranch(newBranchId);
-
-        const loadCourses = async () => {
-            setLoading(true);
-            try {
-                const coursesResponse = await fetchCourses(newBranchId);
-                setCourses(coursesResponse?.data || coursesResponse || []);
-            } catch (err) {
-                setError('Failed to filter courses.');
-            }
-            setLoading(false);
-        };
-        loadCourses();
+        setLoading(true);
+        try {
+            const coursesResponse = await fetchCourses(newBranchId);
+            setCourses(coursesResponse.data || []);
+        } catch (err) {
+            setError('Failed to filter courses.');
+        }
+        setLoading(false);
     };
 
     const handleEnrollSuccess = (enrolledCourseId) => {
         setEnrolledCourseIds(prevIds => new Set([...prevIds, enrolledCourseId]));
     };
 
-    if (error) return <div className="container error-container"><p>{error}</p></div>;
+    if (error) return <p style={{color: 'red', textAlign: 'center', marginTop: '20px'}}>{error}</p>;
 
     return (
         <div className="container">
             <h1>Available Courses</h1>
-
             {!isStudent && (
                 <div>
                     <label htmlFor="branchFilter" style={{ marginRight: '10px' }}>Filter by Branch:</label>
@@ -99,7 +90,6 @@ const CourseListPage = () => {
                     </select>
                 </div>
             )}
-
             {loading ? <p style={{textAlign: 'center', marginTop: '20px'}}>Loading courses...</p> : (
                 courses.length === 0 ? (
                     <p style={{textAlign: 'center', marginTop: '20px'}}>No courses available for the selected criteria.</p>
