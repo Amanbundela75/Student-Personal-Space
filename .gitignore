@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Environment Variables - Inmein secrets hote hain
+.env
+
+# IDE and OS specific files
+.idea/
+.vscode/
+
+# Uploaded files by users
+backend/uploads/

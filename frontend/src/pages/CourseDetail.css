@@ -1,0 +1,217 @@
+/* Purane Styles (Aapke diye gaye) */
+.course-detail-page .course-title {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.course-detail-page hr {
+    margin: 20px 0;
+}
+
+.enrollment-section {
+    margin: 30px 0;
+    padding: 25px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.study-section h3 {
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #27ae60;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+
+.content-header {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.content-item input[type="checkbox"] {
+    margin-right: 15px;
+    min-width: 18px;
+    min-height: 18px;
+    cursor: pointer;
+}
+
+.content-item input[type="checkbox"]:checked + label {
+    text-decoration: line-through;
+    color: #95a5a6;
+}
+
+/* Icons ke liye purane styles */
+.icon-video::before { content: '▶'; margin-right: 8px; color: #e74c3c; }
+.icon-note::before { content: '📝'; margin-right: 8px; color: #3498db; }
+
+
+/* --- NAYE STYLES (Video Player aur Layout ke liye) --- */
+
+.course-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 hissa video ke liye, 1/3 sidebar ke liye */
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.video-player-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.video-player {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* 16:9 ratio maintain karega */
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+}
+
+.video-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.video-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.content-sidebar {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    height: fit-content; /* Sidebar ki height content ke hisab se adjust hogi */
+}
+
+.content-sidebar h3 {
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+/* Content List ko sidebar ke andar style kiya gaya hai */
+.content-sidebar .content-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Thoda kam gap */
+    max-height: 450px; /* Scroll ke liye height */
+    overflow-y: auto;
+    margin-top: 1rem;
+    padding-right: 10px; /* Scrollbar ke liye space */
+}
+
+/* Content Item ko sidebar ke andar style kiya gaya hai */
+.content-sidebar .content-item {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    transition: all 0.2s ease;
+    cursor: pointer; /* Video item par click ke liye */
+}
+
+.content-sidebar .content-item:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Active video item ko highlight karne ke liye */
+.content-sidebar .content-item.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #0069d9;
+}
+
+.content-sidebar .content-item label {
+    font-size: 1rem; /* Thoda chhota font */
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.content-sidebar .content-item.active label {
+    color: white;
+    font-weight: bold;
+}
+
+/* Icon (FontAwesome se) */
+.content-sidebar .icon {
+    margin-right: 0.75rem;
+    color: #555;
+}
+
+.content-sidebar .content-item.active .icon {
+    color: white;
+}
+
+/* Add these styles to your CourseDetail.css file */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Helps on smaller screens */
+    gap: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+
+.header-text h1 {
+    margin: 0;
+}
+.header-text p {
+    margin-top: 0.5rem;
+}
+
+.btn-manage-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-manage-content:hover {
+    background-color: #7e8c9b;
+}

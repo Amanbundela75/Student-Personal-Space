@@ -1,0 +1,99 @@
+/* src/pages/SeniorListPage.css */
+
+.senior-list-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.senior-list-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.senior-list-header h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.senior-list-header p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.senior-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.senior-card {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.senior-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+
+.senior-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.senior-card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.senior-card-content h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.3rem;
+}
+
+.senior-card-role {
+    color: #007bff;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.senior-card-intro {
+    font-style: italic;
+    color: #666;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+}
+
+.senior-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    align-self: flex-start;
+}
+
+.senior-card-link:hover {
+    text-decoration: underline;
+}
+
+/* Add this to your SeniorListPage.css file */
+
+.no-roadmaps-message {
+    text-align: center;
+    padding: 3rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    color: #555;
+}
