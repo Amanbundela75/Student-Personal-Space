@@ -1,8 +1,8 @@
 <!--
-  Apex LMS — Enhanced README
+  Apex LMS — Enhanced README (single-file version)
   Notes:
-  - Replace placeholder GIFs in /assets/demo with your own recordings.
-  - The CI badge below will become "live" once you push the workflow in /ci.yml.
+  - This README references optional assets (assets/banner.gif and assets/demo/*.gif). If you don't add them yet, the README still works—images will just not render.
+  - The CI badge will become live only if/when you add a workflow at .github/workflows/ci.yml.
 -->
 
 <p align="center">
@@ -61,7 +61,7 @@ In today's competitive world, a student's profile is more than just grades. Apex
 
 [🚀 Live Demo — Coming Soon]
 
-Below are placeholders — replace with your own GIFs in assets/demo (see docs/ASSETS_GUIDE.md):
+Place your GIFs in assets/demo and update paths as needed:
 
 | Face Recognition Login | Student Portfolio Dashboard | Admin Course Management |
 | :--------------------: | :-------------------------: | :---------------------: |
@@ -73,6 +73,11 @@ Below are placeholders — replace with your own GIFs in assets/demo (see docs/A
   <img src="assets/demo/portfolio-heatmap.gif" width="49%" alt="Portfolio Heatmap"/>
   <img src="assets/demo/course-enroll.gif" width="49%" alt="Course Enrollment"/>
 </details>
+
+Tips for lightweight GIFs:
+- Keep each clip 6–12 seconds, under ~6–10 MB.
+- 1280x720 or 1080p; trim extra frames; compress with Gifsicle/Ezgif.
+- Tools: ScreenToGif (Win), Kap (macOS), Peek (Linux), OBS/ffmpeg.
 
 ---
 
@@ -155,16 +160,15 @@ sequenceDiagram
 
 ---
 
-## ⚙️ Continuous Integration (Moving Workflow)
+## ⚙️ Continuous Integration (Optional)
 
-This repository includes a multi-node CI that:
-- Installs dependencies for both frontend and backend
-- Runs tests, builds, and linting (when scripts are available)
-- Caches node_modules for faster builds
+A CI badge is shown above and will go live if you add a GitHub Actions workflow at:
+- .github/workflows/ci.yml
 
-The live status badge at the top updates on every push and pull request.
-
-CI workflow file: .github/workflows/ci.yml
+Suggested CI steps (backend and frontend):
+- Install dependencies
+- Lint, Test, Build (use npm run <script> --if-present so it won’t fail if a script is missing)
+- Cache node_modules for speed
 
 ---
 
@@ -215,7 +219,7 @@ App: http://localhost:5173
 
 ### Initial Admin User Setup
 
-1) Register a new user (with face verification)
+1) Register a new user (with face verification)  
 2) Promote to Admin
    - Open MongoDB (Atlas UI, Compass, or mongosh)
    - users collection → your user → set role: "admin"
@@ -227,8 +231,17 @@ App: http://localhost:5173
 
 - Add your GIFs to assets/demo and update the paths above.
 - Keep each GIF under ~6–10 MB for fast loading.
-- Recommended tools: ScreenToGif (Windows), Kap (macOS), Peek (Linux), or ffmpeg.
-- See docs/ASSETS_GUIDE.md for detailed steps.
+- Tools: ScreenToGif (Windows), Kap (macOS), Peek (Linux), OBS/ffmpeg.
+
+Quick ffmpeg commands:
+```bash
+# Basic
+ffmpeg -i input.mp4 -vf "fps=12,scale=1280:-1:flags=lanczos" -loop 0 output.gif
+
+# Higher quality with palette
+ffmpeg -i input.mp4 -vf "fps=12,scale=1280:-1:flags=lanczos,palettegen" -y palette.png
+ffmpeg -i input.mp4 -i palette.png -lavfi "fps=12,scale=1280:-1:flags=lanczos,paletteuse" -loop 0 output.gif
+```
 
 ---
 
