@@ -2,7 +2,7 @@
   Apex LMS — Enhanced README
   Notes:
   - Replace placeholder GIFs in /assets/demo with your own recordings.
-  - The CI badge below will become "live" once you push the workflow in .github/workflows/ci.yml.
+  - The CI badge below will become "live" once you push the workflow in /ci.yml.
 -->
 
 <p align="center">
