@@ -19,7 +19,7 @@ const {
     deleteCertification,
     // NEW: Import the bio controller function
     updateUserBio,
-} = require('../controllers/userController.js');
+} = require('../controllers/UserController.js');
 const { protect, admin } = require('../middleware/authMiddleware.js');
 
 // --- Multer Configuration for File Uploads ---
