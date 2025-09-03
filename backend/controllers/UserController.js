@@ -1,6 +1,6 @@
 const fs = require('fs'); // File System module for deleting files
 const path = require('path'); // Path module for handling file paths
-const User = require('../models/user.js');
+const User = require('../models/User.js');
 const asyncHandler = require('../middleware/asyncHandler.js');
 const jwt = require('jsonwebtoken');
 
