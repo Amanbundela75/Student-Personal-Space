@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/axiosConfig';
 import { useAuth } from '../contexts/AuthContext';
-import '../Components/CreateTest.css'; // Aapki CSS file ko yahan import kiya gaya hai
+import '../components/CreateTest.css'; // Aapki CSS file ko yahan import kiya gaya hai
 
 const CreateTestPage = () => {
     // Auth context se token aur user info lein
