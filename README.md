@@ -23,11 +23,6 @@
 ## 🚀 Live Deployment
 This project is live on **Render**!  
 
-- **Frontend (Live App):** [LMS Platform](https://lms-plateform-1.onrender.com)  
-- **Backend API:** [LMS Backend](https://lms-backend.onrender.com)  
-
----
-
 ## ✨ Core Features  
 
 ### 👨‍🎓 For Students
