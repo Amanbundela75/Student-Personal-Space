@@ -23,6 +23,14 @@
 ## 🚀 Live Deployment
 This project is live on **Render**!  
 
+<img width="1348" height="585" alt="Screenshot (267)" src="https://github.com/user-attachments/assets/5f6ccd7f-2ad9-4f9a-9807-4cfdab152d14" />
+<img width="1347" height="594" alt="Screenshot (268)" src="https://github.com/user-attachments/assets/af1b238f-c9a9-4456-bcec-6c1950aff54a" />
+<img width="1349" height="599" alt="Screenshot (269)" src="https://github.com/user-attachments/assets/b70233de-c06d-4b30-8380-e8ec88e5b93c" />
+<img width="1341" height="590" alt="Screenshot (270)" src="https://github.com/user-attachments/assets/95f29dae-e1a2-47e4-810a-5389bf49fa7f" />
+<img width="1341" height="586" alt="Screenshot (271)" src="https://github.com/user-attachments/assets/81c678fe-6f1e-426d-8121-5f88d4042870" />
+<img width="1366" height="591" alt="Screenshot (264)" src="https://github.com/user-attachments/assets/1c7947f6-0ad2-4eba-aea3-7c1d33d53f7a" />
+<img width="1366" height="396" alt="Screenshot (265)" src="https://github.com/user-attachments/assets/d0a39d21-1270-471f-969e-2d69074625aa" />
+
 ## ✨ Core Features  
 
 ### 👨‍🎓 For Students
